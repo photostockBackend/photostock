@@ -11,7 +11,7 @@ import { HttpExceptionFilter } from './helpers/http-exeption.filter';
 const PORT = process.env.PORT || 5000;
 const serverUrl = `http://localhost:${PORT}`
 
-async function bootstrap() {
+export async function bootstrap() {
   
   const app = await NestFactory.create(AppModule, { cors: {
     origin: ['http://localhost:3000'],
