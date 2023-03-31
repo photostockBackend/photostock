@@ -1,0 +1,17 @@
+# compiled output
+/dist
+/node_modules
+/mongo_init_script
+/mongodata
+
+# env
+.env
+package-lock.json
+yarn.lock
+
+# Logs
+logs
+*.log
+
+# IDEs and editors
+/.idea
