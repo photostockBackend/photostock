@@ -27,7 +27,7 @@ export class RegistrationUseCase
       user.emailConfirmationCode,
       '',
     ); //todo add source/action
-    this.usersRepository.create(user);
-    return user.email;
+    await this.usersRepository.create(user);
+    return;
   }
 }

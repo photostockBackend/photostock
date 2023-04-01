@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -17,6 +18,8 @@ import {
   RegistrationEmailInputModel,
   RegistrationInputModel,
 } from '../types/auth-input.models';
+import { RegistrationCommand } from '../application/use-cases/commands/registration.command';
+import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -83,9 +86,13 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully registrated.',
   })
+  @UseInterceptors(CheckEmailInterceptor)
   @HttpCode(204)
   @Post('registration')
   async registration(@Body() registrationInputModel: RegistrationInputModel) {
+    await this.commandBus.execute(
+      new RegistrationCommand(registrationInputModel),
+    );
     return;
   }
 
