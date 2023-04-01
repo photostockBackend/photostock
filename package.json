@@ -39,6 +39,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
+    "date-fns": "^2.29.3",
     "emailjs-imap-client": "^3.1.0",
     "mailparser": "^3.6.4",
     "mongoose": "^6.10.1",
@@ -97,6 +98,6 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": "^14.17.0"
+    "node": "^18.12.1"
   }
 }
