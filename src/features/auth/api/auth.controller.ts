@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -22,6 +23,9 @@ import {
 import { RegistrationCommand } from '../application/use-cases/commands/registration.command';
 import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
 import { ConfirmRegistrationCommand } from '../application/use-cases/commands/confirm-registration.command';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LoginCommand } from '../application/use-cases/commands/login.command';
+import { TokensType } from '../types/tokens.type';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -55,10 +59,28 @@ export class AuthController {
     status: 200,
     description: 'The user has been successfully logined.',
   })
+  @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
   async login(@Req() req, @Res({ passthrough: true }) res) {
-    return;
+    const tokens = await this.commandBus.execute<
+      LoginCommand,
+      Promise<TokensType>
+    >(
+      new LoginCommand(
+        req.user.userId,
+        String(req.headers['user-agent']),
+        req.ip,
+      ),
+    );
+    return res
+      .status(200)
+      .cookie('refreshToken', tokens.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        path: '/auth/refresh-token',
+      })
+      .json({ accessToken: tokens.accessToken });
   }
 
   @ApiResponse({
