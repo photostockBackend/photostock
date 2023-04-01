@@ -32,14 +32,14 @@ export class AuthController {
     @ApiResponse({ status: 200, description: 'The user has been successfully logined.'})
     @HttpCode(200)
     @Post('login')
-    async login(@Req() req, @Res({ passthrough: true }) res: Response){
+    async login(@Req() req, @Res({ passthrough: true }) res){
         return 
     }
 
     @ApiResponse({ status: 200, description: 'The tokens has been successfully refreshed.'})
     @HttpCode(200)
     @Post('refresh-token')
-    async refreshTokens(@Req() req: Request, @Res({ passthrough: true }) res: Response){
+    async refreshTokens(@Req() req, @Res({ passthrough: true }) res){
         return 
     }
 
@@ -67,7 +67,7 @@ export class AuthController {
     @ApiResponse({ status: 204, description: 'The user has been successfully logout.'})
     @HttpCode(204)
     @Post('logout')
-    async logout(@Req() req: Request){
+    async logout(@Req() req){
         return 
     }
 

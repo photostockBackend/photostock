@@ -14,13 +14,6 @@ import { AuthModule } from './features/auth/auth.module';
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
     ConfigModule.forRoot({isGlobal: true}),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
-      inject: [ConfigService],
-    }),
     AuthModule,
   ],
   controllers: [AppController],
