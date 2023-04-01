@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id                String @id @default(uuid())
+  id                Int @id @default(autoincrement())
   email             String @unique
   createdAt         String
   credInfo          CredInfoUser?
@@ -17,22 +17,22 @@ model User {
 }
 
 model CredInfoUser {
-  id                String @id @default(uuid())
+  id                Int @id @default(autoincrement())
   passwordHash      String  
-  passwordSalt      String
   isActivated       Boolean
   code              String
+  codeExpiresAt     Int
   user              User @relation(fields: [userId], references: [id])
-  userId            String @unique
+  userId            Int @unique
 }
 
 model TokenInfoUser {
-  id                String @id @default(uuid())
+  id                Int @id @default(autoincrement())
   ip                String
   title             String
   deviceId          String
   issuedAt          Int
   expiresAt         Int
   user              User @relation(fields: [userId], references: [id])
-  userId            String
+  userId            Int
 }
