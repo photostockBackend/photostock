@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -20,6 +21,7 @@ import {
 } from '../types/auth-input.models';
 import { RegistrationCommand } from '../application/use-cases/commands/registration.command';
 import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
+import { ConfirmRegistrationCommand } from '../application/use-cases/commands/confirm-registration.command';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -79,6 +81,18 @@ export class AuthController {
     @Body()
     registrationConfirmationInputModel: RegistrationConfirmationInputModel,
   ) {
+    const result = await this.commandBus.execute<
+      ConfirmRegistrationCommand,
+      Promise<boolean>
+    >(
+      new ConfirmRegistrationCommand(
+        registrationConfirmationInputModel.recoveryCode,
+      ),
+    );
+    if (!result)
+      throw new BadRequestException({
+        message: [{ field: 'code', message: 'invalid code' }],
+      });
     return;
   }
 

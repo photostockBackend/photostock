@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Length, Matches } from 'class-validator';
+import { IsString, IsUUID, Length, Matches } from 'class-validator';
 
 export class RegistrationInputModel {
   @ApiProperty({ description: 'user email' })
@@ -37,6 +37,7 @@ export class NewPasswordInputModel {
   readonly newPassword: string;
 
   @ApiProperty({ description: 'code from email' })
+  @IsUUID(4)
   @IsString()
   readonly recoveryCode: string;
 }
