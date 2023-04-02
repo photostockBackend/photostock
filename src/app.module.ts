@@ -6,6 +6,8 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './features/auth/auth.module';
+import { PrismaModule } from './database/prisma.module';
+import { AllDataModule } from './helpers/delete-all-data/delete-all-data.module';
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { AuthModule } from './features/auth/auth.module';
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
     ConfigModule.forRoot({isGlobal: true}),
+    AllDataModule,
     AuthModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [

@@ -22,7 +22,7 @@ model CredInfoUser {
   isActivated       Boolean
   code              String
   codeExpiresAt     Int
-  user              User @relation(fields: [userId], references: [id])
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int @unique
 }
 
@@ -33,6 +33,6 @@ model TokenInfoUser {
   deviceId          String
   issuedAt          Int
   expiresAt         Int
-  user              User @relation(fields: [userId], references: [id])
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int
 }

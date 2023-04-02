@@ -12,7 +12,7 @@ export const seedUsers = async (server: any) => {
     users.push(response.body)
     
     const tokens = await request(server).post('/auth/login')
-      .send({loginOrEmail: user.login, password: user.password})
+      .send({loginOrEmail: user.email, password: user.password})
     accessTokens.push(tokens.body.accessToken)
     cookies.push(tokens.header['set-cookie'])
   }
