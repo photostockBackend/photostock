@@ -1,26 +1,21 @@
 const users = [
     {
-        login: 'login-1',
         email: 'email-1@mail.com',
         password: 'password-1',
     },
     {
-        login: 'login-2',
         email: 'email-2@mail.com',
         password: 'password-2',
     },
     {
-        login: 'login-3',
         email: 'email-3@mail.com',
         password: 'password-3',
     },
     {
-        login: 'login-4',
         email: 'email-4@mail.com',
         password: 'password-4',
     },
     {
-        login: 'real-login',
         email: 'NameFamaly111@yandex.ru',
         password: 'real-password',
     }

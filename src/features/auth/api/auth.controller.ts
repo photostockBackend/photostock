@@ -4,6 +4,7 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiResponseError } from '../../../helpers/common/swagger-decorators/error-api-swagger';
 import { ErrorSwagger } from '../../../helpers/common/types/errored';
 import { LoginInputModel, NewPasswordInputModel, PasswordRecoveryInputModel, RegistrationConfirmationInputModel, RegistrationEmailInputModel, RegistrationInputModel } from '../types/auth-input.models';
+import { AuthCommandRepo } from '../infrastructure/command.repo';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -12,6 +13,7 @@ export class AuthController {
     constructor(
         private commandBus: CommandBus,
         private queryBus: QueryBus,
+        private repo: AuthCommandRepo,
     ) {}
 
     @ApiResponse({ status: 204, description: 'The user has been successfully registrated.'})
@@ -54,6 +56,7 @@ export class AuthController {
     @HttpCode(204)
     @Post('registration')
     async registration(@Body() registrationInputModel: RegistrationInputModel){
+        await this.repo.registration(registrationInputModel)
         return 
     }
 
