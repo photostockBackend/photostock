@@ -15,7 +15,7 @@ export class ConfirmRegistrationUseCase
     const { code } = command;
     const user = await this.authService.findUserByField('code', code);
     if (!user) return false;
-    const result = await user.confirmEmail();
+    const result = await user.confirmCode();
     if (!result) return false;
     return await this.usersRepository.update(user);
   }

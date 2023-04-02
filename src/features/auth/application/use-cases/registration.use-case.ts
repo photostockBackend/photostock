@@ -21,12 +21,7 @@ export class RegistrationUseCase
       email,
       passwordHash,
     });
-    await this.mailService.sendEmail(
-      '',
-      user.email,
-      user.emailConfirmationCode,
-      '',
-    ); //todo add source/action
+    await this.mailService.sendEmail('', user.email, user.credInfo.code, ''); //todo add source/action
     await this.usersRepository.create(user);
     return;
   }
