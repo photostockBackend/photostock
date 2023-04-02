@@ -17,12 +17,7 @@ export class ResendEmailUseCase implements ICommandHandler<ResendEmailCommand> {
     if (!user) return false;
     await user.updCode();
     if (await user.getEmailIsConfirmed()) return false;
-    await this.mailService.sendEmail(
-      '',
-      user.email,
-      user.emailConfirmationCode,
-      '',
-    );
+    await this.mailService.sendEmail('', user.email, user.credInfo.code, '');
     await this.usersRepository.update(user);
     return true;
   }

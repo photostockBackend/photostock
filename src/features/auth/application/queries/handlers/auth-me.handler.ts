@@ -8,6 +8,6 @@ export class AuthMeHandler implements IQueryHandler<AuthMeCommand> {
   constructor(private queryRepo: AuthQueryRepo) {}
   async execute(query: AuthMeCommand): Promise<AuthMeViewModel> {
     const { userId } = query;
-    return await this.queryRepo.authMe(userId);
+    return await this.queryRepo.getAuthMe(userId);
   }
 }

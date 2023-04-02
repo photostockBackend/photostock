@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
-import format from 'pg-format';
 import { AuthMeViewModel } from '../types/auth-view.models';
+import format = require('pg-format');
 
 @Injectable()
 export class AuthQueryRepo {
   constructor(protected prisma: PrismaService) {}
-  async authMe(userId: number): Promise<AuthMeViewModel> {
+  async getAuthMe(userId: number): Promise<AuthMeViewModel> {
     const sql = format(
       `SELECT
                 "id" as "userId",
                 "email"
-                FROM public."Users"
+                FROM "User"
                 WHERE "id" = %1$s;`,
       userId,
     );
-    const user = await this.prisma.$queryRaw<AuthMeViewModel[]>`${sql}`;
+    const user = await this.prisma.$queryRawUnsafe<AuthMeViewModel[]>(sql);
     if (!user.length) return null;
     return user[0];
   }
