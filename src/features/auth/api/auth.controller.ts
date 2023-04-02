@@ -34,6 +34,9 @@ import { CreateNewPairTokensCommand } from '../application/use-cases/commands/cr
 import { PassRecoveryCommand } from '../application/use-cases/commands/pass-recovery.command';
 import { NewPassCommand } from '../application/use-cases/commands/new-pass.command';
 import { LogoutCommand } from '../application/use-cases/commands/logout.command';
+import { AuthMeCommand } from '../application/queries/commands/auth-me.command';
+import { AuthMeViewModel } from '../types/auth-view.models';
+import { BearerAuthGuard } from './guards/bearer-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -231,9 +234,12 @@ export class AuthController {
     status: 200,
     description: 'The user has been successfully identified.',
   })
+  @UseGuards(BearerAuthGuard)
   @HttpCode(200)
   @Get('me')
-  async getAuthMe(@Req() req) {
-    return;
+  async getAuthMe(@Req() req: RequestWithUser) {
+    return await this.queryBus.execute<AuthMeCommand, Promise<AuthMeViewModel>>(
+      new AuthMeCommand(req.user.userId),
+    );
   }
 }

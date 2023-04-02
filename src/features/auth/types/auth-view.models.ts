@@ -1,8 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
-
-
-
-
-
-
-
+export class AuthMeViewModel {
+  email: string;
+  userId: number;
+}
