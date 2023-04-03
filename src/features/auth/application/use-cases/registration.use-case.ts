@@ -4,12 +4,15 @@ import { AuthService } from '../services/auth.service';
 import { User } from '../../../types/domain/user.schema';
 import { MailService } from '../../../../adapters/mail/mail.service';
 import { UsersRepo } from '../../types/interfaces/users-repo.interface';
+import { AuthCommandRepo } from '../../infrastructure/command.repo';
+import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 @CommandHandler(RegistrationCommand)
 export class RegistrationUseCase
   implements ICommandHandler<RegistrationCommand>
 {
-  constructor(
+  /*constructor(
     protected authService: AuthService,
     protected mailService: MailService,
     protected usersRepository: UsersRepo,
@@ -21,8 +24,26 @@ export class RegistrationUseCase
       email,
       passwordHash,
     });
-    await this.mailService.sendEmail('', user.email, user.credInfo.code, ''); //todo add source/action
-    await this.usersRepository.create(user);
+    await this.mailService.sendEmail(command.frontendAdress, user.email, user.credInfo.code, 'confirm-email?code'); 
+    //this.usersRepository.create(user);
+    this.usersRepository.registration(user)
     return;
-  }
+  }*/
+  constructor(
+    protected mailService: MailService,
+    private usersRepo: AuthCommandRepo,
+  ) {}
+
+    async execute(command: RegistrationCommand){
+      const passwordSalt = await bcrypt.genSalt(8)
+      const passwordHash = await bcrypt.hash(command.userDto.password, passwordSalt)
+      const { email, password } = command.userDto;
+      const user = new User({
+        email,
+        passwordHash,
+      });
+
+      await this.usersRepo.registration(user)
+      await this.mailService.sendEmail(command.frontendAdress, user.email, user.credInfo.code, 'confirm-email?code')
+    }
 }

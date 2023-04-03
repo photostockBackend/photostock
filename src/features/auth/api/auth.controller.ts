@@ -51,11 +51,12 @@ export class AuthController {
   @Post('password-recovery')
   async passwordRecovery(
     passwordRecoveryInputModel: PasswordRecoveryInputModel,
+    @Req() req
   ) {
     const result = await this.commandBus.execute<
       PassRecoveryCommand,
       Promise<boolean>
-    >(new PassRecoveryCommand(passwordRecoveryInputModel.email));
+    >(new PassRecoveryCommand(passwordRecoveryInputModel.email, req.headers.origin));
     if (!result)
       throw new BadRequestException({
         message: [
@@ -139,6 +140,7 @@ export class AuthController {
         req.user.userId,
         req.user.deviceId,
         req.ip,
+        req.user.issuedAt,
       ),
     );
     return res
@@ -180,12 +182,15 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully registrated.',
   })
-  @UseInterceptors(CheckEmailInterceptor)
+  //@UseInterceptors(CheckEmailInterceptor)
   @HttpCode(204)
   @Post('registration')
-  async registration(@Body() registrationInputModel: RegistrationInputModel) {
+  async registration(
+    @Body() registrationInputModel: RegistrationInputModel, 
+    @Req() req
+  ) {
     await this.commandBus.execute(
-      new RegistrationCommand(registrationInputModel),
+      new RegistrationCommand(registrationInputModel, req.headers.origin),
     );
     return;
   }
@@ -198,11 +203,12 @@ export class AuthController {
   @Post('registration-email-resending')
   async registrationEmailResending(
     @Body() registrationEmailInputModel: RegistrationEmailInputModel,
+    @Req() req
   ) {
     const result = await this.commandBus.execute<
       ResendEmailCommand,
       Promise<boolean>
-    >(new ResendEmailCommand(registrationEmailInputModel.email));
+    >(new ResendEmailCommand(registrationEmailInputModel.email, req.headers.origin));
     if (!result)
       throw new BadRequestException({
         message: [
@@ -225,7 +231,7 @@ export class AuthController {
     const result = await this.commandBus.execute<
       LogoutCommand,
       Promise<boolean>
-    >(new LogoutCommand(req.user.userId, req.user.deviceId));
+    >(new LogoutCommand(req.user.userId, req.user.deviceId, req.user.issuedAt));
     if (!result) throw new InternalServerErrorException();
     return;
   }

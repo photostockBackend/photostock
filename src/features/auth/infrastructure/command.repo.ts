@@ -1,106 +1,110 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
-import { RegistrationInputModel } from '../types/auth-input.models';
+import { User } from '../../types/domain/user.schema';
 
 @Injectable()
 export class AuthCommandRepo {
   constructor(private prisma: PrismaService) {}
 
-  async registration(registrationInputModel: RegistrationInputModel) {
+  async registration(user: User){
     await this.prisma.user.create({
-      data: {
-        email: registrationInputModel.email,
-        createdAt: new Date().toISOString(),
-        credInfo: {
-          create: {
-            passwordHash: 'fsdf',
-            isActivated: false,
-            code: 'dsf',
-            codeExpiresAt: 111,
-          },
-        },
-        tokenInfo: {
-          create: {
-            ip: 'dsa',
-            title: 'hfg',
-            deviceId: 'fsd',
-            issuedAt: 44,
-            expiresAt: 44,
-          },
-        },
-      },
-    });
+        data: {
+            email: user.email,
+            createdAt: new Date().toISOString(),
+            credInfo: {
+                create: {
+                    passwordHash: 'fsdf',
+                    isActivated: false,
+                    code: 'dsf',
+                    codeExpiresAt: 111,
+                }
+            },
+            tokenInfo: {
+                create: {
+                    ip: 'dsa',
+                    title: 'hfg',
+                    deviceId: 'fsd',
+                    issuedAt: 44,
+                    expiresAt: 44,
+                }
+            }
+        }
+    })
 
-    const user = await this.prisma.user.findMany();
-    console.log('user', user);
-    return;
+    const users = await this.prisma.user.findMany()
+    console.log('user', user)
+    return 
   }
 
-  async login() {
-    return;
+  async login(session){
+
+    return
+  }
+  
+  async logout(userId: number, deviceId: string, issuedAt: number){
+    
+    return
   }
 
-  async logout() {
-    return;
+  async refreshToken(session: number, issuedAt: number, expiresAt: number){
+    
+    return
   }
 
-  async refreshToken() {
-    return;
-  }
-
-  async passwordRecovery() {
+  async passwordRecovery(email: string, code: string){
     await this.prisma.user.update({
-      where: {
-        email: 'email-1@mail.com',
-      },
-      data: {
-        credInfo: {
-          update: {
-            code: '111',
-          },
+        where: {
+          email: email,
+        },
+        data: {
+          credInfo: {
+            update: {
+                code: code,
+            }
+          }
         },
       },
     });
     return;
   }
 
-  async newPassword() {
+  async newPassword(passwordHash: string, recoveryCode: string){
     await this.prisma.credInfoUser.updateMany({
-      where: {
-        code: '111',
-      },
-      data: {
-        passwordHash: '333',
-      },
-    });
-    return;
+        where: {
+            code: recoveryCode,
+        },
+        data: {
+            passwordHash: passwordHash,
+        }
+    })
+    return 
   }
 
-  async registrationConfirmation() {
+  async registrationConfirmation(code: string) {
     await this.prisma.credInfoUser.updateMany({
-      where: {
-        code: '111',
-      },
-      data: {
-        passwordHash: '333',
-      },
-    });
-    return;
+        where: {
+            code: code,
+        },
+        data: {
+            isActivated: true,
+        }
+    })
+    return 
   }
 
-  async registrationEmailResending() {
+  async registrationEmailResending(email: string, code: string){
     await this.prisma.user.update({
-      where: {
-        email: 'email-1@mail.com',
-      },
-      data: {
-        credInfo: {
-          update: {
-            code: '111',
-          },
+        where: {
+          email: email,
         },
-      },
-    });
-    return;
+        data: {
+          credInfo: {
+            update: {
+                code: code,
+            }
+          }
+        },
+    })
+    return 
   }
 }
