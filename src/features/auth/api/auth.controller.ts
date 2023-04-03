@@ -146,6 +146,7 @@ export class AuthController {
     return res
       .status(200)
       .cookie('refreshToken', tokens.refreshToken, {
+        sameSite: true,
         httpOnly: true,
         secure: true,
         path: '/auth/refresh-token',
@@ -182,7 +183,8 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully registrated.',
   })
-  //@UseInterceptors(CheckEmailInterceptor)
+  @ApiResponse({ status: 400, description: 'If the user with the given email already exists.'})
+  @UseInterceptors(CheckEmailInterceptor)
   @HttpCode(204)
   @Post('registration')
   async registration(

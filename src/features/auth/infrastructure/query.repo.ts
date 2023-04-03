@@ -22,13 +22,13 @@ export class AuthQueryRepo {
     return user[0];
   }
 
+  // TODO: make reusable func with field-variant
   async findOneByField(field: string, value: string): Promise<User> {
     const sql = format(
       `SELECT
-                "id" as "userId",
-                "email"
-                FROM "User"
-                WHERE %1$s = %2$s;`,
+        "id" as "userId", "email"
+      FROM "User"
+      WHERE %1$I = %2$L;`, 
       field, value
     );
     const user = await this.prisma.$queryRawUnsafe<User[]>(sql);

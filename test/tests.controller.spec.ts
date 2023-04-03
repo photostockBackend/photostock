@@ -29,8 +29,20 @@ describe('AppController', () => {
       await request(server).delete('/delete-all-data').expect(204)
     })
 
-    it('should seed data', async () => {
+    /*it('should seed data', async () => {
       await seedUsers(server)
+    });*/
+
+    it('should registered user', async () => {
+      const req1 = await request(server).post('/auth/registration')
+        .send({email: 'nickarbuzov@yandex.by', password: '111111'})
+
+      expect(req1).toBe(0)
+
+      const req = await request(server).post('/auth/registration')
+        .send({email: 'nickarbuzov@yandex.by', password: '111111'})
+        .expect(204)
+
     });
 
   });

@@ -7,6 +7,8 @@ import { UsersRepo } from '../../types/interfaces/users-repo.interface';
 import { AuthCommandRepo } from '../../infrastructure/command.repo';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { CredInfoUser } from '../../../types/domain/cred-info-user.schema';
+import { AuthQueryRepo } from '../../infrastructure/query.repo';
 
 @CommandHandler(RegistrationCommand)
 export class RegistrationUseCase
@@ -31,7 +33,7 @@ export class RegistrationUseCase
   }*/
   constructor(
     protected mailService: MailService,
-    private usersRepo: AuthCommandRepo,
+    private authRepo: AuthCommandRepo,
   ) {}
 
     async execute(command: RegistrationCommand){
@@ -41,9 +43,8 @@ export class RegistrationUseCase
       const user = new User({
         email,
         passwordHash,
-      });
-
-      await this.usersRepo.registration(user)
+      }, new CredInfoUser());
+      await this.authRepo.registration(user)
       await this.mailService.sendEmail(command.frontendAdress, user.email, user.credInfo.code, 'confirm-email?code')
     }
 }

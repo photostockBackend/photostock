@@ -11,17 +11,6 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/delete-all-data": {
-        "delete": {
-          "operationId": "AllDataController_delete",
-          "parameters": [],
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          }
-        }
-      },
       "/auth/password-recovery": {
         "post": {
           "operationId": "AuthController_passwordRecovery",
@@ -190,14 +179,14 @@ window.onload = function() {
       }
     },
     "info": {
-      "title": "Swagger-doc for test-task",
-      "description": "The test-task API description",
+      "title": "Swagger-doc for photoStock",
+      "description": "The photoStock API description",
       "version": "1.0",
       "contact": {}
     },
     "tags": [
       {
-        "name": "test-task",
+        "name": "photoStock",
         "description": ""
       }
     ],

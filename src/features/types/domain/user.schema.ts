@@ -7,23 +7,26 @@ import { TokenInfo } from './token-info.schema';
 
 @Injectable()
 export class User {
-  constructor(private userDto: UserCreateType) {
+  constructor(
+    private userDto: UserCreateType,
+    public credInfo: CredInfoUser,
+  ) {
     this.credInfo.passwordHash = userDto.passwordHash;
     this.email = userDto.email;
     this.createdAt = new Date().toISOString();
     this.credInfo.code = uuidv4();
-    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 });
+    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 }).getMilliseconds();
     this.credInfo.isActivated = false;
   }
+
   id: number;
   email: string;
   createdAt: string;
-  credInfo: CredInfoUser;
   tokenInfo: TokenInfo[];
-
+  
   async confirmCode(): Promise<boolean> {
     if (
-      this.credInfo.codeExpiresAt <= new Date() ||
+      this.credInfo.codeExpiresAt <= new Date().getMilliseconds() ||
       this.credInfo.isActivated === true
     )
       return false;
@@ -32,7 +35,7 @@ export class User {
   }
   async updCode(): Promise<void> {
     this.credInfo.code = uuidv4();
-    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 });
+    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 }).getMilliseconds();
     this.credInfo.isActivated = false;
   }
   async setPassHash(newPassHash: string): Promise<void> {

@@ -7,32 +7,22 @@ export class AuthCommandRepo {
   constructor(private prisma: PrismaService) {}
 
   async registration(user: User){
+    
     await this.prisma.user.create({
         data: {
             email: user.email,
-            createdAt: new Date().toISOString(),
+            createdAt: user.createdAt,
             credInfo: {
                 create: {
-                    passwordHash: 'fsdf',
-                    isActivated: false,
-                    code: 'dsf',
-                    codeExpiresAt: 111,
+                    passwordHash: user.credInfo.passwordHash,
+                    isActivated: user.credInfo.isActivated,
+                    code: user.credInfo.code,
+                    codeExpiresAt: user.credInfo.codeExpiresAt,
                 }
             },
-            tokenInfo: {
-                create: {
-                    ip: 'dsa',
-                    title: 'hfg',
-                    deviceId: 'fsd',
-                    issuedAt: 44,
-                    expiresAt: 44,
-                }
-            }
         }
     })
-
-    const users = await this.prisma.user.findMany()
-    console.log('user', user)
+    
     return 
   }
 

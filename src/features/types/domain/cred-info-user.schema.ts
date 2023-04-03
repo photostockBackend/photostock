@@ -5,7 +5,7 @@ export class CredInfoUser {
   passwordHash: string;
   isActivated: boolean;
   code: string;
-  codeExpiresAt: Date;
+  codeExpiresAt: number;
   user: User;
   userId: number;
 }
