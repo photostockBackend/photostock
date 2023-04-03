@@ -4,9 +4,7 @@ import { User } from '../../types/domain/user.schema';
 
 @Injectable()
 export class AuthCommandRepo {
-  constructor(
-    private prisma: PrismaService
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async registration(user: User){
     await this.prisma.user.create({
@@ -65,8 +63,9 @@ export class AuthCommandRepo {
             }
           }
         },
-    })
-    return 
+      },
+    });
+    return;
   }
 
   async newPassword(passwordHash: string, recoveryCode: string){
@@ -108,5 +107,4 @@ export class AuthCommandRepo {
     })
     return 
   }
-
 }
