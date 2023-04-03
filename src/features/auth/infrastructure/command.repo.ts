@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
-import { RegistrationInputModel } from '../types/auth-input.models';
+import { User } from '../../types/domain/user.schema';
 
 @Injectable()
 export class AuthCommandRepo {
@@ -8,10 +8,10 @@ export class AuthCommandRepo {
     private prisma: PrismaService
   ) {}
 
-  async registration(registrationInputModel: RegistrationInputModel){
+  async registration(user: User){
     await this.prisma.user.create({
         data: {
-            email: registrationInputModel.email,
+            email: user.email,
             createdAt: new Date().toISOString(),
             credInfo: {
                 create: {
@@ -33,35 +33,35 @@ export class AuthCommandRepo {
         }
     })
 
-    const user = await this.prisma.user.findMany()
+    const users = await this.prisma.user.findMany()
     console.log('user', user)
     return 
   }
 
-  async login(){
+  async login(session){
 
     return
   }
   
-  async logout(){
+  async logout(userId: number, deviceId: string, issuedAt: number){
     
     return
   }
 
-  async refreshToken(){
+  async refreshToken(session: number, issuedAt: number, expiresAt: number){
     
     return
   }
 
-  async passwordRecovery(){
+  async passwordRecovery(email: string, code: string){
     await this.prisma.user.update({
         where: {
-          email: 'email-1@mail.com',
+          email: email,
         },
         data: {
           credInfo: {
             update: {
-                code: '111'
+                code: code,
             }
           }
         },
@@ -69,39 +69,39 @@ export class AuthCommandRepo {
     return 
   }
 
-  async newPassword(){
+  async newPassword(passwordHash: string, recoveryCode: string){
     await this.prisma.credInfoUser.updateMany({
         where: {
-            code: '111'
+            code: recoveryCode,
         },
         data: {
-            passwordHash: '333'
+            passwordHash: passwordHash,
         }
     })
     return 
   }
 
-  async registrationConfirmation() {
+  async registrationConfirmation(code: string) {
     await this.prisma.credInfoUser.updateMany({
         where: {
-            code: '111'
+            code: code,
         },
         data: {
-            passwordHash: '333'
+            isActivated: true,
         }
     })
     return 
   }
 
-  async registrationEmailResending(){
+  async registrationEmailResending(email: string, code: string){
     await this.prisma.user.update({
         where: {
-          email: 'email-1@mail.com',
+          email: email,
         },
         data: {
           credInfo: {
             update: {
-                code: '111'
+                code: code,
             }
           }
         },

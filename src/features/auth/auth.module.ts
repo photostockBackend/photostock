@@ -6,6 +6,8 @@ import { JWT } from '../../helpers/jwt';
 import { AuthController } from './api/auth.controller';
 import { AuthCommandRepo } from './infrastructure/command.repo';
 import { PrismaModule } from '../../database/prisma.module';
+import { AuthService } from './application/services/auth.service';
+import { CheckEmailInterceptor } from './api/interceptors/check-email.interceptor';
 
 const commands = []
 const queries = []
