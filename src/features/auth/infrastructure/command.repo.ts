@@ -63,9 +63,9 @@ export class AuthCommandRepo {
             }
           }
         },
-      },
-    });
-    return;
+    })
+
+    return
   }
 
   async newPassword(passwordHash: string, recoveryCode: string){

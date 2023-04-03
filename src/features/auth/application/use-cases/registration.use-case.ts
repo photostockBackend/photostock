@@ -35,9 +35,9 @@ export class RegistrationUseCase
   ) {}
 
     async execute(command: RegistrationCommand){
-      const passwordSalt = await bcrypt.genSalt(8)
-      const passwordHash = await bcrypt.hash(command.userDto.password, passwordSalt)
       const { email, password } = command.userDto;
+      const passwordSalt = await bcrypt.genSalt(8)
+      const passwordHash = await bcrypt.hash(password, passwordSalt)
       const user = new User({
         email,
         passwordHash,

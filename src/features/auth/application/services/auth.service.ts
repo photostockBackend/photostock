@@ -3,12 +3,13 @@ import * as bcrypt from 'bcrypt';
 import { UsersRepo } from '../../types/interfaces/users-repo.interface';
 import { User } from '../../../types/domain/user.schema';
 import { TokensInfoRepo } from '../../types/interfaces/tokens-info-repo.interface';
+import { AuthQueryRepo } from '../../infrastructure/query.repo';
 
 @Injectable()
 export class AuthService {
   constructor(
-    protected usersRepository: UsersRepo,
-    private tokensInfoRepository: TokensInfoRepo,
+    protected usersRepository: AuthQueryRepo,
+    private tokensInfoRepository: AuthQueryRepo,
   ) {}
   
   async getPassHash(password: string): Promise<string> {
@@ -39,11 +40,11 @@ export class AuthService {
   }
 
   async checkPayloadRefreshToken(payload: any): Promise<boolean> {
-    return !!(await this.tokensInfoRepository.findOne({
-      issuedAt: payload.iat,
-      deviceId: payload.deviceId,
-      userId: payload.userId,
-    }));
+    return !!(await this.usersRepository.findOne(
+      payload.iat,
+      payload.deviceId,
+      payload.userId,
+    ));
   }
 
   private async generateHash(password: string, salt: string) {

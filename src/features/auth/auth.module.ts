@@ -6,8 +6,6 @@ import { JWT } from '../../helpers/jwt';
 import { AuthController } from './api/auth.controller';
 import { AuthCommandRepo } from './infrastructure/command.repo';
 import { PrismaModule } from '../../database/prisma.module';
-import { AuthService } from './application/services/auth.service';
-import { CheckEmailInterceptor } from './api/interceptors/check-email.interceptor';
 import { AuthMeHandler } from './application/queries/handlers/auth-me.handler';
 import { AuthQueryRepo } from './infrastructure/query.repo';
 import { LoginUseCase } from './application/use-cases/login.use-case';
