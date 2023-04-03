@@ -42,10 +42,10 @@ export async function bootstrap() {
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
-    .setTitle('Swagger-doc for test-task')
-    .setDescription('The test-task API description')
+    .setTitle('Swagger-doc for photoStock')
+    .setDescription('The photoStock API description')
     .setVersion('1.0')
-    .addTag('test-task')
+    .addTag('photoStock')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

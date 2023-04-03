@@ -1,6 +1,8 @@
 import {Controller, Delete, HttpCode} from '@nestjs/common';
 import {AllDataService} from "./delete-all-data.service";
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller('delete-all-data')
 export class AllDataController {
 
