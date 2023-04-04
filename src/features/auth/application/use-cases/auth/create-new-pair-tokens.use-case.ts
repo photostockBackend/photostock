@@ -1,12 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateNewPairTokensCommand } from './commands/create-new-pair-tokens.command';
-import { TokensType } from '../../types/tokens.type';
-import { AuthService } from '../services/auth.service';
-import { JWT } from '../../../../helpers/jwt';
-import { TokensInfoRepo } from '../../types/interfaces/tokens-info-repo.interface';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { JWT } from '../../../../../helpers/jwt';
 import { ConfigService } from '@nestjs/config';
-import { AuthCommandRepo } from '../../infrastructure/command.repo';
+import { AuthCommandRepo } from '../../../infrastructure/command.repositories/command.repo';
 
 @CommandHandler(CreateNewPairTokensCommand)
 export class CreateNewPairTokensUseCase
@@ -46,8 +42,8 @@ export class CreateNewPairTokensUseCase
     private configService: ConfigService,
   ) {}
 
-    async execute(command: CreateNewPairTokensCommand){
-      /*try{
+  async execute(command: CreateNewPairTokensCommand) {
+    /*try{
         const session = await this.devicesRepo.findOneDeviceByRefreshTokenData(command.deviceId, command.issuedAt)
         if(session) {
           const issuedAt = new Date().getTime()
@@ -68,5 +64,5 @@ export class CreateNewPairTokensUseCase
       catch(e){
         throw new HttpException('Auth not found', HttpStatus.UNAUTHORIZED)
       }*/
-    }
+  }
 }

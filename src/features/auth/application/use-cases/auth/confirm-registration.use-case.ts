@@ -1,8 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ConfirmRegistrationCommand } from './commands/confirm-registration.command';
-import { AuthService } from '../services/auth.service';
-import { UsersRepo } from '../../types/interfaces/users-repo.interface';
-import { AuthCommandRepo } from '../../infrastructure/command.repo';
+import { AuthCommandRepo } from '../../../infrastructure/command.repositories/command.repo';
 
 @CommandHandler(ConfirmRegistrationCommand)
 export class ConfirmRegistrationUseCase
@@ -20,11 +18,9 @@ export class ConfirmRegistrationUseCase
     if (!result) return false;
     return await this.usersRepository.update(user);
   }*/
-  constructor(
-    private usersRepo: AuthCommandRepo,
-  ) {}
+  constructor(private usersRepo: AuthCommandRepo) {}
 
-  async execute(command: ConfirmRegistrationCommand){
-    return await this.usersRepo.registrationConfirmation(command.code)
+  async execute(command: ConfirmRegistrationCommand) {
+    return await this.usersRepo.registrationConfirmation(command.code);
   }
 }

@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UsersRepo } from '../../types/interfaces/users-repo.interface';
 import { User } from '../../../types/domain/user.schema';
-import { TokensInfoRepo } from '../../types/interfaces/tokens-info-repo.interface';
-import { AuthQueryRepo } from '../../infrastructure/query.repo';
+import { AuthQueryRepo } from '../../infrastructure/query.repositories/query.repo';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +9,7 @@ export class AuthService {
     protected usersRepository: AuthQueryRepo,
     private tokensInfoRepository: AuthQueryRepo,
   ) {}
-  
+
   async getPassHash(password: string): Promise<string> {
     const passwordSalt = await bcrypt.genSalt(10);
     return await this.generateHash(password, passwordSalt);

@@ -1,10 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LogoutCommand } from './commands/logout.command';
-import { AuthService } from '../services/auth.service';
-import { TokensInfoRepo } from '../../types/interfaces/tokens-info-repo.interface';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { AuthCommandRepo } from '../../infrastructure/command.repo';
-import { JWT } from '../../../../helpers/jwt';
+import { AuthCommandRepo } from '../../../infrastructure/command.repositories/command.repo';
+import { JWT } from '../../../../../helpers/jwt';
 
 @CommandHandler(LogoutCommand)
 export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
@@ -23,15 +20,15 @@ export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
     private readonly jwtService: JWT,
   ) {}
 
-  async execute(command: LogoutCommand){
+  async execute(command: LogoutCommand) {
     const { userId, deviceId, issuedAt } = command;
 
-    const res = await this.devicesRepo.logout(userId, deviceId, issuedAt)
+    const res = await this.devicesRepo.logout(userId, deviceId, issuedAt);
     /*if(res.deletedCount === 0) {
       throw new HttpException('Session not found', HttpStatus.UNAUTHORIZED)
     } else {
       return
     }*/
-    return
+    return;
   }
 }
