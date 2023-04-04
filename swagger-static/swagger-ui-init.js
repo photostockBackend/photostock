@@ -118,6 +118,9 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The user has been successfully registrated."
+            },
+            "400": {
+              "description": "If the user with the given email already exists."
             }
           },
           "tags": [
@@ -213,13 +216,13 @@ window.onload = function() {
         "RegistrationConfirmationInputModel": {
           "type": "object",
           "properties": {
-            "recoveryCode": {
+            "code": {
               "type": "string",
               "description": "code from email"
             }
           },
           "required": [
-            "recoveryCode"
+            "code"
           ]
         },
         "RegistrationInputModel": {

@@ -173,7 +173,7 @@ export class AuthController {
       Promise<boolean>
     >(
       new ConfirmRegistrationCommand(
-        registrationConfirmationInputModel.recoveryCode,
+        registrationConfirmationInputModel.code,
       ),
     );
     if (!result)

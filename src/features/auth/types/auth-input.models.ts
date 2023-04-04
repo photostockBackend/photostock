@@ -45,7 +45,7 @@ export class NewPasswordInputModel {
 export class RegistrationConfirmationInputModel {
   @ApiProperty({ description: 'code from email' })
   @IsString()
-  readonly recoveryCode: string;
+  readonly code: string;
 }
 
 export class RegistrationEmailInputModel {
