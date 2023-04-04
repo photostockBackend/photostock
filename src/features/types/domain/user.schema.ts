@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { UserCreateType } from '../../auth/types/user.types';
 import { CredInfoUser } from './cred-info-user.schema';
-import { TokenInfoSchema } from './token-info.schema';
+import { TokenInfo } from './token-info.schema';
 
 @Injectable()
 export class User {
@@ -21,7 +21,7 @@ export class User {
   id: number;
   email: string;
   createdAt: string;
-  tokenInfo: TokenInfoSchema[];
+  tokenInfo: TokenInfo[];
 
   async confirmCode(): Promise<boolean> {
     if (
