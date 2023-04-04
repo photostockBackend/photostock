@@ -37,6 +37,7 @@ import { LogoutCommand } from '../application/use-cases/auth/commands/logout.com
 import { AuthMeCommand } from '../application/queries/auth/commands/auth-me.command';
 import { AuthMeViewModel } from '../types/auth-view.models';
 import { BearerAuthGuard } from './guards/bearer-auth.guard';
+import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -105,7 +106,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
-  async login(@Req() req, @Res({ passthrough: true }) res) {
+  async login(@Req() req, @Res() res: Response) {
     const tokens = await this.commandBus.execute<
       LoginCommand,
       Promise<TokensType>
@@ -133,10 +134,7 @@ export class AuthController {
   @UseGuards(RefreshAuthGuard)
   @HttpCode(200)
   @Post('refresh-token')
-  async refreshTokens(
-    @Req() req: RequestWithUser,
-    @Res({ passthrough: true }) res,
-  ) {
+  async refreshTokens(@Req() req: RequestWithUser, @Res() res: Response) {
     const tokens = await this.commandBus.execute<
       CreateNewPairTokensCommand,
       Promise<TokensType>
@@ -171,11 +169,7 @@ export class AuthController {
     const result = await this.commandBus.execute<
       ConfirmRegistrationCommand,
       Promise<boolean>
-    >(
-      new ConfirmRegistrationCommand(
-        registrationConfirmationInputModel.code,
-      ),
-    );
+    >(new ConfirmRegistrationCommand(registrationConfirmationInputModel.code));
     if (!result)
       throw new BadRequestException({
         message: [{ field: 'code', message: 'invalid code' }],

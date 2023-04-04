@@ -9,7 +9,7 @@ import { DeleteFilterTokenInfoType } from '../../types/delete-filter-token-info.
 export class TokenInfoCommandRepo implements ITokensInfoRepo {
   constructor(private prisma: PrismaService) {}
   async create(token: TokenInfo): Promise<number> {
-    /*const result = await this.prisma.tokenInfoUser.create({
+    const result = await this.prisma.tokenInfoUser.create({
       data: {
         issuedAt: token.issuedAt,
         expirationAt: token.expirationAt,
@@ -19,11 +19,10 @@ export class TokenInfoCommandRepo implements ITokensInfoRepo {
         user: { connect: { id: token.userId } },
       },
     });
-    return result.id;*/
-    return 0
+    return result.id;
   }
   async update(token: TokenInfo): Promise<boolean> {
-    /*const result = await this.prisma.tokenInfoUser.update({
+    const result = await this.prisma.tokenInfoUser.update({
       where: { id: token.id },
       data: {
         issuedAt: token.issuedAt,
@@ -33,8 +32,7 @@ export class TokenInfoCommandRepo implements ITokensInfoRepo {
         deviceName: token.deviceName,
       },
     });
-    return !!result;*/
-    return true
+    return !!result;
   }
   async findOneByFilter(
     filter: FindFilterTokenInfoType,
