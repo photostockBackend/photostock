@@ -4,10 +4,10 @@ import { JwtService } from '@nestjs/jwt';
 import { MailModule } from '../../adapters/mail/mail.module';
 import { JWT } from '../../helpers/jwt';
 import { AuthController } from './api/auth.controller';
-import { AuthCommandRepo } from './infrastructure/command.repositories/command.repo';
+import { AuthCommandRepo } from './infrastructure/command.repositories/auth.command.repo';
 import { PrismaModule } from '../../database/prisma.module';
 import { AuthMeHandler } from './application/queries/auth/handlers/auth-me.handler';
-import { AuthQueryRepo } from './infrastructure/query.repositories/query.repo';
+import { AuthQueryRepo } from './infrastructure/query.repositories/auth.query.repo';
 import { LoginUseCase } from './application/use-cases/auth/login.use-case';
 import { RegistrationUseCase } from './application/use-cases/auth/registration.use-case';
 import { ConfirmRegistrationUseCase } from './application/use-cases/auth/confirm-registration.use-case';
@@ -28,6 +28,8 @@ import { LocalAuthGuard } from './api/guards/local-auth.guard';
 import { RefreshAuthGuard } from './api/guards/refresh-auth.guard';
 import { TokenInfoCommandRepo } from './infrastructure/command.repositories/token-info.command.repo';
 import { CheckOwnerDeviceInterceptor } from './api/interceptors/check.owner.device.interceptor';
+import { TOKEN_INFO_REPO } from './types/interfaces/i-tokens-info.repo';
+import { USERS_REPO } from './types/interfaces/i-users.repo';
 
 const commands = [
   RegistrationUseCase,
@@ -42,11 +44,14 @@ const commands = [
 const queries = [AuthMeHandler];
 const services = [AuthService];
 const repositories = [
-  AuthCommandRepo,
   AuthQueryRepo,
   {
-    provide: 'TOKEN INFO REPO',
+    provide: TOKEN_INFO_REPO,
     useClass: TokenInfoCommandRepo,
+  },
+  {
+    provide: USERS_REPO,
+    useClass: AuthCommandRepo,
   },
 ];
 const strategies = [BasicStrategy, LocalStrategy, JwtStrategy, RefreshStrategy];

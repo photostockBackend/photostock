@@ -2,8 +2,12 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateNewPairTokensCommand } from './commands/create-new-pair-tokens.command';
 import { JWT } from '../../../../../helpers/jwt';
 import { AuthService } from '../../services/auth.service';
-import { ITokensInfoRepo } from '../../../types/interfaces/i-tokens-info.repo';
+import {
+  ITokensInfoRepo,
+  TOKEN_INFO_REPO,
+} from '../../../types/interfaces/i-tokens-info.repo';
 import { TokensType } from '../../../types/tokens.type';
+import { Inject } from '@nestjs/common';
 
 @CommandHandler(CreateNewPairTokensCommand)
 export class CreateNewPairTokensUseCase
@@ -12,7 +16,7 @@ export class CreateNewPairTokensUseCase
   constructor(
     private authService: AuthService,
     private jwtService: JWT,
-    private tokenInfoRepository: ITokensInfoRepo,
+    @Inject(TOKEN_INFO_REPO) private tokenInfoRepository: ITokensInfoRepo,
   ) {}
   async execute(command: CreateNewPairTokensCommand): Promise<TokensType> {
     const { userId, deviceId, ip } = command;

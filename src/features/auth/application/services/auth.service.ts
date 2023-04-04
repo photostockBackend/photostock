@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User } from '../../../types/domain/user.schema';
-import { AuthQueryRepo } from '../../infrastructure/query.repositories/query.repo';
-import { ITokensInfoRepo } from '../../types/interfaces/i-tokens-info.repo';
+import { UserDomain } from '../../../types/domain/user.schema';
+import {
+  ITokensInfoRepo,
+  TOKEN_INFO_REPO,
+} from '../../types/interfaces/i-tokens-info.repo';
+import { FindFilterUserType } from '../../types/find-filter-user.type';
+import { IUsersRepo, USERS_REPO } from '../../types/interfaces/i-users.repo';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersRepository: AuthQueryRepo,
-    private tokenInfoRepository: ITokensInfoRepo,
+    @Inject(USERS_REPO) private usersRepository: IUsersRepo,
+    @Inject(TOKEN_INFO_REPO) private tokenInfoRepository: ITokensInfoRepo,
   ) {}
 
   async getPassHash(password: string): Promise<string> {
@@ -16,12 +20,13 @@ export class AuthService {
     return await this.generateHash(password, passwordSalt);
   }
 
-  async findUserByField(field: string, value: any): Promise<User> {
-    return await this.usersRepository.findOneByField(field, value);
+  async findOneByFilter(
+    filter: FindFilterUserType,
+  ): Promise<UserDomain | null> {
+    return await this.usersRepository.findOneByFilter(filter);
   }
-
   async checkCredentials(email: string, password: string) {
-    const user = await this.findUserByField('email', email);
+    const user = await this.findOneByFilter({ email: email });
     if (!user) return null;
     const passwordHash = await this.generateHash(
       password,
@@ -39,11 +44,11 @@ export class AuthService {
   }
 
   async checkPayloadRefreshToken(payload: any): Promise<boolean> {
-    return !!(await this.usersRepository.findOne(
-      payload.iat,
-      payload.deviceId,
-      payload.userId,
-    ));
+    return !!(await this.tokenInfoRepository.findOneByFilter({
+      issuedAt: payload.iat,
+      deviceId: payload.deviceId,
+      userId: payload.userId,
+    }));
   }
   async findSession(deviceId: string): Promise<number | null> {
     const session = await this.tokenInfoRepository.findOneByFilter({

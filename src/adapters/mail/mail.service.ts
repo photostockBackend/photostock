@@ -5,12 +5,17 @@ import { Injectable } from '@nestjs/common';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendEmail(frontendAdress: string, email: string, code: string, action: string) {
+  async sendEmail(
+    frontendAddress: string,
+    email: string,
+    code: string,
+    action: string,
+  ) {
     const emailTemplate = (
       code: string,
     ) => `<h1>Thank for your registration</h1>
         <p>To finish registration please follow the link below:
-          <a href='${frontendAdress}/${action}=${code}'>complete registration</a>
+          <a href='${frontendAddress}/${action}=${code}'>complete registration</a>
         </p>`;
 
     await this.mailerService.sendMail({

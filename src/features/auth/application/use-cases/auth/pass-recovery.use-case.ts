@@ -1,41 +1,30 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PassRecoveryCommand } from './commands/pass-recovery.command';
 import { MailService } from '../../../../../adapters/mail/mail.service';
-import { v4 as uuidv4 } from 'uuid';
-import { AuthCommandRepo } from '../../../infrastructure/command.repositories/command.repo';
+import { AuthService } from '../../services/auth.service';
+import { Inject } from '@nestjs/common';
+import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
 
 @CommandHandler(PassRecoveryCommand)
 export class PassRecoveryUseCase
   implements ICommandHandler<PassRecoveryCommand>
 {
-  /*constructor(
+  constructor(
     private authService: AuthService,
     private mailService: MailService,
-    private usersRepository: UsersRepo,
+    @Inject(USERS_REPO) private usersRepository: IUsersRepo,
   ) {}
   async execute(command: PassRecoveryCommand): Promise<boolean> {
-    const { email } = command;
-    const user = await this.usersRepository.findOneByField('email', email);
+    const { email, frontendAddress } = command;
+    const user = await this.usersRepository.findOneByFilter({ email: email });
     if (!user) return false;
     await user.updCode();
-    await this.mailService.sendEmail(command.frontendAdress, user.email, user.credInfo.code, 'password-recovery?recoveryCode');
-    return true;
-  }*/
-
-  constructor(
-    protected mailService: MailService,
-    private usersRepo: AuthCommandRepo,
-  ) {}
-
-  async execute(command: PassRecoveryCommand) {
-    const code = uuidv4();
-    await this.usersRepo.passwordRecovery(command.email, code);
     await this.mailService.sendEmail(
-      command.frontendAdress,
-      command.email,
-      code,
+      frontendAddress,
+      user.email,
+      user.credInfo.code,
       'password-recovery?recoveryCode',
     );
-    return;
+    return await this.usersRepository.update(user);
   }
 }

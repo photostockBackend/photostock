@@ -42,14 +42,14 @@ export class TokenInfoCommandRepo implements ITokensInfoRepo {
     });
     if (!foundSession) return null;
     const session = new TokenInfo({
-      issuedAt: foundSession[0].issuedAt,
-      expirationAt: foundSession[0].expirationAt,
-      deviceId: foundSession[0].deviceId,
-      deviceIp: foundSession[0].deviceIp,
-      deviceName: foundSession[0].deviceName,
-      userId: foundSession[0].userId,
+      issuedAt: foundSession.issuedAt,
+      expirationAt: foundSession.expirationAt,
+      deviceId: foundSession.deviceId,
+      deviceIp: foundSession.deviceIp,
+      deviceName: foundSession.deviceName,
+      userId: foundSession.userId,
     });
-    session.id = foundSession[0].id;
+    session.id = foundSession.id;
     return session;
   }
   async deleteOneByFilter(filter: DeleteFilterTokenInfoType): Promise<boolean> {

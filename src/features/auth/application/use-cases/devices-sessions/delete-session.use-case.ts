@@ -1,12 +1,18 @@
-import { ITokensInfoRepo } from '../../../types/interfaces/i-tokens-info.repo';
+import {
+  ITokensInfoRepo,
+  TOKEN_INFO_REPO,
+} from '../../../types/interfaces/i-tokens-info.repo';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeleteSessionCommand } from './commands/delete-session.command';
+import { Inject } from '@nestjs/common';
 
 @CommandHandler(DeleteSessionCommand)
 export class DeleteSessionUseCase
   implements ICommandHandler<DeleteSessionCommand>
 {
-  constructor(private tokenInfoRepository: ITokensInfoRepo) {}
+  constructor(
+    @Inject(TOKEN_INFO_REPO) private tokenInfoRepository: ITokensInfoRepo,
+  ) {}
 
   async execute(command: DeleteSessionCommand): Promise<boolean> {
     const { userId, deviceId } = command;
