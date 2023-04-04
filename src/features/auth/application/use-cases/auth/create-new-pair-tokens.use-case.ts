@@ -1,17 +1,18 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateNewPairTokensCommand } from './commands/create-new-pair-tokens.command';
 import { JWT } from '../../../../../helpers/jwt';
-import { ConfigService } from '@nestjs/config';
-import { AuthCommandRepo } from '../../../infrastructure/command.repositories/command.repo';
+import { AuthService } from '../../services/auth.service';
+import { ITokensInfoRepo } from '../../../types/interfaces/i-tokens-info.repo';
+import { TokensType } from '../../../types/tokens.type';
 
 @CommandHandler(CreateNewPairTokensCommand)
 export class CreateNewPairTokensUseCase
   implements ICommandHandler<CreateNewPairTokensCommand>
 {
-  /*constructor(
+  constructor(
     private authService: AuthService,
     private jwtService: JWT,
-    private tokensInfoRepository: TokensInfoRepo,
+    private tokenInfoRepository: ITokensInfoRepo,
   ) {}
   async execute(command: CreateNewPairTokensCommand): Promise<TokensType> {
     const { userId, deviceId, ip } = command;
@@ -24,45 +25,16 @@ export class CreateNewPairTokensUseCase
       { expiresIn: '1h' },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
-    const session = await this.tokensInfoRepository.findOne({
-      userId,
-      deviceId,
+    const session = await this.tokenInfoRepository.findOneByFilter({
+      userId: userId,
+      deviceId: deviceId,
     });
     session.updateProperties({
       issuedAt: getPayload.iat,
       expirationAt: getPayload.exp,
       deviceIp: ip,
     });
-    await this.tokensInfoRepository.update(session);
+    await this.tokenInfoRepository.update(session);
     return { accessToken, refreshToken };
-  }*/
-  constructor(
-    private devicesRepo: AuthCommandRepo,
-    private readonly jwtService: JWT,
-    private configService: ConfigService,
-  ) {}
-
-  async execute(command: CreateNewPairTokensCommand) {
-    /*try{
-        const session = await this.devicesRepo.findOneDeviceByRefreshTokenData(command.deviceId, command.issuedAt)
-        if(session) {
-          const issuedAt = new Date().getTime()
-          const expiresAt = new Date().getTime() + Number(this.configService.get('JWT_PERIOD')) * 1000
-          const payloadAccess = {userId: session.userId, deviceId: session.deviceId, issuedAt: issuedAt}
-          const payloadRefresh = {userId: session.userId, deviceId: session.deviceId, issuedAt: issuedAt}
-          const accessToken = this.jwtService.sign(payloadAccess, {expiresIn: `${Number(this.configService.get('JWT_PERIOD')) / 2}s`})
-          const refreshToken = this.jwtService.sign(payloadRefresh, {expiresIn: `${Number(this.configService.get('JWT_PERIOD'))}s`})
-          await this.devicesRepo.refreshToken(session.deviceId, issuedAt, expiresAt)
-          return {
-            accessToken,
-            refreshToken
-          }
-        } else {
-          throw new HttpException('Auth not found', HttpStatus.UNAUTHORIZED)
-        }
-      }
-      catch(e){
-        throw new HttpException('Auth not found', HttpStatus.UNAUTHORIZED)
-      }*/
   }
 }

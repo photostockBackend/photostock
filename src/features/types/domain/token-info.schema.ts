@@ -4,7 +4,7 @@ import {
 } from '../../auth/types/token-info.types';
 import { User } from './user.schema';
 
-export class TokenInfo {
+export class TokenInfoSchema {
   constructor(tokenInfoDto: TokenInfoCreateDtoType) {
     this.issuedAt = tokenInfoDto.issuedAt;
     this.expirationAt = tokenInfoDto.expirationAt;

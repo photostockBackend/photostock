@@ -145,7 +145,6 @@ export class AuthController {
         req.user.userId,
         req.user.deviceId,
         req.ip,
-        req.user.issuedAt,
       ),
     );
     return res

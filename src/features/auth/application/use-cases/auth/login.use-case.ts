@@ -4,7 +4,7 @@ import { JWT } from '../../../../../helpers/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../services/auth.service';
 import { ITokensInfoRepo } from '../../../types/interfaces/i-tokens-info.repo';
-import { TokenInfo } from '../../../../types/domain/token-info.schema';
+import { TokenInfoSchema } from '../../../../types/domain/token-info.schema';
 import { Inject } from '@nestjs/common';
 
 class TokensType {}
@@ -30,7 +30,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
       { expiresIn: '1h' },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
-    const session = new TokenInfo({
+    const session = new TokenInfoSchema({
       issuedAt: getPayload.iat,
       expirationAt: getPayload.exp,
       deviceId: getPayload.deviceId,
