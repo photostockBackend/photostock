@@ -6,7 +6,7 @@ import { JWT } from '../../helpers/jwt';
 import { AuthController } from './api/auth.controller';
 import { AuthCommandRepo } from './infrastructure/command.repositories/command.repo';
 import { PrismaModule } from '../../database/prisma.module';
-import { AuthMeHandler } from './application/queries/handlers/auth-me.handler';
+import { AuthMeHandler } from './application/queries/auth/handlers/auth-me.handler';
 import { AuthQueryRepo } from './infrastructure/query.repositories/query.repo';
 import { LoginUseCase } from './application/use-cases/auth/login.use-case';
 import { RegistrationUseCase } from './application/use-cases/auth/registration.use-case';
@@ -27,6 +27,7 @@ import { BasicAuthGuard } from './api/guards/basic-auth.guard';
 import { LocalAuthGuard } from './api/guards/local-auth.guard';
 import { RefreshAuthGuard } from './api/guards/refresh-auth.guard';
 import { TokenInfoCommandRepo } from './infrastructure/command.repositories/token-info.command.repo';
+import { CheckOwnerDeviceInterceptor } from './api/interceptors/check.owner.device.interceptor';
 
 const commands = [
   RegistrationUseCase,
@@ -55,7 +56,7 @@ const guards = [
   LocalAuthGuard,
   RefreshAuthGuard,
 ];
-const interceptors = [CheckEmailInterceptor];
+const interceptors = [CheckEmailInterceptor, CheckOwnerDeviceInterceptor];
 
 @Module({
   controllers: [AuthController],

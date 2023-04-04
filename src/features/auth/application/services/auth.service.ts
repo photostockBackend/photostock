@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../../types/domain/user.schema';
 import { AuthQueryRepo } from '../../infrastructure/query.repositories/query.repo';
+import { ITokensInfoRepo } from '../../types/interfaces/i-tokens-info.repo';
 
 @Injectable()
 export class AuthService {
   constructor(
-    protected usersRepository: AuthQueryRepo,
-    private tokensInfoRepository: AuthQueryRepo,
+    private usersRepository: AuthQueryRepo,
+    private tokenInfoRepository: ITokensInfoRepo,
   ) {}
 
   async getPassHash(password: string): Promise<string> {
@@ -44,7 +45,12 @@ export class AuthService {
       payload.userId,
     ));
   }
-
+  async findSession(deviceId: string): Promise<number | null> {
+    const session = await this.tokenInfoRepository.findOneByFilter({
+      deviceId: deviceId,
+    });
+    return session ? session.userId : null;
+  }
   private async generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
   }

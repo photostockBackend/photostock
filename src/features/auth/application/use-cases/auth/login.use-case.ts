@@ -42,44 +42,4 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
 
     return { accessToken, refreshToken };
   }
-  /*constructor(
-    private devicesRepo: AuthCommandRepo,
-    private jwtService: JWT,
-    private configService: ConfigService,
-  ) {}
-
-  async execute(command: LoginCommand) {
-    const deviceId = uuidv4();
-    const session = {
-      ip: command.ip,
-      title: command.deviceName,
-      deviceId: deviceId,
-      issuedAt: new Date().getTime(),
-      expiresAt:
-        new Date().getTime() +
-        Number(this.configService.get('JWT_PERIOD')) * 1000,
-      userId: command.userId,
-    };
-    const payloadAccess = {
-      userId: command.userId || '',
-      deviceId: session.deviceId,
-      issuedAt: session.issuedAt,
-    };
-    const payloadRefresh = {
-      userId: command.userId || '',
-      deviceId: session.deviceId,
-      issuedAt: session.issuedAt,
-    };
-    const accessToken = this.jwtService.sign(payloadAccess, {
-      expiresIn: `${Number(this.configService.get('JWT_PERIOD')) / 2}s`,
-    });
-    const refreshToken = this.jwtService.sign(payloadRefresh, {
-      expiresIn: `${Number(this.configService.get('JWT_PERIOD'))}s`,
-    });
-    await this.devicesRepo.login(session);
-    return {
-      accessToken,
-      refreshToken,
-    };
-  }*/
 }

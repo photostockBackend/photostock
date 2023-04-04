@@ -1,22 +1,24 @@
-/*
 import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { PrismaService } from '../../../../database/prisma.service';
+import { SessionsViewModels } from '../../types/sessions-view.models';
+import { FoundSessionType } from '../../types/found-session.type';
+import format = require('pg-format');
 
 @Injectable()
-export class SecurityDevicesQueryRepository {
-  constructor(@InjectDataSource() protected dataSource: DataSource) {}
-  async findSessionsByUserId(userId: number) {
-    const sessions = await this.dataSource.query(
+export class TokenInfoQueryRepo {
+  constructor(protected prisma: PrismaService) {}
+  async findSessionsByUserId(userId: number): Promise<SessionsViewModels[]> {
+    const sql = format(
       `SELECT
                 "issuedAt",
                 "deviceId", 
                 "deviceIp", 
                 "deviceName"
-                FROM public."RefreshTokenMetas"
-                WHERE "userId" = $1;`,
-      [userId],
+                FROM "TokenInfoUser"
+                WHERE "id" = %1$s;`,
+      userId,
     );
+    const sessions = await this.prisma.$queryRawUnsafe<FoundSessionType[]>(sql);
     if (!sessions.length) return null;
     return sessions.map((s) => ({
       ip: s.deviceIp,
@@ -26,4 +28,3 @@ export class SecurityDevicesQueryRepository {
     }));
   }
 }
-*/

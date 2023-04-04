@@ -34,7 +34,7 @@ import { CreateNewPairTokensCommand } from '../application/use-cases/auth/comman
 import { PassRecoveryCommand } from '../application/use-cases/auth/commands/pass-recovery.command';
 import { NewPassCommand } from '../application/use-cases/auth/commands/new-pass.command';
 import { LogoutCommand } from '../application/use-cases/auth/commands/logout.command';
-import { AuthMeCommand } from '../application/queries/commands/auth-me.command';
+import { AuthMeCommand } from '../application/queries/auth/commands/auth-me.command';
 import { AuthMeViewModel } from '../types/auth-view.models';
 import { BearerAuthGuard } from './guards/bearer-auth.guard';
 
