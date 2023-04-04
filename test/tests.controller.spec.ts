@@ -77,7 +77,7 @@ describe('AppController', () => {
 
     });
 
-    /*it('should try login user with incorrect credentials', async () => {
+    it('should try login user with incorrect credentials', async () => {
       
       await request(server).post('/auth/login')
         .send({email: 'incorrect mail', password: '111111'})
@@ -87,7 +87,7 @@ describe('AppController', () => {
         .send({email: 'nickarbuzov@yandex.by', password: 'incorrect pass'})
         .expect(401)
 
-    });*/
-
+    });
+    
   });
 });
