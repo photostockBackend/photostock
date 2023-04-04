@@ -18,20 +18,4 @@ export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
       deviceId,
     });
   }
-  /* constructor(
-    private devicesRepo: AuthCommandRepo,
-    private readonly jwtService: JWT,
-  ) {}
-
-  async execute(command: LogoutCommand) {
-    const { userId, deviceId, issuedAt } = command;
-
-    const res = await this.devicesRepo.logout(userId, deviceId, issuedAt);
-    /!*if(res.deletedCount === 0) {
-      throw new HttpException('Session not found', HttpStatus.UNAUTHORIZED)
-    } else {
-      return
-    }*!/
-    return;
-  }*/
 }

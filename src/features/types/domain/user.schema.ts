@@ -3,27 +3,26 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { UserCreateType } from '../../auth/types/user.types';
 import { CredInfoUser } from './cred-info-user.schema';
-import { TokenInfo } from './token-info.schema';
+import { TokenInfoSchema } from './token-info.schema';
 
 @Injectable()
 export class User {
-  constructor(
-    private userDto: UserCreateType,
-    public credInfo: CredInfoUser,
-  ) {
+  constructor(private userDto: UserCreateType, public credInfo: CredInfoUser) {
     this.credInfo.passwordHash = userDto.passwordHash;
     this.email = userDto.email;
     this.createdAt = new Date().toISOString();
     this.credInfo.code = uuidv4();
-    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 }).getMilliseconds();
+    this.credInfo.codeExpiresAt = add(new Date(), {
+      hours: 24,
+    }).getMilliseconds();
     this.credInfo.isActivated = false;
   }
 
   id: number;
   email: string;
   createdAt: string;
-  tokenInfo: TokenInfo[];
-  
+  tokenInfo: TokenInfoSchema[];
+
   async confirmCode(): Promise<boolean> {
     if (
       this.credInfo.codeExpiresAt <= new Date().getMilliseconds() ||
@@ -35,7 +34,9 @@ export class User {
   }
   async updCode(): Promise<void> {
     this.credInfo.code = uuidv4();
-    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 }).getMilliseconds();
+    this.credInfo.codeExpiresAt = add(new Date(), {
+      hours: 24,
+    }).getMilliseconds();
     this.credInfo.isActivated = false;
   }
   async setPassHash(newPassHash: string): Promise<void> {
