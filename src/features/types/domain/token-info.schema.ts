@@ -2,7 +2,7 @@ import {
   TokenInfoCreateDtoType,
   TokenInfoUpdateDto,
 } from '../../auth/types/token-info.types';
-import { User } from './user.schema';
+import { UserDomain } from './user.schema';
 
 export class TokenInfo {
   constructor(tokenInfoDto: TokenInfoCreateDtoType) {
@@ -20,7 +20,7 @@ export class TokenInfo {
   deviceIp: string;
   deviceName: string;
   userId: number;
-  user: User;
+  user: UserDomain;
 
   updateProperties(tokenInfoUpdateDto: TokenInfoUpdateDto) {
     this.issuedAt = tokenInfoUpdateDto.issuedAt;

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
 import { AuthMeViewModel } from '../types/auth-view.models';
 import format = require('pg-format');
-import { User } from '../../types/domain/user.schema';
+import { UserDomain } from '../../types/domain/user.schema';
 
 @Injectable()
 export class AuthQueryRepo {
@@ -23,15 +23,17 @@ export class AuthQueryRepo {
   }
 
   // TODO: make reusable func with field-variant
-  async findOneByField(field: string, value: string): Promise<User> {
+  async findOneByField(field: string, value: string): Promise<UserDomain> {
     const sql = format(
-      `SELECT
-        "id" as "userId", "email"
-      FROM "User"
-      WHERE %1$I = %2$L;`, 
+      `
+        SELECT u.id, u.email, c."passwordHash", c."isActivated"
+        FROM "User" u
+        LEFT JOIN "CredInfoUser" c on u.id = c."userId"
+        WHERE %1$I = %2$L;
+      `, 
       field, value
     );
-    const user = await this.prisma.$queryRawUnsafe<User[]>(sql);
+    const user = await this.prisma.$queryRawUnsafe<UserDomain[]>(sql);
     if (!user.length) return null;
     return user[0];
   }

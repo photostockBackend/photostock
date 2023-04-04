@@ -1,8 +1,8 @@
-import { User } from '../../../types/domain/user.schema';
+import { UserDomain } from '../../../types/domain/user.schema';
 
 export interface UsersRepo {
-  create(user: User): number;
-  update(user: User): boolean;
-  findOneByField(field: string, value: any): User;
+  create(user: UserDomain): number;
+  update(user: UserDomain): boolean;
+  findOneByField(field: string, value: any): UserDomain;
   deleteById(id: number): boolean;
 }

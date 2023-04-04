@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
-import { User } from '../../types/domain/user.schema';
+import { UserDomain } from '../../types/domain/user.schema';
+import { CredInfoUser } from '../../types/domain/cred-info-user.schema';
 
 @Injectable()
 export class AuthCommandRepo {
   constructor(private prisma: PrismaService) {}
 
-  async registration(user: User){
+  async registration(user: UserDomain){
     
     await this.prisma.user.create({
         data: {
@@ -71,7 +72,10 @@ export class AuthCommandRepo {
   }
 
   async registrationConfirmation(code: string) {
-    await this.prisma.credInfoUser.updateMany({
+    console.log('code', code)
+    const prev = await this.prisma.user.findMany()
+    console.log('prev', prev)
+    const res = await this.prisma.credInfoUser.updateMany({
         where: {
             code: code,
         },
@@ -79,7 +83,14 @@ export class AuthCommandRepo {
             isActivated: true,
         }
     })
-    return 
+    const after = await this.prisma.user.findMany({
+      include: {
+        credInfo: true
+      }
+    })
+    console.log('after', after)
+    console.log('res', res)
+    return res.count
   }
 
   async registrationEmailResending(email: string, code: string){
@@ -96,5 +107,24 @@ export class AuthCommandRepo {
         },
     })
     return 
+  }
+
+  async findUserbyEmail(email: string){
+    const foundedUser = await this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+      include: {
+        credInfo: true
+      }
+    })
+    if(!foundedUser) return null
+    const user = new UserDomain({email: foundedUser.email, passwordHash: foundedUser.credInfo.passwordHash}, new CredInfoUser()) 
+    user.setAll(foundedUser)
+    return user
+  }
+
+  async findOne(issuedAt, deviceId, userId){
+    return true
   }
 }

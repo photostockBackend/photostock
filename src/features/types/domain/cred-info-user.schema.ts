@@ -1,4 +1,4 @@
-import { User } from './user.schema';
+import { UserDomain } from './user.schema';
 
 export class CredInfoUser {
   id: number;
@@ -6,6 +6,6 @@ export class CredInfoUser {
   isActivated: boolean;
   code: string;
   codeExpiresAt: number;
-  user: User;
+  user: UserDomain;
   userId: number;
 }

@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersRepo } from '../../types/interfaces/users-repo.interface';
-import { User } from '../../../types/domain/user.schema';
+import { UserDomain } from '../../../types/domain/user.schema';
 import { TokensInfoRepo } from '../../types/interfaces/tokens-info-repo.interface';
 import { AuthQueryRepo } from '../../infrastructure/query.repo';
+import { AuthCommandRepo } from '../../infrastructure/command.repo';
 
 @Injectable()
 export class AuthService {
   constructor(
-    protected usersRepository: AuthQueryRepo,
+    protected usersRepository: AuthCommandRepo,
     private tokensInfoRepository: AuthQueryRepo,
   ) {}
   
@@ -17,12 +18,13 @@ export class AuthService {
     return await this.generateHash(password, passwordSalt);
   }
 
-  async findUserByField(field: string, value: any): Promise<User> {
-    return await this.usersRepository.findOneByField(field, value);
+  async findUserByField(field: string, value: any): Promise<UserDomain | null> {
+    return await this.usersRepository.findUserbyEmail(value);
   }
 
   async checkCredentials(email: string, password: string) {
     const user = await this.findUserByField('email', email);
+    console.log('user', user)
     if (!user) return null;
     const passwordHash = await this.generateHash(
       password,

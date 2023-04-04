@@ -6,7 +6,7 @@ import { CredInfoUser } from './cred-info-user.schema';
 import { TokenInfo } from './token-info.schema';
 
 @Injectable()
-export class User {
+export class UserDomain {
   constructor(
     private userDto: UserCreateType,
     public credInfo: CredInfoUser,
@@ -29,7 +29,7 @@ export class User {
       this.credInfo.codeExpiresAt <= new Date().getMilliseconds() ||
       this.credInfo.isActivated === true
     )
-      return false;
+    return false;
     this.credInfo.isActivated = true;
     return true;
   }
@@ -43,5 +43,11 @@ export class User {
   }
   async getEmailIsConfirmed(): Promise<boolean> {
     return this.credInfo.isActivated;
+  }
+
+  setAll(obj: any): void {
+    for (let prop in obj) {
+      this[prop] = obj[prop];
+    }
   }
 }

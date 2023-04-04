@@ -1,7 +1,7 @@
 import { RegistrationCommand } from './commands/registration.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthService } from '../services/auth.service';
-import { User } from '../../../types/domain/user.schema';
+import { UserDomain } from '../../../types/domain/user.schema';
 import { MailService } from '../../../../adapters/mail/mail.service';
 import { UsersRepo } from '../../types/interfaces/users-repo.interface';
 import { AuthCommandRepo } from '../../infrastructure/command.repo';
@@ -22,7 +22,7 @@ export class RegistrationUseCase
   async execute(command: RegistrationCommand): Promise<string> {
     const { email, password } = command.userDto;
     const passwordHash = await this.authService.getPassHash(password);
-    const user = new User({
+    const user = new UserDomain({
       email,
       passwordHash,
     });
@@ -40,7 +40,7 @@ export class RegistrationUseCase
       const { email, password } = command.userDto;
       const passwordSalt = await bcrypt.genSalt(8)
       const passwordHash = await bcrypt.hash(password, passwordSalt)
-      const user = new User({
+      const user = new UserDomain({
         email,
         passwordHash,
       }, new CredInfoUser());
