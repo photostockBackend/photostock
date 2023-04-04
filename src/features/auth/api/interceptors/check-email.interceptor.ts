@@ -20,7 +20,7 @@ export class CheckEmailInterceptor implements NestInterceptor {
       'email',
       req.body.email,
     );
-    if (!user)
+    if (user)
       throw new BadRequestException({
         message: [
           {
