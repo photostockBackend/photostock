@@ -28,11 +28,11 @@ model CredInfoUser {
 
 model TokenInfoUser {
   id                Int @id @default(autoincrement())
-  ip                String
-  title             String
+  deviceIp          String
+  deviceName        String
   deviceId          String
   issuedAt          Int
-  expiresAt         Int
+  expirationAt      Int
   user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int
 }

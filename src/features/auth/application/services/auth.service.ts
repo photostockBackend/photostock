@@ -1,18 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UsersRepo } from '../../types/interfaces/users-repo.interface';
 import { UserDomain } from '../../../types/domain/user.schema';
-import { TokensInfoRepo } from '../../types/interfaces/tokens-info-repo.interface';
-import { AuthQueryRepo } from '../../infrastructure/query.repo';
-import { AuthCommandRepo } from '../../infrastructure/command.repo';
+import { AuthCommandRepo } from '../../infrastructure/command.repositories/command.repo';
+import { AuthQueryRepo } from '../../infrastructure/query.repositories/query.repo';
+import { ITokensInfoRepo } from '../../types/interfaces/i-tokens-info.repo';
 
 @Injectable()
 export class AuthService {
   constructor(
-    protected usersRepository: AuthCommandRepo,
-    private tokensInfoRepository: AuthQueryRepo,
+    private usersRepository: AuthCommandRepo,
+    @Inject('TOKEN INFO REPO')
+    private tokensInfoRepository: ITokensInfoRepo,
   ) {}
-  
+
   async getPassHash(password: string): Promise<string> {
     const passwordSalt = await bcrypt.genSalt(10);
     return await this.generateHash(password, passwordSalt);
@@ -48,7 +49,12 @@ export class AuthService {
       payload.userId,
     ));
   }
-
+  async findSession(deviceId: string): Promise<number | null> {
+    const session = await this.tokensInfoRepository.findOneByFilter({
+      deviceId: deviceId,
+    });
+    return session ? session.userId : null;
+  }
   private async generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
   }

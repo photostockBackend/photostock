@@ -15,7 +15,9 @@ export class UserDomain {
     this.email = userDto.email;
     this.createdAt = new Date().toISOString();
     this.credInfo.code = uuidv4();
-    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 }).getMilliseconds();
+    this.credInfo.codeExpiresAt = add(new Date(), {
+      hours: 24,
+    }).getMilliseconds();
     this.credInfo.isActivated = false;
   }
 
@@ -23,7 +25,7 @@ export class UserDomain {
   email: string;
   createdAt: string;
   tokenInfo: TokenInfo[];
-  
+
   async confirmCode(): Promise<boolean> {
     if (
       this.credInfo.codeExpiresAt <= new Date().getMilliseconds() ||
@@ -35,7 +37,9 @@ export class UserDomain {
   }
   async updCode(): Promise<void> {
     this.credInfo.code = uuidv4();
-    this.credInfo.codeExpiresAt = add(new Date(), { hours: 24 }).getMilliseconds();
+    this.credInfo.codeExpiresAt = add(new Date(), {
+      hours: 24,
+    }).getMilliseconds();
     this.credInfo.isActivated = false;
   }
   async setPassHash(newPassHash: string): Promise<void> {

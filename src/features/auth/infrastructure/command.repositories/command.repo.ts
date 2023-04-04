@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../database/prisma.service';
-import { UserDomain } from '../../types/domain/user.schema';
-import { CredInfoUser } from '../../types/domain/cred-info-user.schema';
+import { PrismaService } from '../../../../database/prisma.service';
+import { UserDomain } from '../../../types/domain/user.schema';
+import { CredInfoUser } from '../../../types/domain/cred-info-user.schema';
 
 @Injectable()
 export class AuthCommandRepo {

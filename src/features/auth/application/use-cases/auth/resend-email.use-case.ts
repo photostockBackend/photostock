@@ -1,9 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ResendEmailCommand } from './commands/resend-email.command';
-import { AuthService } from '../services/auth.service';
-import { MailService } from '../../../../adapters/mail/mail.service';
-import { UsersRepo } from '../../types/interfaces/users-repo.interface';
-import { AuthCommandRepo } from '../../infrastructure/command.repo';
+import { MailService } from '../../../../../adapters/mail/mail.service';
+import { AuthCommandRepo } from '../../../infrastructure/command.repositories/command.repo';
 import { v4 as uuidv4 } from 'uuid';
 
 @CommandHandler(ResendEmailCommand)
@@ -33,10 +31,15 @@ export class ResendEmailUseCase implements ICommandHandler<ResendEmailCommand> {
     private usersRepo: AuthCommandRepo,
   ) {}
 
-  async execute(command: ResendEmailCommand){
-    const code = uuidv4()
-    await this.usersRepo.registrationEmailResending(command.email, code)
-    await this.mailService.sendEmail(command.frontendAdress, command.email, code, 'confirm-registration?code')
-    return true
+  async execute(command: ResendEmailCommand) {
+    const code = uuidv4();
+    await this.usersRepo.registrationEmailResending(command.email, code);
+    await this.mailService.sendEmail(
+      command.frontendAdress,
+      command.email,
+      code,
+      'confirm-registration?code',
+    );
+    return true;
   }
 }

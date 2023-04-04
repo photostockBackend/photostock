@@ -21,20 +21,20 @@ import {
   RegistrationEmailInputModel,
   RegistrationInputModel,
 } from '../types/auth-input.models';
-import { RegistrationCommand } from '../application/use-cases/commands/registration.command';
+import { RegistrationCommand } from '../application/use-cases/auth/commands/registration.command';
 import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
-import { ConfirmRegistrationCommand } from '../application/use-cases/commands/confirm-registration.command';
+import { ConfirmRegistrationCommand } from '../application/use-cases/auth/commands/confirm-registration.command';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { LoginCommand } from '../application/use-cases/commands/login.command';
+import { LoginCommand } from '../application/use-cases/auth/commands/login.command';
 import { TokensType } from '../types/tokens.type';
-import { ResendEmailCommand } from '../application/use-cases/commands/resend-email.command';
+import { ResendEmailCommand } from '../application/use-cases/auth/commands/resend-email.command';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
-import { CreateNewPairTokensCommand } from '../application/use-cases/commands/create-new-pair-tokens.command';
-import { PassRecoveryCommand } from '../application/use-cases/commands/pass-recovery.command';
-import { NewPassCommand } from '../application/use-cases/commands/new-pass.command';
-import { LogoutCommand } from '../application/use-cases/commands/logout.command';
-import { AuthMeCommand } from '../application/queries/commands/auth-me.command';
+import { CreateNewPairTokensCommand } from '../application/use-cases/auth/commands/create-new-pair-tokens.command';
+import { PassRecoveryCommand } from '../application/use-cases/auth/commands/pass-recovery.command';
+import { NewPassCommand } from '../application/use-cases/auth/commands/new-pass.command';
+import { LogoutCommand } from '../application/use-cases/auth/commands/logout.command';
+import { AuthMeCommand } from '../application/queries/auth/commands/auth-me.command';
 import { AuthMeViewModel } from '../types/auth-view.models';
 import { BearerAuthGuard } from './guards/bearer-auth.guard';
 
@@ -51,12 +51,17 @@ export class AuthController {
   @Post('password-recovery')
   async passwordRecovery(
     passwordRecoveryInputModel: PasswordRecoveryInputModel,
-    @Req() req
+    @Req() req,
   ) {
     const result = await this.commandBus.execute<
       PassRecoveryCommand,
       Promise<boolean>
-    >(new PassRecoveryCommand(passwordRecoveryInputModel.email, req.headers.origin));
+    >(
+      new PassRecoveryCommand(
+        passwordRecoveryInputModel.email,
+        req.headers.origin,
+      ),
+    );
     if (!result)
       throw new BadRequestException({
         message: [
@@ -140,7 +145,6 @@ export class AuthController {
         req.user.userId,
         req.user.deviceId,
         req.ip,
-        req.user.issuedAt,
       ),
     );
     return res
@@ -183,13 +187,16 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully registrated.',
   })
-  @ApiResponse({ status: 400, description: 'If the user with the given email already exists.'})
+  @ApiResponse({
+    status: 400,
+    description: 'If the user with the given email already exists.',
+  })
   @UseInterceptors(CheckEmailInterceptor)
   @HttpCode(204)
   @Post('registration')
   async registration(
-    @Body() registrationInputModel: RegistrationInputModel, 
-    @Req() req
+    @Body() registrationInputModel: RegistrationInputModel,
+    @Req() req,
   ) {
     await this.commandBus.execute(
       new RegistrationCommand(registrationInputModel, req.headers.origin),
@@ -205,12 +212,17 @@ export class AuthController {
   @Post('registration-email-resending')
   async registrationEmailResending(
     @Body() registrationEmailInputModel: RegistrationEmailInputModel,
-    @Req() req
+    @Req() req,
   ) {
     const result = await this.commandBus.execute<
       ResendEmailCommand,
       Promise<boolean>
-    >(new ResendEmailCommand(registrationEmailInputModel.email, req.headers.origin));
+    >(
+      new ResendEmailCommand(
+        registrationEmailInputModel.email,
+        req.headers.origin,
+      ),
+    );
     if (!result)
       throw new BadRequestException({
         message: [
