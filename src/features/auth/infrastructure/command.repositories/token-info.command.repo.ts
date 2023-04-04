@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
-import { TokenInfoSchema } from '../../../types/domain/token-info.schema';
+import { TokenInfo } from '../../../types/domain/token-info.schema';
 import { ITokensInfoRepo } from '../../types/interfaces/i-tokens-info.repo';
 import { FindFilterTokenInfoType } from '../../types/find-filter-token-info.type';
 import { DeleteFilterTokenInfoType } from '../../types/delete-filter-token-info.type';
@@ -8,7 +8,7 @@ import { DeleteFilterTokenInfoType } from '../../types/delete-filter-token-info.
 @Injectable()
 export class TokenInfoCommandRepo implements ITokensInfoRepo {
   constructor(private prisma: PrismaService) {}
-  async create(token: TokenInfoSchema): Promise<number> {
+  async create(token: TokenInfo): Promise<number> {
     const result = await this.prisma.tokenInfoUser.create({
       data: {
         issuedAt: token.issuedAt,
@@ -21,7 +21,7 @@ export class TokenInfoCommandRepo implements ITokensInfoRepo {
     });
     return result.id;
   }
-  async update(token: TokenInfoSchema): Promise<boolean> {
+  async update(token: TokenInfo): Promise<boolean> {
     const result = await this.prisma.tokenInfoUser.update({
       where: { id: token.id },
       data: {
@@ -36,12 +36,12 @@ export class TokenInfoCommandRepo implements ITokensInfoRepo {
   }
   async findOneByFilter(
     filter: FindFilterTokenInfoType,
-  ): Promise<TokenInfoSchema | null> {
+  ): Promise<TokenInfo | null> {
     const foundSession = await this.prisma.tokenInfoUser.findFirst({
       where: filter,
     });
     if (!foundSession) return null;
-    const session = new TokenInfoSchema({
+    const session = new TokenInfo({
       issuedAt: foundSession[0].issuedAt,
       expirationAt: foundSession[0].expirationAt,
       deviceId: foundSession[0].deviceId,
