@@ -1,21 +1,24 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LogoutCommand } from './commands/logout.command';
-import { AuthCommandRepo } from '../../../infrastructure/command.repositories/command.repo';
-import { JWT } from '../../../../../helpers/jwt';
+import { AuthService } from '../../services/auth.service';
+import { ITokensInfoRepo } from '../../../types/interfaces/i-tokens-info.repo';
 
 @CommandHandler(LogoutCommand)
 export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
-  /*constructor(
+  constructor(
     private authService: AuthService,
-    private tokensInfoRepository: TokensInfoRepo,
+    private tokenInfoRepository: ITokensInfoRepo,
   ) {}
   async execute(command: LogoutCommand): Promise<boolean> {
     const { userId, deviceId } = command;
     const user = await this.authService.findUserByField('userId', userId);
     if (!user) return false;
-    return await this.tokensInfoRepository.deleteOne({ userId, deviceId });
-  }*/
-  constructor(
+    return await this.tokenInfoRepository.deleteOneByFilter({
+      userId,
+      deviceId,
+    });
+  }
+  /* constructor(
     private devicesRepo: AuthCommandRepo,
     private readonly jwtService: JWT,
   ) {}
@@ -24,11 +27,11 @@ export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
     const { userId, deviceId, issuedAt } = command;
 
     const res = await this.devicesRepo.logout(userId, deviceId, issuedAt);
-    /*if(res.deletedCount === 0) {
+    /!*if(res.deletedCount === 0) {
       throw new HttpException('Session not found', HttpStatus.UNAUTHORIZED)
     } else {
       return
-    }*/
+    }*!/
     return;
-  }
+  }*/
 }
