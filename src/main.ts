@@ -39,6 +39,7 @@ export async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.enableCors();
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
