@@ -1,5 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class MailService {
@@ -18,10 +18,17 @@ export class MailService {
           <a href='${frontendAddress}/${action}=${code}'>complete registration</a>
         </p>`;
 
-    await this.mailerService.sendMail({
-      to: email,
-      html: emailTemplate(code),
-      subject: 'Registration vercel',
-    });
+    await this.mailerService
+      .sendMail({
+        to: email,
+        html: emailTemplate(code),
+        subject: 'Registration vercel',
+      })
+      .catch((e) => {
+        throw new HttpException(
+          `Ошибка работы почты: ${JSON.stringify(e)}`,
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      });
   }
 }

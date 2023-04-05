@@ -19,7 +19,7 @@ export class CheckEmailInterceptor implements NestInterceptor {
     const user = await this.authService.findOneByFilter({
       email: req.body.email,
     });
-    if (user)
+    if (user && user.credInfo.isActivated)
       throw new BadRequestException({
         message: [
           {
