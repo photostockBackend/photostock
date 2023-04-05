@@ -190,7 +190,7 @@ export class AuthController {
   @Post('registration')
   async registration(
     @Body() registrationInputModel: RegistrationInputModel,
-    @Req() req,
+    @Req() req: RequestWithUser,
   ) {
     await this.commandBus.execute(
       new RegistrationCommand(registrationInputModel, req.headers.origin),
@@ -206,7 +206,7 @@ export class AuthController {
   @Post('registration-email-resending')
   async registrationEmailResending(
     @Body() registrationEmailInputModel: RegistrationEmailInputModel,
-    @Req() req,
+    @Req() req: RequestWithUser,
   ) {
     const result = await this.commandBus.execute<
       ResendEmailCommand,

@@ -1,6 +1,6 @@
 import { RegistrationCommand } from './commands/registration.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserDomain } from '../../../../types/domain/user.schema';
+import { UserDomain } from '../../../../types/domain/user.domain';
 import { MailService } from '../../../../../adapters/mail/mail.service';
 import { AuthService } from '../../services/auth.service';
 import { Inject } from '@nestjs/common';

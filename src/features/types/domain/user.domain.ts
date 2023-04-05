@@ -2,8 +2,8 @@ import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { UserCreateType } from '../../auth/types/user.types';
-import { CredInfoUserDomain } from './cred-info-user.schema';
-import { TokenInfo } from './token-info.schema';
+import { CredInfoUserDomain } from './cred-info-user.domain';
+import { TokenInfoDomain } from './token-info.domain';
 import { FoundUserType } from '../../auth/types/found-user.type';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class UserDomain {
   email: string;
   createdAt: string;
   credInfo: CredInfoUserDomain;
-  tokenInfo: TokenInfo[];
+  tokenInfo: TokenInfoDomain[];
 
   async confirmCode(): Promise<boolean> {
     if (

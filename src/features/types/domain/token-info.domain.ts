@@ -2,9 +2,9 @@ import {
   TokenInfoCreateDtoType,
   TokenInfoUpdateDto,
 } from '../../auth/types/token-info.types';
-import { UserDomain } from './user.schema';
+import { UserDomain } from './user.domain';
 
-export class TokenInfo {
+export class TokenInfoDomain {
   constructor(tokenInfoDto: TokenInfoCreateDtoType) {
     this.issuedAt = tokenInfoDto.issuedAt;
     this.expirationAt = tokenInfoDto.expirationAt;

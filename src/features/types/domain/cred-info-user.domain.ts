@@ -1,4 +1,4 @@
-import { UserDomain } from './user.schema';
+import { UserDomain } from './user.domain';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 

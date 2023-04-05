@@ -12,12 +12,7 @@ const PORT = process.env.PORT || 5000;
 const serverUrl = `http://localhost:${PORT}`;
 
 export async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      origin: ['http://localhost:3000'],
-      credentials: true,
-    },
-  });
+  const app = await NestFactory.create(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.useGlobalPipes(
     new ValidationPipe({
@@ -39,7 +34,7 @@ export async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.enableCors();
+  app.enableCors({ origin: /.+/ });
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
