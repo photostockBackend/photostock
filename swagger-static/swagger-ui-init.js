@@ -15,9 +15,19 @@ window.onload = function() {
         "post": {
           "operationId": "AuthController_passwordRecovery",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordRecoveryInputModel"
+                }
+              }
+            }
+          },
           "responses": {
             "204": {
-              "description": "The user has been successfully registrated."
+              "description": "The code for pass-recovery sended to email."
             }
           },
           "tags": [
@@ -29,9 +39,19 @@ window.onload = function() {
         "post": {
           "operationId": "AuthController_newPassword",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewPasswordInputModel"
+                }
+              }
+            }
+          },
           "responses": {
             "204": {
-              "description": "The user has been successfully registrated."
+              "description": "The password has been successfully changed."
             }
           },
           "tags": [
@@ -56,6 +76,9 @@ window.onload = function() {
           "responses": {
             "200": {
               "description": "The user has been successfully logined."
+            },
+            "401": {
+              "description": "The email or password is not correct."
             }
           },
           "tags": [
@@ -70,6 +93,9 @@ window.onload = function() {
           "responses": {
             "200": {
               "description": "The tokens has been successfully refreshed."
+            },
+            "401": {
+              "description": "The refresh-token is not valid."
             }
           },
           "tags": [
@@ -94,6 +120,9 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The user has been successfully registration-confimated."
+            },
+            "400": {
+              "description": "The confirmation-code is not valid."
             }
           },
           "tags": [
@@ -120,7 +149,7 @@ window.onload = function() {
               "description": "The user has been successfully registrated."
             },
             "400": {
-              "description": "If the user with the given email already exists."
+              "description": "The user with the given email already exists."
             }
           },
           "tags": [
@@ -137,13 +166,16 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationEmailInputModel"
+                  "$ref": "#/components/schemas/RegistrationEmailResendingInputModel"
                 }
               }
             }
           },
           "responses": {
             "204": {
+              "description": "The user has been successfully registrated."
+            },
+            "400": {
               "description": "The user has been successfully registrated."
             }
           },
@@ -159,6 +191,9 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The user has been successfully logout."
+            },
+            "401": {
+              "description": "The user is not authorized."
             }
           },
           "tags": [
@@ -173,6 +208,9 @@ window.onload = function() {
           "responses": {
             "200": {
               "description": "The user has been successfully identified."
+            },
+            "401": {
+              "description": "The user is not authorized."
             }
           },
           "tags": [
@@ -196,6 +234,35 @@ window.onload = function() {
     "servers": [],
     "components": {
       "schemas": {
+        "PasswordRecoveryInputModel": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "user email"
+            }
+          },
+          "required": [
+            "email"
+          ]
+        },
+        "NewPasswordInputModel": {
+          "type": "object",
+          "properties": {
+            "newPassword": {
+              "type": "string",
+              "description": "new password"
+            },
+            "recoveryCode": {
+              "type": "string",
+              "description": "code from email"
+            }
+          },
+          "required": [
+            "newPassword",
+            "recoveryCode"
+          ]
+        },
         "LoginInputModel": {
           "type": "object",
           "properties": {
@@ -244,9 +311,17 @@ window.onload = function() {
             "password"
           ]
         },
-        "RegistrationEmailInputModel": {
+        "RegistrationEmailResendingInputModel": {
           "type": "object",
-          "properties": {}
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "email for resend confirmation-code"
+            }
+          },
+          "required": [
+            "email"
+          ]
         }
       }
     }

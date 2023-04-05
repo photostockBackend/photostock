@@ -18,7 +18,7 @@ import {
   NewPasswordInputModel,
   PasswordRecoveryInputModel,
   RegistrationConfirmationInputModel,
-  RegistrationEmailInputModel,
+  RegistrationEmailResendingInputModel,
   RegistrationInputModel,
 } from '../types/auth-input.models';
 import { RegistrationCommand } from '../application/use-cases/auth/commands/registration.command';
@@ -46,12 +46,12 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registrated.',
+    description: 'The code for pass-recovery sended to email.',
   })
   @HttpCode(204)
   @Post('password-recovery')
   async passwordRecovery(
-    passwordRecoveryInputModel: PasswordRecoveryInputModel,
+    @Body() passwordRecoveryInputModel: PasswordRecoveryInputModel,
     @Req() req,
   ) {
     const result = await this.commandBus.execute<
@@ -77,11 +77,11 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registrated.',
+    description: 'The password has been successfully changed.',
   })
   @HttpCode(204)
   @Post('new-password')
-  async newPassword(newPasswordInputModel: NewPasswordInputModel) {
+  async newPassword(@Body() newPasswordInputModel: NewPasswordInputModel) {
     const result = await this.commandBus.execute<
       NewPassCommand,
       Promise<boolean>
@@ -102,6 +102,10 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully logined.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The email or password is not correct.',
   })
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
@@ -130,6 +134,10 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'The tokens has been successfully refreshed.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The refresh-token is not valid.',
   })
   @UseGuards(RefreshAuthGuard)
   @HttpCode(200)
@@ -160,6 +168,10 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully registration-confimated.',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'The confirmation-code is not valid.',
+  })
   @HttpCode(204)
   @Post('registration-confirmation')
   async registrationConfirmation(
@@ -183,7 +195,7 @@ export class AuthController {
   })
   @ApiResponse({
     status: 400,
-    description: 'If the user with the given email already exists.',
+    description: 'The user with the given email already exists.',
   })
   @UseInterceptors(CheckEmailInterceptor)
   @HttpCode(204)
@@ -192,6 +204,7 @@ export class AuthController {
     @Body() registrationInputModel: RegistrationInputModel,
     @Req() req: RequestWithUser,
   ) {
+    console.log('registrationInputModel',registrationInputModel)
     await this.commandBus.execute(
       new RegistrationCommand(registrationInputModel, req.headers.origin),
     );
@@ -202,10 +215,14 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully registrated.',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'The user has been successfully registrated.',
+  })
   @HttpCode(204)
   @Post('registration-email-resending')
   async registrationEmailResending(
-    @Body() registrationEmailInputModel: RegistrationEmailInputModel,
+    @Body() registrationEmailInputModel: RegistrationEmailResendingInputModel,
     @Req() req: RequestWithUser,
   ) {
     const result = await this.commandBus.execute<
@@ -233,6 +250,10 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully logout.',
   })
+  @ApiResponse({
+    status: 401,
+    description: 'The user is not authorized.',
+  })
   @HttpCode(204)
   @Post('logout')
   async logout(@Req() req: RequestWithUser) {
@@ -247,6 +268,10 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully identified.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The user is not authorized.',
   })
   @UseGuards(BearerAuthGuard)
   @HttpCode(200)

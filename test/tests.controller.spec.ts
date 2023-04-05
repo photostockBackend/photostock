@@ -88,6 +88,10 @@ describe('AppController', () => {
         .expect(401)
 
     });
+
+    it('should delete all data', async () => {
+      await request(server).delete('/delete-all-data').expect(204)
+    })
     
   });
 });
