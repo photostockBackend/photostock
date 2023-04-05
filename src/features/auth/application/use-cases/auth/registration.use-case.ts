@@ -28,7 +28,7 @@ export class RegistrationUseCase
       user.credInfo.code,
       'confirm-email?code',
     );
-    this.usersRepository.create(user);
+    await this.usersRepository.create(user);
     return;
   }
 }
