@@ -3,6 +3,7 @@ import { NewPassCommand } from './commands/new-pass.command';
 import { AuthService } from '../../services/auth.service';
 import { Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
+import { emailRecoveryFlag } from '../../../../types/domain/user.domain';
 
 @CommandHandler(NewPassCommand)
 export class NewPassUseCase implements ICommandHandler<NewPassCommand> {
@@ -16,7 +17,7 @@ export class NewPassUseCase implements ICommandHandler<NewPassCommand> {
       credInfo: { code: recoveryCode },
     });
     if (!user) return false;
-    const result = await user.confirmCode();
+    const result = await user.confirmCode(emailRecoveryFlag.recovery);
     if (!result) return false;
     const newPassHash = await this.authService.getPassHash(newPassword);
     await user.setPassHash(newPassHash);

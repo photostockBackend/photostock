@@ -10,12 +10,14 @@ export class CredInfoUserDomain {
       hours: 24,
     });
     this.isActivated = false;
+    this.recoveryIsUsed = false;
   }
   id: number;
   passwordHash: string;
   isActivated: boolean;
   code: string;
   codeExpiresAt: Date;
+  recoveryIsUsed: boolean;
   user: UserDomain;
   userId: number;
 }

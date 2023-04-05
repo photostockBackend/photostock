@@ -19,6 +19,7 @@ export class AuthCommandRepo implements IUsersRepo {
             isActivated: user.credInfo.isActivated,
             code: user.credInfo.code,
             codeExpiresAt: user.credInfo.codeExpiresAt,
+            recoveryIsUsed: user.credInfo.recoveryIsUsed,
           },
         },
       },

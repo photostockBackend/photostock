@@ -6,6 +6,10 @@ import { CredInfoUserDomain } from './cred-info-user.domain';
 import { TokenInfoDomain } from './token-info.domain';
 import { FoundUserType } from '../../auth/types/found-user.type';
 
+export enum emailRecoveryFlag {
+  email = 'isActivated',
+  recovery = 'recoveryIsUsed',
+}
 @Injectable()
 export class UserDomain {
   constructor(private userDto: UserCreateType) {
@@ -20,13 +24,13 @@ export class UserDomain {
   credInfo: CredInfoUserDomain;
   tokenInfo: TokenInfoDomain[];
 
-  async confirmCode(): Promise<boolean> {
+  async confirmCode(flag: emailRecoveryFlag): Promise<boolean> {
     if (
       this.credInfo.codeExpiresAt <= new Date() ||
-      this.credInfo.isActivated === true
+      this.credInfo[flag] === true
     )
       return false;
-    this.credInfo.isActivated = true;
+    this.credInfo[flag] = true;
     return true;
   }
   async updCode(): Promise<void> {
@@ -34,7 +38,6 @@ export class UserDomain {
     this.credInfo.codeExpiresAt = add(new Date(), {
       hours: 24,
     });
-    this.credInfo.isActivated = false;
   }
   async setPassHash(newPassHash: string): Promise<void> {
     this.credInfo.passwordHash = newPassHash;
