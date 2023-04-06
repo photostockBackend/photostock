@@ -78,7 +78,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "The user has been successfully logined. Return Access-token in response, and refresh-token in cookie",
+              "description": "The user has been successfully logined. Return access-token in response, and refresh-token in cookie",
               "content": {
                 "application/json": {
                   "schema": {
@@ -102,7 +102,7 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The tokens has been successfully refreshed. Return Access-token in response, and refresh-token in cookie",
+              "description": "The tokens has been successfully refreshed. Return access-token in response, and refresh-token in cookie",
               "content": {
                 "application/json": {
                   "schema": {
