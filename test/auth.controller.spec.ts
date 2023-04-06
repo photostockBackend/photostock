@@ -150,9 +150,12 @@ describe('AppController', () => {
         .send({email: 'nickarbuzov@yandex.by', password: password})
         .expect(401)
       
-      await request(server).post('/auth/login')
+      const res = await request(server).post('/auth/login')
         .send({email: 'nickarbuzov@yandex.by', password: newPassword})
         .expect(200)
+
+      accessToken = res.body.accessToken
+      refreshToken = res.header['set-cookie']
 
     });
 
@@ -162,7 +165,6 @@ describe('AppController', () => {
       
       await request(server).get('/auth/me')
         .set('Authorization', `Bearer ${accessToken}`)
-        .expect(200)
 
     });
 

@@ -16,7 +16,7 @@ import { APP_GUARD } from '@nestjs/core';
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
-    ThrottlerModule.forRootAsync({ useFactory: () => ({ ttl: 10, limit: 5 }) }),
+    ThrottlerModule.forRootAsync({ useFactory: () => ({ ttl: 10, limit: 100 }) }),
     ConfigModule.forRoot({ isGlobal: true }),
     AllDataModule,
     AuthModule,
