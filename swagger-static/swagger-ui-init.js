@@ -28,6 +28,9 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The code for pass-recovery sended to email."
+            },
+            "400": {
+              "description": "The email for pass-recovery is not valid."
             }
           },
           "tags": [
@@ -75,7 +78,14 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "The user has been successfully logined."
+              "description": "The user has been successfully logined. Return Access-token in response, and refresh-token in cookie",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ViewModelToken"
+                  }
+                }
+              }
             },
             "401": {
               "description": "The email or password is not correct."
@@ -92,7 +102,14 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The tokens has been successfully refreshed."
+              "description": "The tokens has been successfully refreshed. Return Access-token in response, and refresh-token in cookie",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ViewModelToken"
+                  }
+                }
+              }
             },
             "401": {
               "description": "The refresh-token is not valid."
@@ -173,10 +190,10 @@ window.onload = function() {
           },
           "responses": {
             "204": {
-              "description": "The user has been successfully registrated."
+              "description": "The new-code has been successfully sended."
             },
             "400": {
-              "description": "The user has been successfully registrated."
+              "description": "The email incorrect or already confirmed."
             }
           },
           "tags": [
@@ -207,7 +224,14 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The user has been successfully identified."
+              "description": "The user has been successfully identified.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AuthMeViewModel"
+                  }
+                }
+              }
             },
             "401": {
               "description": "The user is not authorized."
@@ -215,6 +239,11 @@ window.onload = function() {
           },
           "tags": [
             "auth"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
           ]
         }
       }
@@ -280,6 +309,17 @@ window.onload = function() {
             "password"
           ]
         },
+        "ViewModelToken": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "accessToken"
+          ]
+        },
         "RegistrationConfirmationInputModel": {
           "type": "object",
           "properties": {
@@ -321,6 +361,21 @@ window.onload = function() {
           },
           "required": [
             "email"
+          ]
+        },
+        "AuthMeViewModel": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "email",
+            "userId"
           ]
         }
       }

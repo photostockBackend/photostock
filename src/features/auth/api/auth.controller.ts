@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   LoginInputModel,
   NewPasswordInputModel,
@@ -26,7 +26,7 @@ import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
 import { ConfirmRegistrationCommand } from '../application/use-cases/auth/commands/confirm-registration.command';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { LoginCommand } from '../application/use-cases/auth/commands/login.command';
-import { TokensType } from '../types/tokens.type';
+import { TokensType, ViewModelToken } from '../types/tokens.type';
 import { ResendEmailCommand } from '../application/use-cases/auth/commands/resend-email.command';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
@@ -105,7 +105,8 @@ export class AuthController {
   @ApiBody({ type: LoginInputModel })
   @ApiResponse({
     status: 200,
-    description: 'The user has been successfully logined.',
+    description: 'The user has been successfully logined. Return Access-token in response, and refresh-token in cookie',
+    type: ViewModelToken,
   })
   @ApiResponse({
     status: 401,
@@ -136,7 +137,8 @@ export class AuthController {
 
   @ApiResponse({
     status: 200,
-    description: 'The tokens has been successfully refreshed.',
+    description: 'The tokens has been successfully refreshed. Return Access-token in response, and refresh-token in cookie',
+    type: ViewModelToken,
   })
   @ApiResponse({
     status: 401,
@@ -216,11 +218,11 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registrated.',
+    description: 'The new-code has been successfully sended.',
   })
   @ApiResponse({
     status: 400,
-    description: 'The user has been successfully registrated.',
+    description: 'The email incorrect or already confirmed.',
   })
   @HttpCode(204)
   @Post('registration-email-resending')
@@ -269,9 +271,11 @@ export class AuthController {
     return;
   }
 
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully identified.',
+    type: AuthMeViewModel,
   })
   @ApiResponse({
     status: 401,
