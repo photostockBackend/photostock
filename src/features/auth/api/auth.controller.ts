@@ -264,7 +264,7 @@ export class AuthController {
     const result = await this.commandBus.execute<
       LogoutCommand,
       Promise<boolean>
-    >(new LogoutCommand(req.user.userId, req.user.deviceId, req.user.issuedAt));
+    >(new LogoutCommand(req.user.userId, req.user.deviceId));
     if (!result) throw new InternalServerErrorException();
     return;
   }
