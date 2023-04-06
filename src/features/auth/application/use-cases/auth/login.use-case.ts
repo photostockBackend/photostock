@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { ITokensInfoRepo } from '../../../types/interfaces/i-tokens-info.repo';
 import { TokenInfoDomain } from '../../../../types/domain/token-info.domain';
 import { Inject } from '@nestjs/common';
+import * as process from 'process';
 
 class TokensType {}
 
@@ -22,12 +23,12 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     const { userId, deviceName, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn: '15m' },
+      { expiresIn: process.env.ACCESS_PERIOD },
     );
     const deviceId = uuidv4();
     const refreshToken = this.jwtService.sign(
       { userId: userId, deviceId: deviceId },
-      { expiresIn: '1h' },
+      { expiresIn: process.env.REFRESH_PERIOD },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
     const session = new TokenInfoDomain({

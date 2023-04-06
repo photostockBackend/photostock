@@ -8,6 +8,7 @@ import {
 } from '../../../types/interfaces/i-tokens-info.repo';
 import { TokensType } from '../../../types/tokens.type';
 import { Inject } from '@nestjs/common';
+import process from 'process';
 
 @CommandHandler(CreateNewPairTokensCommand)
 export class CreateNewPairTokensUseCase
@@ -22,11 +23,11 @@ export class CreateNewPairTokensUseCase
     const { userId, deviceId, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn: '15m' },
+      { expiresIn: process.env.ACCESS_PERIOD },
     );
     const refreshToken = this.jwtService.sign(
       { userId: userId, deviceId: deviceId },
-      { expiresIn: '1h' },
+      { expiresIn: process.env.REFRESH_PERIOD },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
     const session = await this.tokenInfoRepository.findOneByFilter({
