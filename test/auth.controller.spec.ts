@@ -183,10 +183,29 @@ describe('AppController', () => {
       newAccessToken = res.body.accessToken
       newRefreshToken = res.header['set-cookie']
 
-      
     });
 
+    it('should try to logout, by valid token and not valid token', async () => {
 
+      await request(server).post('/auth/logout').expect(401)
+
+      await request(server).post('/auth/logout')
+        .set('Cookie', refreshToken)
+        .expect(401)
+
+      await request(server).post('/auth/logout')
+        .set('Cookie', newRefreshToken)
+        .expect(204)
+
+      await request(server).post('/auth/logout')
+        .set('Cookie', newRefreshToken)
+        .expect(401)
+
+      await request(server).post('/auth/refresh-token')
+        .set('Cookie', newRefreshToken)
+        .expect(401)
+
+    });
 
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204)
