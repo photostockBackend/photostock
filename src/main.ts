@@ -12,7 +12,10 @@ const PORT = process.env.PORT || 5000;
 const serverUrl = `http://localhost:${PORT}`;
 
 export async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: {
+    origin: ['http://localhost:3000', 'front-team.vercel.app'],
+    credentials: true
+  }})
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.useGlobalPipes(
     new ValidationPipe({
@@ -34,7 +37,6 @@ export async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
-  app.enableCors({ origin: /.+/, credentials: true });
   app.use(cookieParser());
 
   const config = new DocumentBuilder()

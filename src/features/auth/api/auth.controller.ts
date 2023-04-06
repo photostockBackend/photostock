@@ -48,6 +48,10 @@ export class AuthController {
     status: 204,
     description: 'The code for pass-recovery sended to email.',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'The email for pass-recovery is not valid.',
+  })
   @HttpCode(204)
   @Post('password-recovery')
   async passwordRecovery(
@@ -110,7 +114,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
-  async login(@Req() req, @Res() res: Response) {
+  async login(@Req() req, @Res({ passthrough: true }) res: Response) {
     const tokens = await this.commandBus.execute<
       LoginCommand,
       Promise<TokensType>
@@ -121,14 +125,17 @@ export class AuthController {
         req.ip,
       ),
     );
-    return res
-      .status(200)
-      .cookie('refreshToken', tokens.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        path: '/auth/refresh-token',
-      })
-      .json({ accessToken: tokens.accessToken });
+    res.cookie(
+      'refreshToken', 
+      tokens.refreshToken, 
+      {
+          sameSite: 'none',
+          httpOnly: true,
+          secure: true,
+          maxAge: 24*60*60*1000,
+      }
+    );
+    return { accessToken: tokens.accessToken };
   }
 
   @ApiResponse({
@@ -142,7 +149,7 @@ export class AuthController {
   @UseGuards(RefreshAuthGuard)
   @HttpCode(200)
   @Post('refresh-token')
-  async refreshTokens(@Req() req: RequestWithUser, @Res() res: Response) {
+  async refreshTokens(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
     const tokens = await this.commandBus.execute<
       CreateNewPairTokensCommand,
       Promise<TokensType>
@@ -153,15 +160,17 @@ export class AuthController {
         req.ip,
       ),
     );
-    return res
-      .status(200)
-      .cookie('refreshToken', tokens.refreshToken, {
-        sameSite: true,
-        httpOnly: true,
-        secure: true,
-        path: '/auth/refresh-token',
-      })
-      .json({ accessToken: tokens.accessToken });
+    res.cookie(
+      'refreshToken', 
+      tokens.refreshToken, 
+      {
+          sameSite: 'none',
+          httpOnly: true,
+          secure: true,
+          maxAge: 24*60*60*1000,
+      }
+    );
+    return { accessToken: tokens.accessToken };
   }
 
   @ApiResponse({
@@ -204,7 +213,6 @@ export class AuthController {
     @Body() registrationInputModel: RegistrationInputModel,
     @Req() req: RequestWithUser,
   ) {
-    console.log('registrationInputModel',registrationInputModel)
     await this.commandBus.execute(
       new RegistrationCommand(registrationInputModel, req.headers.origin),
     );
@@ -239,7 +247,7 @@ export class AuthController {
         message: [
           {
             field: 'email',
-            message: 'invalid email',
+            message: 'invalid email or email already confirmed',
           },
         ],
       });
