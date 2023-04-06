@@ -204,7 +204,6 @@ export class AuthController {
     @Body() registrationInputModel: RegistrationInputModel,
     @Req() req: RequestWithUser,
   ) {
-    console.log('registrationInputModel',registrationInputModel)
     await this.commandBus.execute(
       new RegistrationCommand(registrationInputModel, req.headers.origin),
     );

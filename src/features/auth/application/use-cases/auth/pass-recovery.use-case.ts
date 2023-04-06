@@ -16,7 +16,10 @@ export class PassRecoveryUseCase
   ) {}
   async execute(command: PassRecoveryCommand): Promise<boolean> {
     const { email, frontendAddress } = command;
-    const user = await this.usersRepository.findOneByFilter({ email: email });
+    const user = await this.usersRepository.findOneByFilter({
+      email: email,
+      credInfo: { isActivated: true },
+    });
     if (!user) return false;
     await user.updCode();
     await this.mailService.sendEmail(

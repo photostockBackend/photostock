@@ -8,6 +8,7 @@ export type FoundUserType = {
     isActivated: boolean;
     code: string;
     codeExpiresAt: Date;
+    recoveryIsUsed: boolean;
     userId: number;
   };
 };

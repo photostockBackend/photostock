@@ -3,6 +3,8 @@ export type FindFilterUserType = {
   email?: string;
   createdAt?: string;
   credInfo?: {
-    code: string;
+    code?: string;
+    isActivated?: boolean;
+    recoveryIsUsed?: boolean;
   };
 };
