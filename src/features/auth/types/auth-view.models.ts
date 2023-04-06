@@ -6,3 +6,8 @@ export class AuthMeViewModel {
   @ApiProperty()
   userId: number;
 }
+
+export class ViewModelToken {
+  @ApiProperty()
+  accessToken: string
+}

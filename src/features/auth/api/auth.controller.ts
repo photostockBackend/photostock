@@ -26,7 +26,7 @@ import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
 import { ConfirmRegistrationCommand } from '../application/use-cases/auth/commands/confirm-registration.command';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { LoginCommand } from '../application/use-cases/auth/commands/login.command';
-import { TokensType, ViewModelToken } from '../types/tokens.type';
+import { TokensType } from '../types/tokens.type';
 import { ResendEmailCommand } from '../application/use-cases/auth/commands/resend-email.command';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
@@ -35,7 +35,7 @@ import { PassRecoveryCommand } from '../application/use-cases/auth/commands/pass
 import { NewPassCommand } from '../application/use-cases/auth/commands/new-pass.command';
 import { LogoutCommand } from '../application/use-cases/auth/commands/logout.command';
 import { AuthMeCommand } from '../application/queries/auth/commands/auth-me.command';
-import { AuthMeViewModel } from '../types/auth-view.models';
+import { AuthMeViewModel, ViewModelToken } from '../types/auth-view.models';
 import { BearerAuthGuard } from './guards/bearer-auth.guard';
 import { Response } from 'express';
 
@@ -105,7 +105,7 @@ export class AuthController {
   @ApiBody({ type: LoginInputModel })
   @ApiResponse({
     status: 200,
-    description: 'The user has been successfully logined. Return Access-token in response, and refresh-token in cookie',
+    description: 'The user has been successfully logined. Return access-token in response, and refresh-token in cookie',
     type: ViewModelToken,
   })
   @ApiResponse({
@@ -137,7 +137,7 @@ export class AuthController {
 
   @ApiResponse({
     status: 200,
-    description: 'The tokens has been successfully refreshed. Return Access-token in response, and refresh-token in cookie',
+    description: 'The tokens has been successfully refreshed. Return access-token in response, and refresh-token in cookie',
     type: ViewModelToken,
   })
   @ApiResponse({
