@@ -257,6 +257,7 @@ export class AuthController {
     status: 401,
     description: 'The user is not authorized.',
   })
+  @UseGuards(RefreshAuthGuard)
   @HttpCode(204)
   @Post('logout')
   async logout(@Req() req: RequestWithUser) {

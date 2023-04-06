@@ -5,7 +5,10 @@ import { LoginCommand } from './commands/login.command';
 import { JWT } from '../../../../../helpers/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../services/auth.service';
-import { ITokensInfoRepo } from '../../../types/interfaces/i-tokens-info.repo';
+import {
+  ITokensInfoRepo,
+  TOKEN_INFO_REPO,
+} from '../../../types/interfaces/i-tokens-info.repo';
 import { TokenInfoDomain } from '../../../../types/domain/token-info.domain';
 
 class TokensType {}
@@ -16,7 +19,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     private authService: AuthService,
     private jwtService: JWT,
     private configService: ConfigService,
-    @Inject('TOKEN INFO REPO')
+    @Inject(TOKEN_INFO_REPO)
     private tokensInfoRepository: ITokensInfoRepo,
   ) {}
 
