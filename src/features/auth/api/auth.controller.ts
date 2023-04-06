@@ -12,31 +12,32 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   LoginInputModel,
   NewPasswordInputModel,
   PasswordRecoveryInputModel,
   RegistrationConfirmationInputModel,
-  RegistrationEmailInputModel,
+  RegistrationEmailResendingInputModel,
   RegistrationInputModel,
 } from '../types/auth-input.models';
-import { RegistrationCommand } from '../application/use-cases/commands/registration.command';
+import { RegistrationCommand } from '../application/use-cases/auth/commands/registration.command';
 import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
-import { ConfirmRegistrationCommand } from '../application/use-cases/commands/confirm-registration.command';
+import { ConfirmRegistrationCommand } from '../application/use-cases/auth/commands/confirm-registration.command';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { LoginCommand } from '../application/use-cases/commands/login.command';
+import { LoginCommand } from '../application/use-cases/auth/commands/login.command';
 import { TokensType } from '../types/tokens.type';
-import { ResendEmailCommand } from '../application/use-cases/commands/resend-email.command';
+import { ResendEmailCommand } from '../application/use-cases/auth/commands/resend-email.command';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
-import { CreateNewPairTokensCommand } from '../application/use-cases/commands/create-new-pair-tokens.command';
-import { PassRecoveryCommand } from '../application/use-cases/commands/pass-recovery.command';
-import { NewPassCommand } from '../application/use-cases/commands/new-pass.command';
-import { LogoutCommand } from '../application/use-cases/commands/logout.command';
-import { AuthMeCommand } from '../application/queries/commands/auth-me.command';
-import { AuthMeViewModel } from '../types/auth-view.models';
+import { CreateNewPairTokensCommand } from '../application/use-cases/auth/commands/create-new-pair-tokens.command';
+import { PassRecoveryCommand } from '../application/use-cases/auth/commands/pass-recovery.command';
+import { NewPassCommand } from '../application/use-cases/auth/commands/new-pass.command';
+import { LogoutCommand } from '../application/use-cases/auth/commands/logout.command';
+import { AuthMeCommand } from '../application/queries/auth/commands/auth-me.command';
+import { AuthMeViewModel, ViewModelToken } from '../types/auth-view.models';
 import { BearerAuthGuard } from './guards/bearer-auth.guard';
+import { Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -45,18 +46,27 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registrated.',
+    description: 'The code for pass-recovery sended to email.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The email for pass-recovery is not valid.',
   })
   @HttpCode(204)
   @Post('password-recovery')
   async passwordRecovery(
-    passwordRecoveryInputModel: PasswordRecoveryInputModel,
-    @Req() req
+    @Body() passwordRecoveryInputModel: PasswordRecoveryInputModel,
+    @Req() req,
   ) {
     const result = await this.commandBus.execute<
       PassRecoveryCommand,
       Promise<boolean>
-    >(new PassRecoveryCommand(passwordRecoveryInputModel.email, req.headers.origin));
+    >(
+      new PassRecoveryCommand(
+        passwordRecoveryInputModel.email,
+        req.headers.origin,
+      ),
+    );
     if (!result)
       throw new BadRequestException({
         message: [
@@ -71,11 +81,11 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registrated.',
+    description: 'The password has been successfully changed.',
   })
   @HttpCode(204)
   @Post('new-password')
-  async newPassword(newPasswordInputModel: NewPasswordInputModel) {
+  async newPassword(@Body() newPasswordInputModel: NewPasswordInputModel) {
     const result = await this.commandBus.execute<
       NewPassCommand,
       Promise<boolean>
@@ -95,12 +105,17 @@ export class AuthController {
   @ApiBody({ type: LoginInputModel })
   @ApiResponse({
     status: 200,
-    description: 'The user has been successfully logined.',
+    description: 'The user has been successfully logined. Return access-token in response, and refresh-token in cookie',
+    type: ViewModelToken,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The email or password is not correct.',
   })
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
   @Post('login')
-  async login(@Req() req, @Res({ passthrough: true }) res) {
+  async login(@Req() req, @Res({ passthrough: true }) res: Response) {
     const tokens = await this.commandBus.execute<
       LoginCommand,
       Promise<TokensType>
@@ -111,26 +126,30 @@ export class AuthController {
         req.ip,
       ),
     );
-    return res
-      .status(200)
-      .cookie('refreshToken', tokens.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        path: '/auth/refresh-token',
-      })
-      .json({ accessToken: tokens.accessToken });
+    res.cookie('refreshToken', tokens.refreshToken, {
+      sameSite: 'none',
+      httpOnly: true,
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+    return { accessToken: tokens.accessToken };
   }
 
   @ApiResponse({
     status: 200,
-    description: 'The tokens has been successfully refreshed.',
+    description: 'The tokens has been successfully refreshed. Return access-token in response, and refresh-token in cookie',
+    type: ViewModelToken,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The refresh-token is not valid.',
   })
   @UseGuards(RefreshAuthGuard)
   @HttpCode(200)
   @Post('refresh-token')
   async refreshTokens(
     @Req() req: RequestWithUser,
-    @Res({ passthrough: true }) res,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const tokens = await this.commandBus.execute<
       CreateNewPairTokensCommand,
@@ -140,23 +159,24 @@ export class AuthController {
         req.user.userId,
         req.user.deviceId,
         req.ip,
-        req.user.issuedAt,
       ),
     );
-    return res
-      .status(200)
-      .cookie('refreshToken', tokens.refreshToken, {
-        sameSite: true,
-        httpOnly: true,
-        secure: true,
-        path: '/auth/refresh-token',
-      })
-      .json({ accessToken: tokens.accessToken });
+    res.cookie('refreshToken', tokens.refreshToken, {
+      sameSite: 'none',
+      httpOnly: true,
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+    return { accessToken: tokens.accessToken };
   }
 
   @ApiResponse({
     status: 204,
     description: 'The user has been successfully registration-confimated.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The confirmation-code is not valid.',
   })
   @HttpCode(204)
   @Post('registration-confirmation')
@@ -167,11 +187,7 @@ export class AuthController {
     const result = await this.commandBus.execute<
       ConfirmRegistrationCommand,
       Promise<boolean>
-    >(
-      new ConfirmRegistrationCommand(
-        registrationConfirmationInputModel.recoveryCode,
-      ),
-    );
+    >(new ConfirmRegistrationCommand(registrationConfirmationInputModel.code));
     if (!result)
       throw new BadRequestException({
         message: [{ field: 'code', message: 'invalid code' }],
@@ -183,13 +199,16 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully registrated.',
   })
-  @ApiResponse({ status: 400, description: 'If the user with the given email already exists.'})
+  @ApiResponse({
+    status: 400,
+    description: 'The user with the given email already exists.',
+  })
   @UseInterceptors(CheckEmailInterceptor)
   @HttpCode(204)
   @Post('registration')
   async registration(
-    @Body() registrationInputModel: RegistrationInputModel, 
-    @Req() req
+    @Body() registrationInputModel: RegistrationInputModel,
+    @Req() req: RequestWithUser,
   ) {
     await this.commandBus.execute(
       new RegistrationCommand(registrationInputModel, req.headers.origin),
@@ -199,24 +218,33 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registrated.',
+    description: 'The new-code has been successfully sended.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The email incorrect or already confirmed.',
   })
   @HttpCode(204)
   @Post('registration-email-resending')
   async registrationEmailResending(
-    @Body() registrationEmailInputModel: RegistrationEmailInputModel,
-    @Req() req
+    @Body() registrationEmailInputModel: RegistrationEmailResendingInputModel,
+    @Req() req: RequestWithUser,
   ) {
     const result = await this.commandBus.execute<
       ResendEmailCommand,
       Promise<boolean>
-    >(new ResendEmailCommand(registrationEmailInputModel.email, req.headers.origin));
+    >(
+      new ResendEmailCommand(
+        registrationEmailInputModel.email,
+        req.headers.origin,
+      ),
+    );
     if (!result)
       throw new BadRequestException({
         message: [
           {
             field: 'email',
-            message: 'invalid email',
+            message: 'invalid email or email already confirmed',
           },
         ],
       });
@@ -227,20 +255,31 @@ export class AuthController {
     status: 204,
     description: 'The user has been successfully logout.',
   })
+  @ApiResponse({
+    status: 401,
+    description: 'The user is not authorized.',
+  })
+  @UseGuards(RefreshAuthGuard)
   @HttpCode(204)
   @Post('logout')
   async logout(@Req() req: RequestWithUser) {
     const result = await this.commandBus.execute<
       LogoutCommand,
       Promise<boolean>
-    >(new LogoutCommand(req.user.userId, req.user.deviceId, req.user.issuedAt));
+    >(new LogoutCommand(req.user.userId, req.user.deviceId));
     if (!result) throw new InternalServerErrorException();
     return;
   }
 
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully identified.',
+    type: AuthMeViewModel,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The user is not authorized.',
   })
   @UseGuards(BearerAuthGuard)
   @HttpCode(200)

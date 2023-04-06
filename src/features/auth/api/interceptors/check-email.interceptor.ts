@@ -16,10 +16,10 @@ export class CheckEmailInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Promise<Observable<any>> {
     const req = context.switchToHttp().getRequest();
-    const user = await this.authService.findUserByField(
-      'email',
-      req.body.email,
-    );
+    const user = await this.authService.findOneByFilter({
+      email: req.body.email,
+      credInfo: { isActivated: true },
+    });
     if (user)
       throw new BadRequestException({
         message: [

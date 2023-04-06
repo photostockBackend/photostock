@@ -1,5 +1,5 @@
 generator client {
-  provider          = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -9,30 +9,31 @@ datasource db {
 }
 
 model User {
-  id                Int @id @default(autoincrement())
-  email             String @unique
-  createdAt         String
-  credInfo          CredInfoUser?
-  tokenInfo         TokenInfoUser[]
+  id        Int             @id @default(autoincrement())
+  email     String          @unique
+  createdAt String
+  credInfo  CredInfoUser?
+  tokenInfo TokenInfoUser[]
 }
 
 model CredInfoUser {
-  id                Int @id @default(autoincrement())
-  passwordHash      String  
-  isActivated       Boolean
-  code              String
-  codeExpiresAt     Int
-  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int @unique
+  id              Int      @id @default(autoincrement())
+  passwordHash    String
+  isActivated     Boolean
+  code            String
+  codeExpiresAt   DateTime
+  recoveryIsUsed  Boolean
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int      @unique
 }
 
 model TokenInfoUser {
-  id                Int @id @default(autoincrement())
-  ip                String
-  title             String
-  deviceId          String
-  issuedAt          Int
-  expiresAt         Int
-  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int
+  id           Int    @id @default(autoincrement())
+  deviceIp     String
+  deviceName   String
+  deviceId     String
+  issuedAt     Int
+  expirationAt Int
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
 }

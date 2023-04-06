@@ -1,28 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UsersRepo } from '../../types/interfaces/users-repo.interface';
-import { User } from '../../../types/domain/user.schema';
-import { TokensInfoRepo } from '../../types/interfaces/tokens-info-repo.interface';
-import { AuthQueryRepo } from '../../infrastructure/query.repo';
+import { UserDomain } from '../../../types/domain/user.domain';
+import {
+  ITokensInfoRepo,
+  TOKEN_INFO_REPO,
+} from '../../types/interfaces/i-tokens-info.repo';
+import { FindFilterUserType } from '../../types/find-filter-user.type';
+import { IUsersRepo, USERS_REPO } from '../../types/interfaces/i-users.repo';
 
 @Injectable()
 export class AuthService {
   constructor(
-    protected usersRepository: AuthQueryRepo,
-    private tokensInfoRepository: AuthQueryRepo,
+    @Inject(USERS_REPO) private usersRepository: IUsersRepo,
+    @Inject(TOKEN_INFO_REPO) private tokenInfoRepository: ITokensInfoRepo,
   ) {}
-  
+
   async getPassHash(password: string): Promise<string> {
     const passwordSalt = await bcrypt.genSalt(10);
     return await this.generateHash(password, passwordSalt);
   }
 
-  async findUserByField(field: string, value: any): Promise<User> {
-    return await this.usersRepository.findOneByField(field, value);
+  async findOneByFilter(
+    filter: FindFilterUserType,
+  ): Promise<UserDomain | null> {
+    return await this.usersRepository.findOneByFilter(filter);
   }
-
   async checkCredentials(email: string, password: string) {
-    const user = await this.findUserByField('email', email);
+    const user = await this.findOneByFilter({ email: email });
     if (!user) return null;
     const passwordHash = await this.generateHash(
       password,
@@ -40,13 +44,18 @@ export class AuthService {
   }
 
   async checkPayloadRefreshToken(payload: any): Promise<boolean> {
-    return !!(await this.usersRepository.findOne(
-      payload.iat,
-      payload.deviceId,
-      payload.userId,
-    ));
+    return !!(await this.tokenInfoRepository.findOneByFilter({
+      issuedAt: payload.iat,
+      deviceId: payload.deviceId,
+      userId: payload.userId,
+    }));
   }
-
+  async findSession(deviceId: string): Promise<number | null> {
+    const session = await this.tokenInfoRepository.findOneByFilter({
+      deviceId: deviceId,
+    });
+    return session ? session.userId : null;
+  }
   private async generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
   }
