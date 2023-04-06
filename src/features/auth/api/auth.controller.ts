@@ -125,16 +125,12 @@ export class AuthController {
         req.ip,
       ),
     );
-    res.cookie(
-      'refreshToken', 
-      tokens.refreshToken, 
-      {
-          sameSite: 'none',
-          httpOnly: true,
-          secure: true,
-          maxAge: 24*60*60*1000,
-      }
-    );
+    res.cookie('refreshToken', tokens.refreshToken, {
+      sameSite: 'none',
+      httpOnly: true,
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     return { accessToken: tokens.accessToken };
   }
 
@@ -149,7 +145,10 @@ export class AuthController {
   @UseGuards(RefreshAuthGuard)
   @HttpCode(200)
   @Post('refresh-token')
-  async refreshTokens(@Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
+  async refreshTokens(
+    @Req() req: RequestWithUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const tokens = await this.commandBus.execute<
       CreateNewPairTokensCommand,
       Promise<TokensType>
@@ -160,16 +159,12 @@ export class AuthController {
         req.ip,
       ),
     );
-    res.cookie(
-      'refreshToken', 
-      tokens.refreshToken, 
-      {
-          sameSite: 'none',
-          httpOnly: true,
-          secure: true,
-          maxAge: 24*60*60*1000,
-      }
-    );
+    res.cookie('refreshToken', tokens.refreshToken, {
+      sameSite: 'none',
+      httpOnly: true,
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     return { accessToken: tokens.accessToken };
   }
 

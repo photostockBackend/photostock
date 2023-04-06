@@ -24,11 +24,11 @@ export class CreateNewPairTokensUseCase
     const { userId, deviceId, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn: `${Number(this.configService.get('ACCESS_PERIOD'))}s` },
+      { expiresIn: this.configService.get('ACCESS_PERIOD') },
     );
     const refreshToken = this.jwtService.sign(
       { userId: userId, deviceId: deviceId },
-      { expiresIn: `${Number(this.configService.get('REFRESH_PERIOD'))}s` },
+      { expiresIn: this.configService.get('REFRESH_PERIOD') },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
     const session = await this.tokenInfoRepository.findOneByFilter({

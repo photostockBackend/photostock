@@ -24,12 +24,12 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     const { userId, deviceName, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn: `${Number(this.configService.get('ACCESS_PERIOD'))}s` },
+      { expiresIn: this.configService.get('ACCESS_PERIOD') },
     );
     const deviceId = uuidv4();
     const refreshToken = this.jwtService.sign(
       { userId: userId, deviceId: deviceId },
-      { expiresIn: `${Number(this.configService.get('REFRESH_PERIOD'))}s` },
+      { expiresIn: this.configService.get('REFRESH_PERIOD') },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
     const session = new TokenInfoDomain({
