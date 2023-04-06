@@ -56,7 +56,10 @@ export class TokenInfoCommandRepo implements ITokensInfoRepo {
     const result = await this.prisma.tokenInfoUser.deleteMany({
       where: filter,
     });
-    if (result.count !== 1) return false;
+    if (result.count !== 1) {
+      console.log(filter, result);
+      return false;
+    }
     return true;
   }
   async deleteAllExceptCurrentDeviceId(
