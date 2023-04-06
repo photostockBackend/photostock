@@ -55,5 +55,6 @@ export class UserDomain {
     this.credInfo.codeExpiresAt = userDto.credInfo.codeExpiresAt;
     this.credInfo.isActivated = userDto.credInfo.isActivated;
     this.credInfo.userId = userDto.credInfo.userId;
+    this.credInfo.recoveryIsUsed = userDto.credInfo.recoveryIsUsed;
   }
 }
