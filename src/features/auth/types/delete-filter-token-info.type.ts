@@ -1,4 +1,4 @@
 export type DeleteFilterTokenInfoType = {
   userId: number;
-  deviceId?: string;
+  deviceId: string;
 };
