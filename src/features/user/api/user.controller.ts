@@ -1,22 +1,16 @@
 import {
-  BadRequestException,
-  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
-  InternalServerErrorException,
   Post,
   Put,
   Req,
-  Res,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import { Response } from 'express';
 import { BearerAuthGuard } from '../../auth/api/guards/bearer-auth.guard';
 
 @ApiTags('user')
@@ -65,7 +59,7 @@ export class UserController {
   @UseGuards(BearerAuthGuard)
   @Put('profile')
   async updateProfileForCurrentUser(@Req() req: RequestWithUser) {
-    return
+    return;
   }
 
   @ApiResponse({
@@ -80,6 +74,6 @@ export class UserController {
   @UseGuards(BearerAuthGuard)
   @Delete('profile')
   async deleteProfileForCurrentUser(@Req() req: RequestWithUser) {
-    return 
+    return;
   }
 }

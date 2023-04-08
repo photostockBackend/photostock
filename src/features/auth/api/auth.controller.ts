@@ -22,12 +22,10 @@ import {
   RegistrationInputModel,
 } from '../types/auth-input.models';
 import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { TokensType } from '../types/tokens.type';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
 import { AuthMeViewModel, ViewModelToken } from '../types/auth-view.models';
-import { BearerAuthGuard } from './guards/bearer-auth.guard';
 import { Response } from 'express';
 import { ConfirmRegistrationCommand } from '../application/use-cases/auth/confirm-registration.use-case';
 import { PassRecoveryCommand } from '../application/use-cases/auth/pass-recovery.use-case';
@@ -39,6 +37,7 @@ import { ResendEmailCommand } from '../application/use-cases/auth/resend-email.u
 import { LogoutCommand } from '../application/use-cases/auth/logout.use-case';
 import { AuthMeCommand } from '../application/queries/auth/handlers/auth-me.handler';
 import { CheckUserNameInterceptor } from './interceptors/check-username.interceptor';
+import { LocalAuthGuard } from './guards/strategies/local.strategy';
 
 @ApiTags('auth')
 @Controller('auth')

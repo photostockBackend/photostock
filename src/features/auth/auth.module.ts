@@ -19,12 +19,14 @@ import { CreateNewPairTokensUseCase } from './application/use-cases/auth/create-
 import { AuthService } from './application/services/auth.service';
 import { CheckEmailInterceptor } from './api/interceptors/check-email.interceptor';
 import { BasicStrategy } from './api/guards/strategies/basic.strategy';
-import { LocalStrategy } from './api/guards/strategies/local.strategy';
+import {
+  LocalAuthGuard,
+  LocalStrategy,
+} from './api/guards/strategies/local.strategy';
 import { JwtStrategy } from './api/guards/strategies/jwt.strategy';
 import { RefreshStrategy } from './api/guards/strategies/refresh.strategy';
 import { BearerAuthGuard } from './api/guards/bearer-auth.guard';
 import { BasicAuthGuard } from './api/guards/basic-auth.guard';
-import { LocalAuthGuard } from './api/guards/local-auth.guard';
 import { RefreshAuthGuard } from './api/guards/refresh-auth.guard';
 import { TokenInfoCommandRepo } from './infrastructure/command.repositories/token-info.command.repo';
 import { CheckOwnerDeviceInterceptor } from './api/interceptors/check.owner.device.interceptor';

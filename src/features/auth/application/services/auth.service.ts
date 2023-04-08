@@ -25,8 +25,9 @@ export class AuthService {
   ): Promise<UserDomain | null> {
     return await this.usersRepository.findOneByFilter(filter);
   }
-  async checkCredentials(email: string, password: string) {
-    const user = await this.findOneByFilter({ email: email });
+  async checkCredentials(userNameOrEmail: string, password: string) {
+    const field = await this.isUserNameOrEmail(userNameOrEmail);
+    const user = await this.findOneByFilter({ [field]: userNameOrEmail });
     if (!user) return null;
     const passwordHash = await this.generateHash(
       password,
@@ -58,5 +59,8 @@ export class AuthService {
   }
   private async generateHash(password: string, salt: string) {
     return await bcrypt.hash(password, salt);
+  }
+  private async isUserNameOrEmail(loginOrEmail: string) {
+    return loginOrEmail.includes('@') ? 'email' : 'userName';
   }
 }
