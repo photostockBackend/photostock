@@ -11,6 +11,17 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
+      "/testing/all-data": {
+        "delete": {
+          "operationId": "TestingAllDataController_DeleteAll",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/auth/password-recovery": {
         "post": {
           "operationId": "AuthController_passwordRecovery",
