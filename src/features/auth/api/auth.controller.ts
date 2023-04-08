@@ -105,7 +105,8 @@ export class AuthController {
   @ApiBody({ type: LoginInputModel })
   @ApiResponse({
     status: 200,
-    description: 'The user has been successfully logined. Return access-token in response, and refresh-token in cookie',
+    description:
+      'The user has been successfully logined. Return access-token in response, and refresh-token in cookie',
     type: ViewModelToken,
   })
   @ApiResponse({
@@ -137,7 +138,8 @@ export class AuthController {
 
   @ApiResponse({
     status: 200,
-    description: 'The tokens has been successfully refreshed. Return access-token in response, and refresh-token in cookie',
+    description:
+      'The tokens has been successfully refreshed. Return access-token in response, and refresh-token in cookie',
     type: ViewModelToken,
   })
   @ApiResponse({
