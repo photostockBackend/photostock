@@ -22,7 +22,8 @@ export class RegistrationUseCase
     @Inject(USERS_REPO) private usersRepository: IUsersRepo,
   ) {}
   async execute(command: RegistrationCommand): Promise<string> {
-    const { email, password } = command.userDto;
+    const { userName, email, password } = command.userDto;
+    // TODO: условие возможно лишнее, продумать поиск по юзернейму или емайлу
     const foundUser = await this.authService.findOneByFilter({ email: email });
     if (foundUser && foundUser.credInfo.isActivated)
       throw new BadRequestException({
@@ -35,6 +36,7 @@ export class RegistrationUseCase
       });
     const passwordHash = await this.authService.getPassHash(password);
     const user = new UserDomain({
+      userName,
       email,
       passwordHash,
     });

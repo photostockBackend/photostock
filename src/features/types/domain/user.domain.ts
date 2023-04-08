@@ -19,6 +19,7 @@ export class UserDomain {
   }
 
   id: number;
+  userName: string;
   email: string;
   createdAt: string;
   credInfo: CredInfoUserDomain;
@@ -48,6 +49,7 @@ export class UserDomain {
   async setAll(userDto: FoundUserType) {
     this.id = userDto.id;
     this.credInfo.passwordHash = userDto.credInfo.passwordHash;
+    this.userName = userDto.userName
     this.email = userDto.email;
     this.createdAt = userDto.createdAt;
     this.credInfo.id = userDto.credInfo.id;

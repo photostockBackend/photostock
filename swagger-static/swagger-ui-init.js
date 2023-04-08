@@ -11,17 +11,6 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/testing/all-data": {
-        "delete": {
-          "operationId": "TestingAllDataController_DeleteAll",
-          "parameters": [],
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          }
-        }
-      },
       "/auth/password-recovery": {
         "post": {
           "operationId": "AuthController_passwordRecovery",
@@ -368,9 +357,9 @@ window.onload = function() {
         "LoginInputModel": {
           "type": "object",
           "properties": {
-            "email": {
+            "emailOrUsername": {
               "type": "string",
-              "description": "user email"
+              "description": "user name or user email"
             },
             "password": {
               "type": "string",
@@ -378,7 +367,7 @@ window.onload = function() {
             }
           },
           "required": [
-            "email",
+            "emailOrUsername",
             "password"
           ]
         },
@@ -408,6 +397,10 @@ window.onload = function() {
         "RegistrationInputModel": {
           "type": "object",
           "properties": {
+            "userName": {
+              "type": "string",
+              "description": "user name"
+            },
             "email": {
               "type": "string",
               "description": "user email"
@@ -420,6 +413,7 @@ window.onload = function() {
             }
           },
           "required": [
+            "userName",
             "email",
             "password"
           ]

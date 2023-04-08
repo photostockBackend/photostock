@@ -1,5 +1,6 @@
 export type FoundUserType = {
   id: number;
+  userName: string;
   email: string;
   createdAt: string;
   credInfo: {

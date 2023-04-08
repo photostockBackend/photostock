@@ -10,6 +10,7 @@ datasource db {
 
 model User {
   id                Int               @id @default(autoincrement())
+  userName          String            @unique
   email             String            @unique
   createdAt         String
   credInfo          CredInfoUser?
@@ -41,7 +42,6 @@ model TokenInfoUser {
 
 model ProfileInfoUser {
   id                Int               @id @default(autoincrement())
-  userName          String      
   name              String            
   surName           String
   dateOfBirthday    DateTime

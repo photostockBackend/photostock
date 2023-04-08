@@ -11,6 +11,7 @@ export class AuthCommandRepo implements IUsersRepo {
   async create(user: UserDomain): Promise<number> {
     const result = await this.prisma.user.create({
       data: {
+        userName: user.userName,
         email: user.email,
         createdAt: user.createdAt,
         credInfo: {
@@ -32,6 +33,7 @@ export class AuthCommandRepo implements IUsersRepo {
         id: user.id,
       },
       data: {
+        userName: user.userName,
         email: user.email,
         createdAt: user.createdAt,
         credInfo: {
@@ -57,6 +59,7 @@ export class AuthCommandRepo implements IUsersRepo {
     });
     if (!foundUser) return null;
     const user = new UserDomain({
+      userName: foundUser.userName,
       email: foundUser.email,
       passwordHash: foundUser.credInfo.passwordHash,
     });

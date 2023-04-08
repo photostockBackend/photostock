@@ -38,6 +38,7 @@ import { RegistrationCommand } from '../application/use-cases/auth/registration.
 import { ResendEmailCommand } from '../application/use-cases/auth/resend-email.use-case';
 import { LogoutCommand } from '../application/use-cases/auth/logout.use-case';
 import { AuthMeCommand } from '../application/queries/auth/handlers/auth-me.handler';
+import { CheckUserNameInterceptor } from './interceptors/check-username.interceptor';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -205,6 +206,7 @@ export class AuthController {
     status: 400,
     description: 'The user with the given email already exists.',
   })
+  @UseInterceptors(CheckUserNameInterceptor)
   @UseInterceptors(CheckEmailInterceptor)
   @HttpCode(204)
   @Post('registration')

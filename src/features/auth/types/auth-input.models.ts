@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID, Length, Matches } from 'class-validator';
 
 export class RegistrationInputModel {
+  @ApiProperty({ description: 'user name' })
+  @IsString()
+  @Length(1, 20)
+  readonly userName: string;
+
   @ApiProperty({ description: 'user email' })
   @IsString()
   @Matches(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4}$)/)
@@ -14,9 +19,9 @@ export class RegistrationInputModel {
 }
 
 export class LoginInputModel {
-  @ApiProperty({ description: 'user email' })
+  @ApiProperty({ description: 'user name or user email' })
   @IsString()
-  email: string;
+  emailOrUsername: string;
 
   @ApiProperty({ description: 'user password' })
   @IsString()
