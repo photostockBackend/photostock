@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { LogoutCommand } from './commands/logout.command';
 import { AuthService } from '../../services/auth.service';
 import {
   ITokensInfoRepo,
@@ -7,6 +6,12 @@ import {
 } from '../../../types/interfaces/i-tokens-info.repo';
 import { Inject } from '@nestjs/common';
 
+export class LogoutCommand {
+  constructor(
+    public readonly userId: number,
+    public readonly deviceId: string,
+  ) {}
+}
 @CommandHandler(LogoutCommand)
 export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
   constructor(

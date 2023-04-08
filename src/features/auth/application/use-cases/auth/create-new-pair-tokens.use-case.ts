@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CreateNewPairTokensCommand } from './commands/create-new-pair-tokens.command';
 import { JWT } from '../../../../../helpers/jwt';
 import { AuthService } from '../../services/auth.service';
 import {
@@ -10,6 +9,13 @@ import {
 } from '../../../types/interfaces/i-tokens-info.repo';
 import { TokensType } from '../../../types/tokens.type';
 
+export class CreateNewPairTokensCommand {
+  constructor(
+    public readonly userId: number,
+    public readonly deviceId: string,
+    public readonly ip: string,
+  ) {}
+}
 @CommandHandler(CreateNewPairTokensCommand)
 export class CreateNewPairTokensUseCase
   implements ICommandHandler<CreateNewPairTokensCommand>

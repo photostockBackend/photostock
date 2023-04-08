@@ -21,23 +21,23 @@ import {
   RegistrationEmailResendingInputModel,
   RegistrationInputModel,
 } from '../types/auth-input.models';
-import { RegistrationCommand } from '../application/use-cases/auth/commands/registration.command';
 import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
-import { ConfirmRegistrationCommand } from '../application/use-cases/auth/commands/confirm-registration.command';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { LoginCommand } from '../application/use-cases/auth/commands/login.command';
 import { TokensType } from '../types/tokens.type';
-import { ResendEmailCommand } from '../application/use-cases/auth/commands/resend-email.command';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
-import { CreateNewPairTokensCommand } from '../application/use-cases/auth/commands/create-new-pair-tokens.command';
-import { PassRecoveryCommand } from '../application/use-cases/auth/commands/pass-recovery.command';
-import { NewPassCommand } from '../application/use-cases/auth/commands/new-pass.command';
-import { LogoutCommand } from '../application/use-cases/auth/commands/logout.command';
-import { AuthMeCommand } from '../application/queries/auth/commands/auth-me.command';
 import { AuthMeViewModel, ViewModelToken } from '../types/auth-view.models';
 import { BearerAuthGuard } from './guards/bearer-auth.guard';
 import { Response } from 'express';
+import { ConfirmRegistrationCommand } from '../application/use-cases/auth/confirm-registration.use-case';
+import { PassRecoveryCommand } from '../application/use-cases/auth/pass-recovery.use-case';
+import { NewPassCommand } from '../application/use-cases/auth/new-pass.use-case';
+import { LoginCommand } from '../application/use-cases/auth/login.use-case';
+import { CreateNewPairTokensCommand } from '../application/use-cases/auth/create-new-pair-tokens.use-case';
+import { RegistrationCommand } from '../application/use-cases/auth/registration.use-case';
+import { ResendEmailCommand } from '../application/use-cases/auth/resend-email.use-case';
+import { LogoutCommand } from '../application/use-cases/auth/logout.use-case';
+import { AuthMeCommand } from '../application/queries/auth/handlers/auth-me.handler';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -105,7 +105,8 @@ export class AuthController {
   @ApiBody({ type: LoginInputModel })
   @ApiResponse({
     status: 200,
-    description: 'The user has been successfully logined. Return access-token in response, and refresh-token in cookie',
+    description:
+      'The user has been successfully logined. Return access-token in response, and refresh-token in cookie',
     type: ViewModelToken,
   })
   @ApiResponse({
@@ -137,7 +138,8 @@ export class AuthController {
 
   @ApiResponse({
     status: 200,
-    description: 'The tokens has been successfully refreshed. Return access-token in response, and refresh-token in cookie',
+    description:
+      'The tokens has been successfully refreshed. Return access-token in response, and refresh-token in cookie',
     type: ViewModelToken,
   })
   @ApiResponse({

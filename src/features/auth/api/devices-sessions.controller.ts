@@ -12,12 +12,12 @@ import {
 import { SkipThrottle } from '@nestjs/throttler';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
-import { DeleteSessionCommand } from '../application/use-cases/devices-sessions/commands/delete-session.command';
-import { DeleteSessionsExcludeCurrentCommand } from '../application/use-cases/devices-sessions/commands/delete-sessions-exclude-current.command';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import { GetSessionCommand } from '../application/queries/sessions/commands/get-session.command';
 import { SessionsViewModels } from '../types/sessions-view.models';
 import { CheckOwnerDeviceInterceptor } from './interceptors/check.owner.device.interceptor';
+import { DeleteSessionsExcludeCurrentCommand } from '../application/use-cases/devices-sessions/delete-sessions-exclude-current.use-case';
+import { DeleteSessionCommand } from '../application/use-cases/devices-sessions/delete-session.use-case';
+import { GetSessionCommand } from '../application/queries/sessions/handlers/get-sessions.use-case';
 
 @Controller('/security/devices')
 export class SecurityDevicesController {

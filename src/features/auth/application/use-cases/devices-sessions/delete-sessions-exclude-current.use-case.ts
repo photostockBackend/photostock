@@ -1,4 +1,3 @@
-import { DeleteSessionsExcludeCurrentCommand } from './commands/delete-sessions-exclude-current.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   ITokensInfoRepo,
@@ -6,6 +5,12 @@ import {
 } from '../../../types/interfaces/i-tokens-info.repo';
 import { Inject } from '@nestjs/common';
 
+export class DeleteSessionsExcludeCurrentCommand {
+  constructor(
+    public readonly userId: number,
+    public readonly deviceId: string,
+  ) {}
+}
 @CommandHandler(DeleteSessionsExcludeCurrentCommand)
 export class DeleteSessionsExcludeCurrentUseCase
   implements ICommandHandler<DeleteSessionsExcludeCurrentCommand>
