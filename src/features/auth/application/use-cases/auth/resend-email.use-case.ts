@@ -27,7 +27,7 @@ export class ResendEmailUseCase implements ICommandHandler<ResendEmailCommand> {
       command.frontendAddress,
       user.email,
       user.credInfo.code,
-      'confirm-registration?code',
+      'auth/confirm-registration?code',
     );
     await this.usersRepository.update(user);
     return true;

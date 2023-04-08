@@ -21,7 +21,7 @@ import { BearerAuthGuard } from '../../auth/api/guards/bearer-auth.guard';
 
 @ApiTags('user')
 @Controller('user')
-export class AuthController {
+export class UserController {
   constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
 
   @ApiResponse({

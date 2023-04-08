@@ -31,7 +31,7 @@ export class PassRecoveryUseCase
       frontendAddress,
       user.email,
       user.credInfo.code,
-      'password-recovery?recoveryCode',
+      'auth/password-recovery?recoveryCode',
     );
     return await this.usersRepository.update(user);
   }

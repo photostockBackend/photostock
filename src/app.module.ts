@@ -10,6 +10,7 @@ import { AllDataModule } from './helpers/delete-all-data/delete-all-data.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { TestingAllDataController } from './features/delete-all-data/testing.all.data.controller';
+import { UserModule } from './features/user/user.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TestingAllDataController } from './features/delete-all-data/testing.all
     AllDataModule,
     AuthModule,
     PrismaModule,
+    UserModule,
   ],
   controllers: [AppController, TestingAllDataController],
   providers: [

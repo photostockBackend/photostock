@@ -3,7 +3,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { PrismaService } from '../../database/prisma.service';
 import format = require('pg-format');
 
-const tables = ['User', 'CredInfoUser', 'TokenInfoUser'];
+const tables = ['User', 'CredInfoUser', 'TokenInfoUser', 'ProfileInfoUser'];
 @SkipThrottle()
 @Controller('testing/all-data')
 export class TestingAllDataController {

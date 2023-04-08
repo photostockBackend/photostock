@@ -42,7 +42,7 @@ export class RegistrationUseCase
       command.frontendAddress,
       user.email,
       user.credInfo.code,
-      'confirm-email?code',
+      'auth/confirm-email?code',
     );
     if (foundUser) {
       user.id = foundUser.id;

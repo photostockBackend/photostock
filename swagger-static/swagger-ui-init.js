@@ -257,6 +257,68 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/user/profile": {
+        "get": {
+          "operationId": "UserController_getProfileforCurrentUser",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The profile get for current user."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        },
+        "post": {
+          "operationId": "UserController_createProfileForCurrentUser",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "The profile has been successfully created."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        },
+        "put": {
+          "operationId": "UserController_updateProfileForCurrentUser",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "The profile has been successfully updated."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        },
+        "delete": {
+          "operationId": "UserController_deleteProfileForCurrentUser",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "The profile has been successfully deleted."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        }
       }
     },
     "info": {

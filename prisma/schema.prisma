@@ -41,8 +41,8 @@ model TokenInfoUser {
 
 model ProfileInfoUser {
   id                Int               @id @default(autoincrement())
-  userName          String
-  name              String
+  userName          String      
+  name              String            
   surName           String
   dateOfBirthday    DateTime
   city              String

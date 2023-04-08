@@ -283,7 +283,7 @@ export class AuthController {
     status: 401,
     description: 'The user is not authorized.',
   })
-  @UseGuards(BearerAuthGuard)
+  @UseGuards(RefreshAuthGuard)
   @HttpCode(200)
   @Get('me')
   async getAuthMe(@Req() req: RequestWithUser) {
