@@ -1,10 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PassRecoveryCommand } from './commands/pass-recovery.command';
 import { MailService } from '../../../../../adapters/mail/mail.service';
 import { AuthService } from '../../services/auth.service';
 import { Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
 
+export class PassRecoveryCommand {
+  constructor(
+    public readonly email: string,
+    public readonly frontendAddress: string,
+  ) {}
+}
 @CommandHandler(PassRecoveryCommand)
 export class PassRecoveryUseCase
   implements ICommandHandler<PassRecoveryCommand>

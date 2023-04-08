@@ -3,9 +3,14 @@ import {
   TOKEN_INFO_REPO,
 } from '../../../types/interfaces/i-tokens-info.repo';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DeleteSessionCommand } from './commands/delete-session.command';
 import { Inject } from '@nestjs/common';
 
+export class DeleteSessionCommand {
+  constructor(
+    public readonly userId: number,
+    public readonly deviceId: string,
+  ) {}
+}
 @CommandHandler(DeleteSessionCommand)
 export class DeleteSessionUseCase
   implements ICommandHandler<DeleteSessionCommand>

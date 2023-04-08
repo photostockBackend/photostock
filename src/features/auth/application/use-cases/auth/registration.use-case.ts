@@ -1,11 +1,17 @@
-import { RegistrationCommand } from './commands/registration.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserDomain } from '../../../../types/domain/user.domain';
 import { MailService } from '../../../../../adapters/mail/mail.service';
 import { AuthService } from '../../services/auth.service';
 import { BadRequestException, Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
+import { RegistrationInputModel } from '../../../types/auth-input.models';
 
+export class RegistrationCommand {
+  constructor(
+    public readonly userDto: RegistrationInputModel,
+    public readonly frontendAddress: string,
+  ) {}
+}
 @CommandHandler(RegistrationCommand)
 export class RegistrationUseCase
   implements ICommandHandler<RegistrationCommand>
