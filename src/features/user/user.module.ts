@@ -4,19 +4,17 @@ import { JwtService } from '@nestjs/jwt';
 import { JWT } from '../../helpers/jwt';
 import { PrismaModule } from '../../database/prisma.module';
 import { UserController } from './api/user.controller';
-import { JwtStrategy } from '../auth/api/guards/strategies/jwt.strategy';
-import { BearerAuthGuard } from '../auth/api/guards/bearer-auth.guard';
+import {
+  BearerAuthGuard,
+  JwtStrategy,
+} from '../auth/api/guards/strategies/jwt.strategy';
 
-const commands = [
-];
+const commands = [];
 const queries = [];
 const services = [];
-const repositories = [
-];
+const repositories = [];
 const strategies = [JwtStrategy];
-const guards = [
-  BearerAuthGuard,
-];
+const guards = [BearerAuthGuard];
 const interceptors = [];
 
 @Module({

@@ -21,10 +21,8 @@ import {
   RegistrationEmailResendingInputModel,
   RegistrationInputModel,
 } from '../types/auth-input.models';
-import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
 import { TokensType } from '../types/tokens.type';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import { RefreshAuthGuard } from './guards/refresh-auth.guard';
 import { AuthMeViewModel, ViewModelToken } from '../types/auth-view.models';
 import { Response } from 'express';
 import { ConfirmRegistrationCommand } from '../application/use-cases/auth/confirm-registration.use-case';
@@ -36,8 +34,9 @@ import { RegistrationCommand } from '../application/use-cases/auth/registration.
 import { ResendEmailCommand } from '../application/use-cases/auth/resend-email.use-case';
 import { LogoutCommand } from '../application/use-cases/auth/logout.use-case';
 import { AuthMeCommand } from '../application/queries/auth/handlers/auth-me.handler';
-import { CheckUserNameInterceptor } from './interceptors/check-username.interceptor';
 import { LocalAuthGuard } from './guards/strategies/local.strategy';
+import { CheckUserNameEmailInterceptor } from './interceptors/check-user-name-email.interceptor';
+import { RefreshAuthGuard } from './guards/strategies/refresh.strategy';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -205,8 +204,7 @@ export class AuthController {
     status: 400,
     description: 'The user with the given email already exists.',
   })
-  @UseInterceptors(CheckUserNameInterceptor)
-  @UseInterceptors(CheckEmailInterceptor)
+  @UseInterceptors(CheckUserNameEmailInterceptor)
   @HttpCode(204)
   @Post('registration')
   async registration(

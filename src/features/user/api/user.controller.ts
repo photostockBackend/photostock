@@ -11,7 +11,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import { BearerAuthGuard } from '../../auth/api/guards/bearer-auth.guard';
+import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 
 @ApiTags('user')
 @Controller('user')

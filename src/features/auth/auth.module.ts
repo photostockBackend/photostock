@@ -17,21 +17,27 @@ import { ResendEmailUseCase } from './application/use-cases/auth/resend-email.us
 import { LogoutUseCase } from './application/use-cases/auth/logout.use-case';
 import { CreateNewPairTokensUseCase } from './application/use-cases/auth/create-new-pair-tokens.use-case';
 import { AuthService } from './application/services/auth.service';
-import { CheckEmailInterceptor } from './api/interceptors/check-email.interceptor';
-import { BasicStrategy } from './api/guards/strategies/basic.strategy';
+import {
+  BasicAuthGuard,
+  BasicStrategy,
+} from './api/guards/strategies/basic.strategy';
 import {
   LocalAuthGuard,
   LocalStrategy,
 } from './api/guards/strategies/local.strategy';
-import { JwtStrategy } from './api/guards/strategies/jwt.strategy';
-import { RefreshStrategy } from './api/guards/strategies/refresh.strategy';
-import { BearerAuthGuard } from './api/guards/bearer-auth.guard';
-import { BasicAuthGuard } from './api/guards/basic-auth.guard';
-import { RefreshAuthGuard } from './api/guards/refresh-auth.guard';
+import {
+  BearerAuthGuard,
+  JwtStrategy,
+} from './api/guards/strategies/jwt.strategy';
+import {
+  RefreshAuthGuard,
+  RefreshStrategy,
+} from './api/guards/strategies/refresh.strategy';
 import { TokenInfoCommandRepo } from './infrastructure/command.repositories/token-info.command.repo';
 import { CheckOwnerDeviceInterceptor } from './api/interceptors/check.owner.device.interceptor';
 import { TOKEN_INFO_REPO } from './types/interfaces/i-tokens-info.repo';
 import { USERS_REPO } from './types/interfaces/i-users.repo';
+import { CheckUserNameEmailInterceptor } from './api/interceptors/check-user-name-email.interceptor';
 
 const commands = [
   RegistrationUseCase,
@@ -63,7 +69,10 @@ const guards = [
   LocalAuthGuard,
   RefreshAuthGuard,
 ];
-const interceptors = [CheckEmailInterceptor, CheckOwnerDeviceInterceptor];
+const interceptors = [
+  CheckUserNameEmailInterceptor,
+  CheckOwnerDeviceInterceptor,
+];
 
 @Module({
   controllers: [AuthController],
