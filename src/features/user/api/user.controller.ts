@@ -20,6 +20,7 @@ import RequestWithUser from '../../types/interfaces/request-with-user.interface'
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateProfileInputModel } from '../types/user-input.models';
+import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
 
 @ApiTags('user')
 @Controller('user')
@@ -50,6 +51,7 @@ export class UserController {
   })
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
+  @UseInterceptors(CheckUserNameInterceptor)
   @UseInterceptors(FileInterceptor('file', {}))
   @Post('profile')
   async createProfileForCurrentUser(
@@ -57,6 +59,7 @@ export class UserController {
     @Body() createProfileInputModel: CreateProfileInputModel,
     @UploadedFile(
       new ParseFilePipe({
+        fileIsRequired: false,
         validators: [
           new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
           new MaxFileSizeValidator({ maxSize: 1024 * 1000 }),
@@ -65,6 +68,7 @@ export class UserController {
     )
     file: Express.Multer.File,
   ) {
+    console.log(createProfileInputModel.birthday);
     return;
   }
 

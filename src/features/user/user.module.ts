@@ -1,28 +1,22 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { JwtService } from '@nestjs/jwt';
-import { JWT } from '../../helpers/jwt';
 import { PrismaModule } from '../../database/prisma.module';
 import { UserController } from './api/user.controller';
-import {
-  BearerAuthGuard,
-  JwtStrategy,
-} from '../auth/api/guards/strategies/jwt.strategy';
+import { AuthModule } from '../auth/auth.module';
+import { CheckUserNameInterceptor } from './api/interceptor/check-user-name.interceptor';
 
 const commands = [];
 const queries = [];
 const services = [];
 const repositories = [];
-const strategies = [JwtStrategy];
-const guards = [BearerAuthGuard];
-const interceptors = [];
+const strategies = [];
+const guards = [];
+const interceptors = [CheckUserNameInterceptor];
 
 @Module({
   controllers: [UserController],
-  imports: [CqrsModule, PrismaModule],
+  imports: [CqrsModule, PrismaModule, AuthModule],
   providers: [
-    JwtService,
-    JWT,
     ...commands,
     ...queries,
     ...services,

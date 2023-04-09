@@ -10,7 +10,9 @@ export class ProfileUserDomain {
     this.dateOfBirthday = profileDto.dateOfBirthday;
     this.city = profileDto.city;
     this.aboutMe = profileDto.aboutMe || '';
+    this.profilePhotoLink = profileDto.profilePhotoLink || '';
     this.userId = profileDto.userId;
+    this.user = profileDto.user;
   }
   id: number;
   username: string;

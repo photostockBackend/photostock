@@ -88,5 +88,6 @@ const interceptors = [
     ...guards,
     ...interceptors,
   ],
+  exports: [JwtService, AuthService, ...guards],
 })
 export class AuthModule {}
