@@ -42,17 +42,17 @@ describe('AppController', () => {
       await seedUsers(server)
     });*/
 
-    /*it('should registered user, and should registered new user, while prev user not confirmed', async () => {
+    it('should registered user, and should registered new user, while prev user not confirmed', async () => {
       
       const mailService = app.get<MailService>(MailService)
       const sendEmail = jest.spyOn(mailService, 'sendEmail')
       
       await request(server).post('/auth/registration')
-        .send({userName: 'Nickolay', email: 'nickarbuzov@yandex.by', password: password})
+        .send({username: 'Nickolay', email: 'nickarbuzov@yandex.by', password: password})
         .expect(204)
       
       await request(server).post('/auth/registration')
-        .send({userName: 'Nickolay', email: 'nickarbuzov@yandex.by', password: password})
+        .send({username: 'Nickolay', email: 'nickarbuzov@yandex.by', password: password})
         .expect(204)
 
       expect(mailService.sendEmail).toBeCalled()
@@ -147,11 +147,11 @@ describe('AppController', () => {
     it('should try to login with old password and new password', async () => {
 
       await request(server).post('/auth/login')
-        .send({email: 'nickarbuzov@yandex.by', password: password})
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: password})
         .expect(401)
       
       const res = await request(server).post('/auth/login')
-        .send({email: 'nickarbuzov@yandex.by', password: newPassword})
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: newPassword})
         .expect(200)
 
       accessToken = res.body.accessToken
@@ -172,7 +172,6 @@ describe('AppController', () => {
     it('should try to refresh-tokens, by valid token and not valid token', async () => {
 
       await request(server).post('/auth/refresh-token').expect(401)
-
       const res = await request(server).post('/auth/refresh-token')
         .set('Cookie', refreshToken)
         .expect(200)
@@ -210,7 +209,7 @@ describe('AppController', () => {
 
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204)
-    })*/
+    })
     
   });
 });
