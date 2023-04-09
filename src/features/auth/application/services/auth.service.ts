@@ -61,6 +61,6 @@ export class AuthService {
     return await bcrypt.hash(password, salt);
   }
   private async isUserNameOrEmail(loginOrEmail: string) {
-    return loginOrEmail.includes('@') ? 'email' : 'userName';
+    return loginOrEmail.includes('@') ? 'email' : 'username';
   }
 }
