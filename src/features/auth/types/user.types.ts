@@ -1,5 +1,5 @@
 export type UserCreateType = {
-  userName: string;
+  username: string;
   email: string;
   passwordHash: string;
 };

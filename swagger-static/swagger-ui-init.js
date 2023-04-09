@@ -397,7 +397,7 @@ window.onload = function() {
         "RegistrationInputModel": {
           "type": "object",
           "properties": {
-            "userName": {
+            "username": {
               "type": "string",
               "description": "user name"
             },
@@ -413,7 +413,7 @@ window.onload = function() {
             }
           },
           "required": [
-            "userName",
+            "username",
             "email",
             "password"
           ]

@@ -5,7 +5,7 @@ export class RegistrationInputModel {
   @ApiProperty({ description: 'user name' })
   @IsString()
   @Length(1, 20)
-  readonly userName: string;
+  readonly username: string;
 
   @ApiProperty({ description: 'user email' })
   @IsString()

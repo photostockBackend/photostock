@@ -1,6 +1,6 @@
 export type FindFilterUserType = {
   id?: number;
-  userName?: string;
+  username?: string;
   email?: string;
   createdAt?: string;
   credInfo?: {

@@ -20,7 +20,7 @@ export class CheckUserNameEmailInterceptor implements NestInterceptor {
     let emailInvalid = false;
 
     let user = await this.authService.findOneByFilter({
-      userName: req.body.userName,
+      username: req.body.username,
       credInfo: { isActivated: true },
     });
     if (user) loginInvalid = true;

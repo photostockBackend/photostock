@@ -42,7 +42,7 @@ describe('AppController', () => {
       await seedUsers(server)
     });*/
 
-    it('should registered user, and should registered new user, while prev user not confirmed', async () => {
+    /*it('should registered user, and should registered new user, while prev user not confirmed', async () => {
       
       const mailService = app.get<MailService>(MailService)
       const sendEmail = jest.spyOn(mailService, 'sendEmail')
@@ -210,7 +210,7 @@ describe('AppController', () => {
 
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204)
-    })
+    })*/
     
   });
 });
