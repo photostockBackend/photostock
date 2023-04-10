@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../adapters/files/files.service';
-import { CreateProfileInputModel } from '../../types/user-input.models';
+import { CreateProfileInputModel } from '../../types/user-profile-input.models';
 import { AuthService } from '../../../auth/application/services/auth.service';
 import { Inject, UnauthorizedException } from '@nestjs/common';
 import { ProfileUserDomain } from '../../../types/domain/profile-user.domain';

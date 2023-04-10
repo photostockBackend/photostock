@@ -22,11 +22,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CreateProfileInputModel,
   UpdateProfileInputModel,
-} from '../types/user-input.models';
+} from '../types/user-profile-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
 import { CreateProfileCommand } from '../application/use-cases/create-profile.use-case';
 import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
 import { DeleteProfileCommand } from '../application/use-cases/delete-profile.use-case';
+import { ProfileUserViewModel } from '../types/user-profile-view.models';
+import { GetProfileUserCommand } from '../application/queries/handlers/get-profile-for-user.handler';
 
 @ApiTags('user')
 @Controller('user')
@@ -44,7 +46,10 @@ export class UserController {
   @UseGuards(BearerAuthGuard)
   @Get('profile')
   async getProfileForCurrentUser(@Req() req: RequestWithUser) {
-    return;
+    return await this.queryBus.execute<
+      GetProfileUserCommand,
+      Promise<ProfileUserViewModel>
+    >(new GetProfileUserCommand(req.user.userId));
   }
 
   @ApiResponse({

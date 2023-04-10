@@ -1,4 +1,4 @@
-import { UpdateProfileInputModel } from '../../types/user-input.models';
+import { UpdateProfileInputModel } from '../../types/user-profile-input.models';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../adapters/files/files.service';
 import { AuthService } from '../../../auth/application/services/auth.service';

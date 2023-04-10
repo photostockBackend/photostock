@@ -7,22 +7,33 @@ import { CheckUserNameInterceptor } from './api/interceptor/check-user-name.inte
 import { CreateProfileUseCase } from './application/use-cases/create-profile.use-case';
 import { UpdateProfileUseCase } from './application/use-cases/update-profile.use-case';
 import { DeleteProfileUseCase } from './application/use-cases/delete-profile.use-case';
+import { FilesModule } from '../../adapters/files/files.module';
+import { UserProfileCommandRepo } from './infrastructure/command.repositories/user-profile.command.repo';
+import { PROFILE_USER_REPO } from './types/interfaces/i-profile-user.repo';
+import { GetProfileForUserHandler } from './application/queries/handlers/get-profile-for-user.handler';
+import { UserProfileQueryRepo } from './infrastructure/query.repositories/user-profile.query.repo';
 
 const commands = [
   CreateProfileUseCase,
   UpdateProfileUseCase,
   DeleteProfileUseCase,
 ];
-const queries = [];
+const queries = [GetProfileForUserHandler];
 const services = [];
-const repositories = [];
+const repositories = [
+  {
+    provide: PROFILE_USER_REPO,
+    useClass: UserProfileCommandRepo,
+  },
+  UserProfileQueryRepo,
+];
 const strategies = [];
 const guards = [];
 const interceptors = [CheckUserNameInterceptor];
 
 @Module({
   controllers: [UserController],
-  imports: [CqrsModule, PrismaModule, AuthModule],
+  imports: [CqrsModule, PrismaModule, AuthModule, FilesModule],
   providers: [
     ...commands,
     ...queries,

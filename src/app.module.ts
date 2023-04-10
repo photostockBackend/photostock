@@ -10,6 +10,7 @@ import { AllDataModule } from './helpers/delete-all-data/delete-all-data.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './features/user/user.module';
+import { FilesModule } from './adapters/files/files.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserModule } from './features/user/user.module';
     AuthModule,
     PrismaModule,
     UserModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [
