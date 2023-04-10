@@ -30,11 +30,11 @@ export class CreateNewPairTokensUseCase
     const { userId, deviceId, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn: this.configService.get('ACCESS_PERIOD') },
+      { expiresIn: `${Number(this.configService.get('ACCESS_PERIOD'))}s` },
     );
     const refreshToken = this.jwtService.sign(
       { userId: userId, deviceId: deviceId },
-      { expiresIn: this.configService.get('REFRESH_PERIOD') },
+      { expiresIn: `${Number(this.configService.get('REFRESH_PERIOD'))}s` },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
     const session = await this.tokenInfoRepository.findOneByFilter({
