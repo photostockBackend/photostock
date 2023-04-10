@@ -2,7 +2,11 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../adapters/files/files.service';
 import { CreateProfileInputModel } from '../../types/user-profile-input.models';
 import { AuthService } from '../../../auth/application/services/auth.service';
-import { Inject, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ProfileUserDomain } from '../../../types/domain/profile-user.domain';
 import {
   IProfileUserRepo,
@@ -35,10 +39,20 @@ export class CreateProfileUseCase
       command.createProfileInputModel;
     const user = await this.authService.findOneByFilter({ id: command.userId });
     if (!user) throw new UnauthorizedException();
+    let profile = await this.profileRepository.findByUserId(command.userId);
+    if (profile)
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'profile',
+            message: 'profile already created',
+          },
+        ],
+      });
     let link = '';
     if (command.file)
       link = await this.filesService.saveAvatar(command.userId, command.file);
-    const profile = new ProfileUserDomain({
+    profile = new ProfileUserDomain({
       name,
       surName,
       city,
