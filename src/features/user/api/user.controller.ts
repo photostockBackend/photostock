@@ -19,9 +19,14 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateProfileInputModel } from '../types/user-input.models';
+import {
+  CreateProfileInputModel,
+  UpdateProfileInputModel,
+} from '../types/user-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
 import { CreateProfileCommand } from '../application/use-cases/create-profile.use-case';
+import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
+import { DeleteProfileCommand } from '../application/use-cases/delete-profile.use-case';
 
 @ApiTags('user')
 @Controller('user')
@@ -85,8 +90,25 @@ export class UserController {
   })
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
+  @UseInterceptors(CheckUserNameInterceptor)
   @Put('profile')
-  async updateProfileForCurrentUser(@Req() req: RequestWithUser) {
+  async updateProfileForCurrentUser(
+    @Req() req: RequestWithUser,
+    @Body() updateProfileInputModel: UpdateProfileInputModel,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1000 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    await this.commandBus.execute(
+      new UpdateProfileCommand(req.user.userId, file, updateProfileInputModel),
+    );
     return;
   }
 
@@ -102,6 +124,7 @@ export class UserController {
   @UseGuards(BearerAuthGuard)
   @Delete('profile')
   async deleteProfileForCurrentUser(@Req() req: RequestWithUser) {
+    await this.commandBus.execute(new DeleteProfileCommand(req.user.userId));
     return;
   }
 }

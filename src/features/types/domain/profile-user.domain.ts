@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserDomain } from './user.domain';
 import { ProfileUserCreateType } from '../../user/types/profile-user-create.type';
+import { ProfileUserUpdateType } from '../../user/types/profile-user-update.type';
 
 @Injectable()
 export class ProfileUserDomain {
@@ -24,5 +25,13 @@ export class ProfileUserDomain {
   userId: number;
   async setUser(user: UserDomain): Promise<void> {
     this.user = user;
+  }
+  async setAllWithoutIdAndUser(profileDto: ProfileUserUpdateType) {
+    this.name = profileDto.name;
+    this.surName = profileDto.surName;
+    this.dateOfBirthday = profileDto.dateOfBirthday;
+    this.city = profileDto.city;
+    this.aboutMe = profileDto.aboutMe;
+    this.profilePhotoLink = profileDto.profilePhotoLink;
   }
 }

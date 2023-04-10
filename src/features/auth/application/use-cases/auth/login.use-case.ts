@@ -32,7 +32,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     const { userId, deviceName, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn:  `${Number(this.configService.get('ACCESS_PERIOD'))}s` },
+      { expiresIn: `${Number(this.configService.get('ACCESS_PERIOD'))}s` },
     );
     const deviceId = uuidv4();
     const refreshToken = this.jwtService.sign(

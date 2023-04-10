@@ -62,4 +62,15 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
     await profile.setUser(user);
     return profile;
   }
+  async deleteByUserId(userId: number): Promise<void> {
+    try {
+      await this.prisma.profileInfoUser.delete({
+        where: {
+          userId: userId,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }
