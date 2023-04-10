@@ -21,6 +21,7 @@ import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateProfileInputModel } from '../types/user-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
+import { CreateProfileCommand } from '../application/use-cases/create-profile.use-case';
 
 @ApiTags('user')
 @Controller('user')
@@ -68,7 +69,9 @@ export class UserController {
     )
     file: Express.Multer.File,
   ) {
-    console.log(createProfileInputModel.birthday);
+    await this.commandBus.execute(
+      new CreateProfileCommand(req.user.userId, file, createProfileInputModel),
+    );
     return;
   }
 
