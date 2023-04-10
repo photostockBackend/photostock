@@ -3,10 +3,8 @@ import * as request from 'supertest';
 import { createAppandServerForTests } from './utils/app';
 import { seedUsers } from './utils/seed-data';
 import { generatePagination, generateQueryPagination, slicedEntityArray } from './utils/helpers';
-import * as fs from 'fs'
-import { fileReader } from '../src/adapters/files/helpers/helpers';
 import * as path from 'path';
-import { dirname } from 'node:path';
+import { MailService } from '../src/adapters/mail/mail.service';
 
 jest.setTimeout(60000)
 describe('AppController', () => {
@@ -22,21 +20,51 @@ describe('AppController', () => {
   })
 
   describe('tests', () => {
+    let code
+    let newCode
+    let accessToken
+    let refreshToken
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204)
     })
 
-    /*it('should seed data', async () => {
-      await seedUsers(server)
-    });*/
-    it('should send file', async () => {
-      const response = await request(server).post('/user/profile')
-        .set('Content-Type', 'multipart/form-data')
-        .field('name', 'John Doe')
-        .field('email', 'johndoe@example.com')
-        .attach('file', path.join(__dirname, './1.jpeg'))
+    it('should registered user, confirmed email and login for get tokens', async () => {
+      
+      const mailService = app.get<MailService>(MailService)
+      const sendEmail = jest.spyOn(mailService, 'sendEmail')
+      
+      await request(server).post('/auth/registration')
+        .send({username: 'Nickolay', email: 'nickarbuzov@yandex.by', password: '111111'})
+        .expect(204)
 
-      expect(response).toBe(0)
+      expect(mailService.sendEmail).toBeCalled()
+      code = sendEmail.mock.lastCall[2]
+
+      await request(server).post('/auth/registration-confirmation')
+        .send({code: code})
+        .expect(204)
+      
+      const res = await request(server).post('/auth/login')
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: '111111'})
+        .expect(200)
+
+      accessToken = res.body.accessToken
+      refreshToken = res.header['set-cookie']
+
+    });
+
+    it('should send file', async () => {
+      const date = new Date().toISOString()
+      const res = await request(server).post('/user/profile')
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('username', 'Nickolay')
+        .field('name', 'name')
+        .field('surName', 'surName')
+        .field('birthday', date)
+        .field('city', 'city')
+        .attach('file', path.join(__dirname, './1.jpeg'))
+      expect(res).toBe(0)
       })
 
     it('should delete all data', async () => {
@@ -45,3 +73,4 @@ describe('AppController', () => {
     
   });
 });
+

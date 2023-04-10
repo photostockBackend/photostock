@@ -18,13 +18,14 @@ export class FilesService {
       Key: `content/user/${userId}/avatars/${userId}.${
         file.mimetype.split('/')[1]
       }`,
-      body: file.buffer,
+      Body: file.buffer,
+      ContentType: 'image/jpeg',
     };
 
     const command = new PutObjectCommand(bucketParams);
     try {
       await s3.send(command);
-      return `https://storage.yandexcloud.net/photostock/content/user/${userId}/avatars/${userId}.${
+      return `https://photostock.storage.yandexcloud.net/content/user/${userId}/avatars/${userId}.${
         file.mimetype.split('/')[1]
       }`;
     } catch (e) {

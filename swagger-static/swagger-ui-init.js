@@ -249,7 +249,7 @@ window.onload = function() {
       },
       "/user/profile": {
         "get": {
-          "operationId": "UserController_getProfileforCurrentUser",
+          "operationId": "UserController_getProfileForCurrentUser",
           "parameters": [],
           "responses": {
             "200": {
@@ -266,6 +266,16 @@ window.onload = function() {
         "post": {
           "operationId": "UserController_createProfileForCurrentUser",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProfileInputModel"
+                }
+              }
+            }
+          },
           "responses": {
             "204": {
               "description": "The profile has been successfully created."
@@ -281,6 +291,16 @@ window.onload = function() {
         "put": {
           "operationId": "UserController_updateProfileForCurrentUser",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProfileInputModel"
+                }
+              }
+            }
+          },
           "responses": {
             "204": {
               "description": "The profile has been successfully updated."
@@ -444,6 +464,14 @@ window.onload = function() {
             "email",
             "userId"
           ]
+        },
+        "CreateProfileInputModel": {
+          "type": "object",
+          "properties": {}
+        },
+        "UpdateProfileInputModel": {
+          "type": "object",
+          "properties": {}
         }
       }
     }
