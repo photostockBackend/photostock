@@ -1,5 +1,3 @@
-import { UserDomain } from '../../types/domain/user.domain';
-
 export type ProfileUserCreateType = {
   name?: string;
   surName?: string;
@@ -8,5 +6,4 @@ export type ProfileUserCreateType = {
   aboutMe?: string;
   profilePhotoLink?: string;
   userId: number;
-  user: UserDomain;
 };

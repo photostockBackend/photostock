@@ -12,10 +12,8 @@ export class ProfileUserDomain {
     this.aboutMe = profileDto.aboutMe || '';
     this.profilePhotoLink = profileDto.profilePhotoLink || '';
     this.userId = profileDto.userId;
-    this.user = profileDto.user;
   }
   id: number;
-  username: string;
   name: string;
   surName: string;
   dateOfBirthday: Date;
@@ -24,4 +22,7 @@ export class ProfileUserDomain {
   profilePhotoLink: string;
   user: UserDomain;
   userId: number;
+  async setUser(user: UserDomain): Promise<void> {
+    this.user = user;
+  }
 }

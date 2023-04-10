@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserDomain } from '../../../../types/domain/user.domain';
 import { MailService } from '../../../../../adapters/mail/mail.service';
 import { AuthService } from '../../services/auth.service';
-import { BadRequestException, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
 import { RegistrationInputModel } from '../../../types/auth-input.models';
 
@@ -21,19 +21,12 @@ export class RegistrationUseCase
     private mailService: MailService,
     @Inject(USERS_REPO) private usersRepository: IUsersRepo,
   ) {}
-  async execute(command: RegistrationCommand): Promise<string> {
+  async execute(command: RegistrationCommand): Promise<void> {
     const { username, email, password } = command.userDto;
-    // TODO: условие возможно лишнее, продумать поиск по юзернейму или емайлу
-    const foundUser = await this.authService.findOneByFilter({ email: email });
-    if (foundUser && foundUser.credInfo.isActivated)
-      throw new BadRequestException({
-        message: [
-          {
-            field: 'email',
-            message: 'email already used',
-          },
-        ],
-      });
+    const foundUser = await this.authService.findOneByFilter({
+      username: username,
+      email: email,
+    });
     const passwordHash = await this.authService.getPassHash(password);
     const user = new UserDomain({
       username,

@@ -16,14 +16,14 @@ export class CheckUserNameEmailInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Promise<Observable<any>> {
     const req = context.switchToHttp().getRequest();
-    let loginInvalid = false;
+    let usernameInvalid = false;
     let emailInvalid = false;
 
     let user = await this.authService.findOneByFilter({
       username: req.body.username,
       credInfo: { isActivated: true },
     });
-    if (user) loginInvalid = true;
+    if (user) usernameInvalid = true;
 
     user = await this.authService.findOneByFilter({
       email: req.body.email,
@@ -31,12 +31,12 @@ export class CheckUserNameEmailInterceptor implements NestInterceptor {
     });
     if (user) emailInvalid = true;
 
-    if (loginInvalid && emailInvalid)
+    if (usernameInvalid && emailInvalid)
       throw new BadRequestException({
         message: [
           {
-            field: 'login',
-            message: 'login already used',
+            field: 'username',
+            message: 'username already used',
           },
           {
             field: 'email',
@@ -44,12 +44,12 @@ export class CheckUserNameEmailInterceptor implements NestInterceptor {
           },
         ],
       });
-    else if (loginInvalid)
+    else if (usernameInvalid)
       throw new BadRequestException({
         message: [
           {
-            field: 'login',
-            message: 'login already used',
+            field: 'username',
+            message: 'username already used',
           },
         ],
       });
