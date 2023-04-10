@@ -5,31 +5,30 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { AuthService } from '../../application/services/auth.service';
+import { AuthService } from '../../../auth/application/services/auth.service';
 import { Observable } from 'rxjs';
+import RequestWithUser from '../../../types/interfaces/request-with-user.interface';
 
 @Injectable()
-export class CheckEmailInterceptor implements NestInterceptor {
+export class CheckUserNameInterceptor implements NestInterceptor {
   constructor(private authService: AuthService) {}
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    const req = context.switchToHttp().getRequest();
+    const req: RequestWithUser = context.switchToHttp().getRequest();
     const user = await this.authService.findOneByFilter({
-      email: req.body.email,
-      credInfo: { isActivated: true },
+      username: req.body.username,
     });
-    if (user)
+    if (user && user.id !== req.user.userId)
       throw new BadRequestException({
         message: [
           {
-            field: 'email',
-            message: 'email already used',
+            field: 'username',
+            message: 'username already used',
           },
         ],
       });
-
     return next.handle().pipe();
   }
 }

@@ -48,11 +48,11 @@ describe('AppController', () => {
       const sendEmail = jest.spyOn(mailService, 'sendEmail')
       
       await request(server).post('/auth/registration')
-        .send({email: 'nickarbuzov@yandex.by', password: password})
+        .send({username: 'Nickolay', email: 'nickarbuzov@yandex.by', password: password})
         .expect(204)
       
       await request(server).post('/auth/registration')
-        .send({email: 'nickarbuzov@yandex.by', password: password})
+        .send({username: 'Nickolay', email: 'nickarbuzov@yandex.by', password: password})
         .expect(204)
 
       expect(mailService.sendEmail).toBeCalled()
@@ -81,7 +81,7 @@ describe('AppController', () => {
     it('should try login user with confirm-profile and without confirm-profile', async () => {
       
       await request(server).post('/auth/login')
-        .send({email: 'nickarbuzov@yandex.by', password: password})
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: password})
         .expect(401)
       
       await request(server).post('/auth/registration-confirmation')
@@ -89,7 +89,7 @@ describe('AppController', () => {
         .expect(400)
       
       await request(server).post('/auth/login')
-        .send({email: 'nickarbuzov@yandex.by', password: password})
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: password})
         .expect(401)
 
       await request(server).post('/auth/registration-confirmation')
@@ -101,7 +101,7 @@ describe('AppController', () => {
         .expect(204)
  
       const res = await request(server).post('/auth/login')
-        .send({email: 'nickarbuzov@yandex.by', password: password})
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: password})
         .expect(200)
       accessToken = res.body.accessToken
       refreshToken = res.header['set-cookie']
@@ -147,11 +147,11 @@ describe('AppController', () => {
     it('should try to login with old password and new password', async () => {
 
       await request(server).post('/auth/login')
-        .send({email: 'nickarbuzov@yandex.by', password: password})
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: password})
         .expect(401)
       
       const res = await request(server).post('/auth/login')
-        .send({email: 'nickarbuzov@yandex.by', password: newPassword})
+        .send({emailOrUsername: 'nickarbuzov@yandex.by', password: newPassword})
         .expect(200)
 
       accessToken = res.body.accessToken
@@ -164,14 +164,14 @@ describe('AppController', () => {
       await request(server).get('/auth/me').expect(401)
       
       await request(server).get('/auth/me')
-        .set('Authorization', `Bearer ${accessToken}`)
+        .set('Cookie', refreshToken)
+        .expect(200)
 
     });
 
     it('should try to refresh-tokens, by valid token and not valid token', async () => {
 
       await request(server).post('/auth/refresh-token').expect(401)
-
       const res = await request(server).post('/auth/refresh-token')
         .set('Cookie', refreshToken)
         .expect(200)

@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LoginCommand } from './commands/login.command';
 import { JWT } from '../../../../../helpers/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../services/auth.service';
@@ -10,9 +9,15 @@ import {
   TOKEN_INFO_REPO,
 } from '../../../types/interfaces/i-tokens-info.repo';
 import { TokenInfoDomain } from '../../../../types/domain/token-info.domain';
+import { TokensType } from '../../../types/tokens.type';
 
-class TokensType {}
-
+export class LoginCommand {
+  constructor(
+    public readonly userId: number,
+    public readonly deviceName: string,
+    public readonly ip: string,
+  ) {}
+}
 @CommandHandler(LoginCommand)
 export class LoginUseCase implements ICommandHandler<LoginCommand> {
   constructor(
@@ -27,12 +32,12 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     const { userId, deviceName, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn: this.configService.get('ACCESS_PERIOD') },
+      { expiresIn: `${Number(this.configService.get('ACCESS_PERIOD'))}s` },
     );
     const deviceId = uuidv4();
     const refreshToken = this.jwtService.sign(
       { userId: userId, deviceId: deviceId },
-      { expiresIn: this.configService.get('REFRESH_PERIOD') },
+      { expiresIn: `${Number(this.configService.get('REFRESH_PERIOD'))}s` },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
     const session = new TokenInfoDomain({

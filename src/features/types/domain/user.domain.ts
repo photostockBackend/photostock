@@ -14,11 +14,13 @@ export enum emailRecoveryFlag {
 export class UserDomain {
   constructor(private userDto: UserCreateType) {
     this.credInfo = new CredInfoUserDomain(userDto.passwordHash);
+    this.username = userDto.username;
     this.email = userDto.email;
     this.createdAt = new Date().toISOString();
   }
 
   id: number;
+  username: string;
   email: string;
   createdAt: string;
   credInfo: CredInfoUserDomain;
@@ -48,6 +50,7 @@ export class UserDomain {
   async setAll(userDto: FoundUserType) {
     this.id = userDto.id;
     this.credInfo.passwordHash = userDto.credInfo.passwordHash;
+    this.username = userDto.username;
     this.email = userDto.email;
     this.createdAt = userDto.createdAt;
     this.credInfo.id = userDto.credInfo.id;

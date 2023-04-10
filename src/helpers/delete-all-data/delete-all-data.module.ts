@@ -5,11 +5,7 @@ import { PrismaModule } from '../../database/prisma.module';
 
 @Module({
   controllers: [AllDataController],
-  imports: [
-    PrismaModule,
-  ],
-  providers: [
-    AllDataService,
-  ],
+  imports: [PrismaModule],
+  providers: [AllDataService],
 })
 export class AllDataModule {}

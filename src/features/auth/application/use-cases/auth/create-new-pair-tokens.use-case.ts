@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CreateNewPairTokensCommand } from './commands/create-new-pair-tokens.command';
 import { JWT } from '../../../../../helpers/jwt';
 import { AuthService } from '../../services/auth.service';
 import {
@@ -10,6 +9,13 @@ import {
 } from '../../../types/interfaces/i-tokens-info.repo';
 import { TokensType } from '../../../types/tokens.type';
 
+export class CreateNewPairTokensCommand {
+  constructor(
+    public readonly userId: number,
+    public readonly deviceId: string,
+    public readonly ip: string,
+  ) {}
+}
 @CommandHandler(CreateNewPairTokensCommand)
 export class CreateNewPairTokensUseCase
   implements ICommandHandler<CreateNewPairTokensCommand>
@@ -24,11 +30,11 @@ export class CreateNewPairTokensUseCase
     const { userId, deviceId, ip } = command;
     const accessToken = this.jwtService.sign(
       { userId: userId },
-      { expiresIn: this.configService.get('ACCESS_PERIOD') },
+      { expiresIn: `${Number(this.configService.get('ACCESS_PERIOD'))}s` },
     );
     const refreshToken = this.jwtService.sign(
       { userId: userId, deviceId: deviceId },
-      { expiresIn: this.configService.get('REFRESH_PERIOD') },
+      { expiresIn: `${Number(this.configService.get('REFRESH_PERIOD'))}s` },
     );
     const getPayload = await this.authService.getPayload(refreshToken);
     const session = await this.tokenInfoRepository.findOneByFilter({

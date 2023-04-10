@@ -246,6 +246,68 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/user/profile": {
+        "get": {
+          "operationId": "UserController_getProfileforCurrentUser",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The profile get for current user."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        },
+        "post": {
+          "operationId": "UserController_createProfileForCurrentUser",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "The profile has been successfully created."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        },
+        "put": {
+          "operationId": "UserController_updateProfileForCurrentUser",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "The profile has been successfully updated."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        },
+        "delete": {
+          "operationId": "UserController_deleteProfileForCurrentUser",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "The profile has been successfully deleted."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        }
       }
     },
     "info": {
@@ -295,9 +357,9 @@ window.onload = function() {
         "LoginInputModel": {
           "type": "object",
           "properties": {
-            "email": {
+            "emailOrUsername": {
               "type": "string",
-              "description": "user email"
+              "description": "user name or user email"
             },
             "password": {
               "type": "string",
@@ -305,7 +367,7 @@ window.onload = function() {
             }
           },
           "required": [
-            "email",
+            "emailOrUsername",
             "password"
           ]
         },
@@ -335,6 +397,10 @@ window.onload = function() {
         "RegistrationInputModel": {
           "type": "object",
           "properties": {
+            "username": {
+              "type": "string",
+              "description": "user name"
+            },
             "email": {
               "type": "string",
               "description": "user email"
@@ -347,6 +413,7 @@ window.onload = function() {
             }
           },
           "required": [
+            "username",
             "email",
             "password"
           ]

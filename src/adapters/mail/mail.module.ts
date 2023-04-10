@@ -8,11 +8,11 @@ import { ConfigService } from '@nestjs/config';
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         transport: {
-            service: "gmail",
-            auth: {
-                user: config.get('GMAIL_ACCAUNT'),
-                pass: config.get('GMAIL_PASSWORD'),
-            },
+          service: 'gmail',
+          auth: {
+            user: config.get('GMAIL_ACCAUNT'),
+            pass: config.get('GMAIL_PASSWORD'),
+          },
         },
         defaults: {
           from: `"No Reply" <${config.get('GMAIL_ACCAUNT')}>`,
