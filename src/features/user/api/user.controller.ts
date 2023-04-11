@@ -96,6 +96,7 @@ export class UserController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(CheckUserNameInterceptor)
+  @UseInterceptors(FileInterceptor('file', {}))
   @Put('profile')
   async updateProfileForCurrentUser(
     @Req() req: RequestWithUser,

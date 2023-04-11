@@ -58,6 +58,7 @@ export class UpdateProfileInputModel {
   @Length(1, 30)
   city: string;
 
+  @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 200)

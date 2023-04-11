@@ -53,7 +53,16 @@ describe('AppController', () => {
 
     });
 
-    it('should send file', async () => {
+    it('should get profile', async () => {
+      await request(server).get('/user/profile').expect(401)
+      const res = await request(server).get('/user/profile')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(200)
+      expect(res.body).toStrictEqual({})
+    })
+
+    it('should create profile', async () => {
+      await request(server).post('/user/profile').expect(401)
       const date = new Date().toISOString()
       const res = await request(server).post('/user/profile')
         .set('Content-Type', 'multipart/form-data')
@@ -64,8 +73,59 @@ describe('AppController', () => {
         .field('birthday', date)
         .field('city', 'city')
         .attach('file', path.join(__dirname, './1.jpeg'))
-      expect(res).toBe(0)
+        .expect(204)
+    })
+
+    it('should get profile', async () => {
+      const res = await request(server).get('/user/profile')
+        .set('Authorization', `Bearer ${accessToken}`)
+      expect(res.body).toStrictEqual({
+        aboutMe: '',
+        city: 'city',
+        dateOfBirthday: expect.any(String),
+        name: 'name',
+        profilePhotoLink: expect.any(String),
+        surName: 'surName',
+        username: 'Nickolay',
       })
+    })
+
+    it('should update profile', async () => {
+      await request(server).put('/user/profile').expect(401)
+      const date = new Date().toISOString()
+      const res = await request(server).put('/user/profile')
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('username', 'Nickolay')
+        .field('name', 'newname')
+        .field('surName', 'surName')
+        .field('birthday', date)
+        .field('city', 'city')
+        .field('aboutMe', 'aboutMe')
+        .attach('file', path.join(__dirname, './1.jpeg'))
+        .expect(204)
+    })
+
+    it('should get update-profile', async () => {
+      const res = await request(server).get('/user/profile')
+        .set('Authorization', `Bearer ${accessToken}`)
+      expect(res.body).toStrictEqual({
+        aboutMe: 'aboutMe',
+        city: 'city',
+        dateOfBirthday: expect.any(String),
+        name: 'newname',
+        profilePhotoLink: expect.any(String),
+        surName: 'surName',
+        username: 'Nickolay',
+      })
+    })
+
+    it('should delete profile', async () => {
+      await request(server).delete('/user/profile').expect(401)
+      const res = await request(server).delete('/user/profile')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(204)
+    })
 
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204)
