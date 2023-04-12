@@ -21,7 +21,6 @@ describe('AppController', () => {
 
   describe('tests', () => {
     let code
-    let newCode
     let accessToken
     let refreshToken
     it('should delete all data', async () => {
@@ -59,6 +58,22 @@ describe('AppController', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
       expect(res.body).toStrictEqual({})
+    })
+
+    it('should return error if try update profile before create that', async () => {
+      await request(server).put('/user/profile').expect(401)
+      const date = new Date().toISOString()
+      const res = await request(server).put('/user/profile')
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('username', 'Nickolay')
+        .field('name', 'newname')
+        .field('surName', 'surName')
+        .field('birthday', date)
+        .field('city', 'city')
+        .field('aboutMe', 'aboutMe')
+        .attach('avatar', path.join(__dirname, './1.jpeg'))
+        .expect(400)
     })
 
     it('should create profile', async () => {
@@ -106,7 +121,22 @@ describe('AppController', () => {
         .expect(204)
     })
 
-    it('should get update-profile', async () => {
+    it('should update profile without file', async () => {
+      await request(server).put('/user/profile').expect(401)
+      const date = new Date().toISOString()
+      const res = await request(server).put('/user/profile')
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('username', 'Nickolay')
+        .field('name', 'newname')
+        .field('surName', 'newsurName')
+        .field('birthday', date)
+        .field('city', 'city')
+        .field('aboutMe', 'aboutMe')
+        .expect(204)
+    })
+
+    it('should get updated-profile', async () => {
       const res = await request(server).get('/user/profile')
         .set('Authorization', `Bearer ${accessToken}`)
       expect(res.body).toStrictEqual({
@@ -115,7 +145,7 @@ describe('AppController', () => {
         dateOfBirthday: expect.any(String),
         name: 'newname',
         profilePhotoLink: expect.any(String),
-        surName: 'surName',
+        surName: 'newsurName',
         username: 'Nickolay',
       })
     })
