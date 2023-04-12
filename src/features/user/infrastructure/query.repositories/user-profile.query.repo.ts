@@ -26,6 +26,14 @@ export class UserProfileQueryRepo {
       sql,
     );
     if (!profile.length) return null;
-    return profile[0];
+    return {
+      username: profile[0].username,
+      name: profile[0].name,
+      surName: profile[0].surName,
+      birthday: profile[0].dateOfBirthday,
+      city: profile[0].city,
+      aboutMe: profile[0].aboutMe,
+      profilePhotoLink: profile[0].profilePhotoLink,
+    };
   }
 }
