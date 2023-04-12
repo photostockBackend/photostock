@@ -16,7 +16,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -36,9 +36,11 @@ import { GetProfileUserCommand } from '../application/queries/handlers/get-profi
 export class UserController {
   constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
 
+  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'The profile get for current user.',
+    type: ProfileUserViewModel,
   })
   @ApiResponse({
     status: 401,
@@ -55,6 +57,7 @@ export class UserController {
     return result;
   }
 
+  @ApiBearerAuth()
   @ApiResponse({
     status: 204,
     description: 'The profile has been successfully created.',
@@ -88,9 +91,14 @@ export class UserController {
     return;
   }
 
+  @ApiBearerAuth()
   @ApiResponse({
     status: 204,
     description: 'The profile has been successfully updated.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The profile for update is not exists.',
   })
   @ApiResponse({
     status: 401,
@@ -121,9 +129,14 @@ export class UserController {
     return;
   }
 
+  @ApiBearerAuth()
   @ApiResponse({
     status: 204,
     description: 'The profile has been successfully deleted.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'The profile for update is not exists.',
   })
   @ApiResponse({
     status: 401,

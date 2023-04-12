@@ -63,7 +63,7 @@ describe('AppController', () => {
     it('should return error if try update profile before create that', async () => {
       await request(server).put('/user/profile').expect(401)
       const date = new Date().toISOString()
-      const res = await request(server).put('/user/profile')
+      await request(server).put('/user/profile')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('username', 'Nickolay')
@@ -76,10 +76,17 @@ describe('AppController', () => {
         .expect(400)
     })
 
+    it('should return error if try delete profile before create that', async () => {
+      await request(server).delete('/user/profile').expect(401)
+      await request(server).delete('/user/profile')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(400)
+    })
+
     it('should create profile', async () => {
       await request(server).post('/user/profile').expect(401)
       const date = new Date().toISOString()
-      const res = await request(server).post('/user/profile')
+      await request(server).post('/user/profile')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('username', 'Nickolay')
@@ -108,7 +115,7 @@ describe('AppController', () => {
     it('should update profile', async () => {
       await request(server).put('/user/profile').expect(401)
       const date = new Date().toISOString()
-      const res = await request(server).put('/user/profile')
+      await request(server).put('/user/profile')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('username', 'Nickolay')
@@ -124,7 +131,7 @@ describe('AppController', () => {
     it('should update profile without file', async () => {
       await request(server).put('/user/profile').expect(401)
       const date = new Date().toISOString()
-      const res = await request(server).put('/user/profile')
+      await request(server).put('/user/profile')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('username', 'Nickolay')
@@ -152,7 +159,7 @@ describe('AppController', () => {
 
     it('should delete profile', async () => {
       await request(server).delete('/user/profile').expect(401)
-      const res = await request(server).delete('/user/profile')
+      await request(server).delete('/user/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(204)
     })
