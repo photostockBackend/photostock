@@ -44,6 +44,7 @@
     "class-validator": "0.14.0",
     "cookie-parser": "^1.4.6",
     "date-fns": "^2.29.3",
+    "easy-yandex-s3": "^2.0.0",
     "emailjs-imap-client": "^3.1.0",
     "mailparser": "^3.6.4",
     "mongoose": "^6.10.1",

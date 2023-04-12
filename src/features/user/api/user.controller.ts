@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   MaxFileSizeValidator,
+  NotFoundException,
   ParseFilePipe,
   Post,
   Put,
@@ -46,10 +47,12 @@ export class UserController {
   @UseGuards(BearerAuthGuard)
   @Get('profile')
   async getProfileForCurrentUser(@Req() req: RequestWithUser) {
-    return await this.queryBus.execute<
+    const result = await this.queryBus.execute<
       GetProfileUserCommand,
       Promise<ProfileUserViewModel>
     >(new GetProfileUserCommand(req.user.userId));
+    if (!result) throw new NotFoundException();
+    return result;
   }
 
   @ApiResponse({

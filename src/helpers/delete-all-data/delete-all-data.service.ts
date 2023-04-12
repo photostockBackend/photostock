@@ -10,9 +10,10 @@ export class AllDataService {
   ) {}
 
   async deleteAllData(): Promise<void> {
-    this.filesService.deleteAll()
+    this.filesService.deleteAll();
     await this.prisma.tokenInfoUser.deleteMany();
     await this.prisma.credInfoUser.deleteMany();
+    await this.prisma.profileInfoUser.deleteMany();
     await this.prisma.user.deleteMany();
   }
 }
