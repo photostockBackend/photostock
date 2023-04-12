@@ -72,7 +72,7 @@ describe('AppController', () => {
         .field('surName', 'surName')
         .field('birthday', date)
         .field('city', 'city')
-        .attach('file', path.join(__dirname, './1.jpeg'))
+        .attach('avatar', path.join(__dirname, './1.jpeg'))
         .expect(204)
     })
 
@@ -102,7 +102,7 @@ describe('AppController', () => {
         .field('birthday', date)
         .field('city', 'city')
         .field('aboutMe', 'aboutMe')
-        .attach('file', path.join(__dirname, './1.jpeg'))
+        .attach('avatar', path.join(__dirname, './1.jpeg'))
         .expect(204)
     })
 

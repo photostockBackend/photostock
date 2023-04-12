@@ -63,7 +63,7 @@ export class UserController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(CheckUserNameInterceptor)
-  @UseInterceptors(FileInterceptor('file', {}))
+  @UseInterceptors(FileInterceptor('avatar', {}))
   @Post('profile')
   async createProfileForCurrentUser(
     @Req() req: RequestWithUser,
@@ -96,7 +96,7 @@ export class UserController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(CheckUserNameInterceptor)
-  @UseInterceptors(FileInterceptor('file', {}))
+  @UseInterceptors(FileInterceptor('avatar', {}))
   @Put('profile')
   async updateProfileForCurrentUser(
     @Req() req: RequestWithUser,

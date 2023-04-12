@@ -29,7 +29,7 @@ export class CreateProfileInputModel {
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
-  @Length(1, 200)
+  @Length(0, 200)
   aboutMe: string;
 }
 
@@ -61,6 +61,6 @@ export class UpdateProfileInputModel {
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
-  @Length(1, 200)
+  @Length(0, 200)
   aboutMe: string;
 }
