@@ -35,10 +35,10 @@ export class UpdateProfileUseCase
       command.updateProfileInputModel;
     const profile = await this.profileRepository.findByUserId(command.userId);
     const user = await this.authService.findOneByFilter({ id: command.userId });
-    const link = await this.filesService.saveAvatar(
-      command.userId,
-      command.file,
-    );
+    let link = '';
+    if (command.file) {
+      link = await this.filesService.saveAvatar(command.userId, command.file);
+    }
     await profile.setAllWithoutIdAndUser({
       name,
       surName,

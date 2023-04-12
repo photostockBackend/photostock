@@ -50,8 +50,9 @@ export class CreateProfileUseCase
         ],
       });
     let link = '';
-    if (command.file)
+    if (command.file) {
       link = await this.filesService.saveAvatar(command.userId, command.file);
+    }
     profile = new ProfileUserDomain({
       name,
       surName,
