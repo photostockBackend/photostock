@@ -2,7 +2,7 @@ import { UpdateProfileInputModel } from '../../types/user-profile-input.models';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../adapters/files/files.service';
 import { AuthService } from '../../../auth/application/services/auth.service';
-import { BadRequestException, Inject } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import {
   IProfileUserRepo,
   PROFILE_USER_REPO,

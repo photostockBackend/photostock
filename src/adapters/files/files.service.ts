@@ -44,7 +44,7 @@ export class FilesService {
   
     const { Contents } = await s3.send(new ListObjectsV2Command(listParams));
   
-    if (Contents.length === 0) {
+    if (!Contents || Contents.length === 0) {
       return;
     }
   

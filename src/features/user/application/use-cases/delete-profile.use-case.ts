@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import {
   IProfileUserRepo,
   PROFILE_USER_REPO,
@@ -19,6 +19,16 @@ export class DeleteProfileUseCase
   ) {}
   async execute(command: DeleteProfileCommand): Promise<void> {
     this.filesService.deleteAvatar(command.userId)
-    await this.profileRepository.deleteByUserId(command.userId);
+    const result = await this.profileRepository.deleteByUserId(command.userId);
+    if(!result) {
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'profile',
+            message: 'profile is not exist',
+          },
+        ],
+      });
+    }
   }
 }
