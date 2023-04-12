@@ -272,7 +272,6 @@ export class AuthController {
     return;
   }
 
-  @ApiBearerAuth()
   @ApiResponse({
     status: 200,
     description: 'The user has been successfully identified.',

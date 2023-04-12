@@ -5,5 +5,5 @@ export interface IProfileUserRepo {
   create(profile: ProfileUserDomain): Promise<number>;
   update(profile: ProfileUserDomain): Promise<boolean>;
   findByUserId(userId: number): Promise<ProfileUserDomain | null>;
-  deleteByUserId(userId: number): Promise<void>;
+  deleteByUserId(userId: number): Promise<boolean>;
 }
