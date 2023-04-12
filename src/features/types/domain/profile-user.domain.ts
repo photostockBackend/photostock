@@ -31,7 +31,7 @@ export class ProfileUserDomain {
     this.surName = profileDto.surName;
     this.dateOfBirthday = profileDto.dateOfBirthday;
     this.city = profileDto.city;
-    this.aboutMe = profileDto.aboutMe;
+    this.aboutMe = profileDto.aboutMe || '';
     this.profilePhotoLink = profileDto.profilePhotoLink;
   }
 }
