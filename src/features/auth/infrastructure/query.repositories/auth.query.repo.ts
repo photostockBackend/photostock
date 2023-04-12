@@ -11,7 +11,8 @@ export class AuthQueryRepo {
     const sql = format(
       `SELECT
                 "id" as "userId",
-                "email"
+                "email",
+                "username"
                 FROM "User"
                 WHERE "id" = %1$s;`,
       userId,
