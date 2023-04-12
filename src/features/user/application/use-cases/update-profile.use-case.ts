@@ -2,7 +2,7 @@ import { UpdateProfileInputModel } from '../../types/user-profile-input.models';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../adapters/files/files.service';
 import { AuthService } from '../../../auth/application/services/auth.service';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import {
   IProfileUserRepo,
   PROFILE_USER_REPO,
@@ -34,6 +34,15 @@ export class UpdateProfileUseCase
     const { username, name, surName, birthday, city, aboutMe } =
       command.updateProfileInputModel;
     const profile = await this.profileRepository.findByUserId(command.userId);
+    if (profile)
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'profile',
+            message: 'profile is not exist',
+          },
+        ],
+      });
     const user = await this.authService.findOneByFilter({ id: command.userId });
     let link = '';
     if (command.file) {
