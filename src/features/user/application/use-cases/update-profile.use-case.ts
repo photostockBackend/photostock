@@ -34,7 +34,7 @@ export class UpdateProfileUseCase
     const { username, name, surName, birthday, city, aboutMe } =
       command.updateProfileInputModel;
     const profile = await this.profileRepository.findByUserId(command.userId);
-    if (profile)
+    if (!profile)
       throw new BadRequestException({
         message: [
           {
