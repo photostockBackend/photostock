@@ -56,8 +56,7 @@ describe('AppController', () => {
       await request(server).get('/user/profile').expect(401)
       const res = await request(server).get('/user/profile')
         .set('Authorization', `Bearer ${accessToken}`)
-        .expect(200)
-      expect(res.body).toStrictEqual({})
+        .expect(404)
     })
 
     it('should return error if try update profile before create that', async () => {

@@ -46,6 +46,10 @@ export class UserController {
     status: 401,
     description: 'The user not identified.',
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Profile for current user doesnt exists.',
+  })
   @UseGuards(BearerAuthGuard)
   @Get('profile')
   async getProfileForCurrentUser(@Req() req: RequestWithUser) {

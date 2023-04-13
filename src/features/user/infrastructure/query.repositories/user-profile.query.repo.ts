@@ -19,7 +19,7 @@ export class UserProfileQueryRepo {
                 FROM "ProfileInfoUser"
                 JOIN "User"
                 ON "User"."id" = %1$s
-                WHERE "ProfileInfoUser"."id" = %1$s;`,
+                WHERE "ProfileInfoUser"."userId" = %1$s;`,
       userId,
     );
     const profile = await this.prisma.$queryRawUnsafe<ProfileUserViewModel[]>(
@@ -30,7 +30,7 @@ export class UserProfileQueryRepo {
       username: profile[0].username,
       name: profile[0].name,
       surName: profile[0].surName,
-      birthday: profile[0].dateOfBirthday,
+      dateOfBirthday: profile[0].dateOfBirthday,
       city: profile[0].city,
       aboutMe: profile[0].aboutMe,
       profilePhotoLink: profile[0].profilePhotoLink,
