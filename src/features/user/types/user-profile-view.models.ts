@@ -8,7 +8,7 @@ export class ProfileUserViewModel {
   @ApiProperty()
   surName: string;
   @ApiProperty()
-  dateOfBirthday: Date;
+  birthday: Date;
   @ApiProperty()
   city: string;
   @ApiProperty()
