@@ -1,4 +1,4 @@
-import { UserDomain } from '../../../types/domain/user.domain';
+import { UserDomain } from '../../../../core/domain/user.domain';
 import { FindFilterUserType } from '../find-filter-user.type';
 
 export const USERS_REPO = 'USERS REPO';

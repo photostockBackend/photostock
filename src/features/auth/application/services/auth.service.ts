@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UserDomain } from '../../../types/domain/user.domain';
+import { UserDomain } from '../../../../core/domain/user.domain';
 import {
   ITokensInfoRepo,
   TOKEN_INFO_REPO,

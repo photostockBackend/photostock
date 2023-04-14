@@ -1,7 +1,7 @@
-import {Injectable} from '@nestjs/common';
-import {PrismaService} from '../../../../database/prisma.service';
-import {UserDomain} from '../../../types/domain/user.domain';
-import {IProfileUserRepo} from '../../types/interfaces/i-profile-user.repo';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../../../database/prisma.service';
+import { UserDomain } from '../../../../core/domain/user.domain';
+import { IProfileUserRepo } from '../../types/interfaces/i-profile-user.repo';
 
 @Injectable()
 export class UserProfileCommandRepo implements IProfileUserRepo {

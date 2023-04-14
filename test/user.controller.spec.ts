@@ -1,8 +1,8 @@
-import {INestApplication} from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import {createAppandServerForTests} from './utils/app';
+import { createAppandServerForTests } from './utils/app';
 import * as path from 'path';
-import {MailService} from '../src/adapters/mail/mail.service';
+import { MailService } from '../src/adapters/mail/mail.service';
 
 jest.setTimeout(60000);
 describe('AppController', () => {
@@ -59,47 +59,31 @@ describe('AppController', () => {
       await request(server).get('/user/profile').expect(401);
       const res = await request(server)
         .get('/user/profile')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .expect(404);
+        .set('Authorization', `Bearer ${accessToken}`);
+      expect(res.body).toStrictEqual({
+        username: 'Nickolay',
+        firstName: null,
+        lastName: null,
+        birthday: null,
+        city: null,
+        aboutMe: null,
+        profilePhotoLink: null,
+      });
     });
 
-    it('should return error if try update profile before create that', async () => {
+    it('should update profile', async () => {
       await request(server).put('/user/profile').expect(401);
-      const date = new Date().toISOString();
+      const date = '01.01.2000';
       await request(server)
         .put('/user/profile')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('username', 'Nickolay')
-        .field('name', 'newname')
-        .field('surName', 'surName')
+        .field('firstName', 'newname')
+        .field('lastName', 'surName')
         .field('birthday', date)
         .field('city', 'city')
         .field('aboutMe', 'aboutMe')
-        .attach('avatar', path.join(__dirname, './1.jpeg'))
-        .expect(400);
-    });
-
-    it('should return error if try delete profile before create that', async () => {
-      await request(server).delete('/user/profile').expect(401);
-      await request(server)
-        .delete('/user/profile')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .expect(400);
-    });
-
-    it('should create profile', async () => {
-      await request(server).post('/user/profile').expect(401);
-      const date = new Date().toISOString();
-      await request(server)
-        .post('/user/profile')
-        .set('Content-Type', 'multipart/form-data')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .field('username', 'Nickolay')
-        .field('name', 'name')
-        .field('surName', 'surName')
-        .field('birthday', date)
-        .field('city', 'city')
         .attach('avatar', path.join(__dirname, './1.jpeg'))
         .expect(204);
     });
@@ -109,28 +93,28 @@ describe('AppController', () => {
         .get('/user/profile')
         .set('Authorization', `Bearer ${accessToken}`);
       expect(res.body).toStrictEqual({
-        aboutMe: '',
+        aboutMe: 'aboutMe',
         city: 'city',
         birthday: expect.any(String),
-        name: 'name',
+        firstName: 'newname',
         profilePhotoLink: expect.any(String),
-        surName: 'surName',
+        lastName: 'surName',
         username: 'Nickolay',
       });
     });
 
     it('should update profile', async () => {
       await request(server).put('/user/profile').expect(401);
-      const date = new Date().toISOString();
+      const date = '10.10.2010';
       await request(server)
         .put('/user/profile')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('username', 'Nickolay')
-        .field('name', 'newname')
-        .field('surName', 'surName')
+        .field('firstName', 'newnewname')
+        .field('lastName', 'newnewsurName')
         .field('birthday', date)
-        .field('city', 'city')
+        .field('city', 'newcity')
         .field('aboutMe', 'aboutMe')
         .attach('avatar', path.join(__dirname, './1.jpeg'))
         .expect(204);
@@ -138,14 +122,14 @@ describe('AppController', () => {
 
     it('should update profile without file', async () => {
       await request(server).put('/user/profile').expect(401);
-      const date = new Date().toISOString();
+      const date = '20.20.2020';
       await request(server)
         .put('/user/profile')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('username', 'Nickolay')
-        .field('name', 'newname')
-        .field('surName', 'newsurName')
+        .field('firstName', 'newname')
+        .field('lastName', 'newsurName')
         .field('birthday', date)
         .field('city', 'city')
         .field('aboutMe', 'aboutMe')
@@ -160,19 +144,11 @@ describe('AppController', () => {
         aboutMe: 'aboutMe',
         city: 'city',
         birthday: expect.any(String),
-        name: 'newname',
+        firstName: 'newname',
         profilePhotoLink: expect.any(String),
-        surName: 'newsurName',
+        lastName: 'newsurName',
         username: 'Nickolay',
       });
-    });
-
-    it('should delete profile', async () => {
-      await request(server).delete('/user/profile').expect(401);
-      await request(server)
-        .delete('/user/profile')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .expect(204);
     });
 
     it('should delete all data', async () => {

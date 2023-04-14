@@ -1,12 +1,12 @@
 import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { UserCreateType } from '../../auth/types/user.types';
+import { UserCreateType } from '../../features/auth/types/user.types';
 import { CredInfoUserDomain } from './cred-info-user.domain';
 import { TokenInfoDomain } from './token-info.domain';
-import { FoundUserType } from '../../auth/types/found-user.type';
+import { FoundUserType } from '../../features/auth/types/found-user.type';
 import { ProfileUserDomain } from './profile-user.domain';
-import { ProfileUserCreateType } from '../../user-profile/types/profile-user-create.type';
+import { ProfileUserCreateType } from '../../features/user-profile/types/profile-user-create.type';
 
 export enum emailRecoveryFlag {
   email = 'isActivated',

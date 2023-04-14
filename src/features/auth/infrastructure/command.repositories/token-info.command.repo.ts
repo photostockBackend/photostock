@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
-import { TokenInfoDomain } from '../../../types/domain/token-info.domain';
+import { TokenInfoDomain } from '../../../../core/domain/token-info.domain';
 import { ITokensInfoRepo } from '../../types/interfaces/i-tokens-info.repo';
 import { FindFilterTokenInfoType } from '../../types/find-filter-token-info.type';
 import { DeleteFilterTokenInfoType } from '../../types/delete-filter-token-info.type';

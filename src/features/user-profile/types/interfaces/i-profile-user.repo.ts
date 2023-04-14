@@ -1,4 +1,4 @@
-import { UserDomain } from '../../../types/domain/user.domain';
+import { UserDomain } from '../../../../core/domain/user.domain';
 
 export const PROFILE_USER_REPO = 'PROFILE USER REPO';
 export interface IProfileUserRepo {

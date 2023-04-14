@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthService } from '../../services/auth.service';
 import { Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
-import { emailRecoveryFlag } from '../../../../types/domain/user.domain';
+import { emailRecoveryFlag } from '../../../../../core/domain/user.domain';
 
 export class ConfirmRegistrationCommand {
   constructor(public readonly code: string) {}

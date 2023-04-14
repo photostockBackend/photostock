@@ -1,4 +1,4 @@
-import { TokenInfoDomain } from '../../../types/domain/token-info.domain';
+import { TokenInfoDomain } from '../../../../core/domain/token-info.domain';
 import { FindFilterTokenInfoType } from '../find-filter-token-info.type';
 import { DeleteFilterTokenInfoType } from '../delete-filter-token-info.type';
 

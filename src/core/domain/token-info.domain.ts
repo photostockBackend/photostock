@@ -1,7 +1,7 @@
 import {
   TokenInfoCreateDtoType,
   TokenInfoUpdateDto,
-} from '../../auth/types/token-info.types';
+} from '../../features/auth/types/token-info.types';
 import { UserDomain } from './user.domain';
 
 export class TokenInfoDomain {
