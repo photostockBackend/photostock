@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../../database/prisma.service';
-import { UserDomain } from '../../../types/domain/user.domain';
-import { IProfileUserRepo } from '../../types/interfaces/i-profile-user.repo';
+import {Injectable} from '@nestjs/common';
+import {PrismaService} from '../../../../database/prisma.service';
+import {UserDomain} from '../../../types/domain/user.domain';
+import {IProfileUserRepo} from '../../types/interfaces/i-profile-user.repo';
 
 @Injectable()
 export class UserProfileCommandRepo implements IProfileUserRepo {
@@ -39,18 +39,5 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
     await user.setAll(foundUser);
     await user.setProfile(foundUser.profileInfo);
     return user;
-  }
-  async deleteByUserId(userId: number): Promise<boolean> {
-    try {
-      await this.prisma.profileInfoUser.delete({
-        where: {
-          userId: userId,
-        },
-      });
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
   }
 }

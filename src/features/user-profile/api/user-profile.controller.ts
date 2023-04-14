@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   FileTypeValidator,
   Get,
   HttpCode,
@@ -14,17 +13,16 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {CommandBus, QueryBus} from '@nestjs/cqrs';
+import {ApiBearerAuth, ApiResponse, ApiTags} from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateProfileInputModel } from '../types/user-profile-input.models';
-import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
-import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
-import { DeleteProfileCommand } from '../application/use-cases/delete-profile.use-case';
-import { ProfileUserViewModel } from '../types/user-profile-view.models';
-import { GetProfileUserCommand } from '../application/queries/handlers/get-profile-for-user.handler';
+import {BearerAuthGuard} from '../../auth/api/guards/strategies/jwt.strategy';
+import {FileInterceptor} from '@nestjs/platform-express';
+import {UpdateProfileInputModel} from '../types/user-profile-input.models';
+import {CheckUserNameInterceptor} from './interceptor/check-user-name.interceptor';
+import {UpdateProfileCommand} from '../application/use-cases/update-profile.use-case';
+import {ProfileUserViewModel} from '../types/user-profile-view.models';
+import {GetProfileUserCommand} from '../application/queries/handlers/get-profile-for-user.handler';
 
 @ApiTags('user')
 @Controller('user')
@@ -91,27 +89,6 @@ export class UserProfileController {
     await this.commandBus.execute(
       new UpdateProfileCommand(req.user.userId, file, updateProfileInputModel),
     );
-    return;
-  }
-
-  @ApiBearerAuth()
-  @ApiResponse({
-    status: 204,
-    description: 'The profile has been successfully deleted.',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'The profile for update is not exists.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'The user-profile not identified.',
-  })
-  @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
-  @Delete('profile')
-  async deleteProfileForCurrentUser(@Req() req: RequestWithUser) {
-    await this.commandBus.execute(new DeleteProfileCommand(req.user.userId));
     return;
   }
 }
