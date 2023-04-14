@@ -23,6 +23,9 @@ export class AuthCommandRepo implements IUsersRepo {
             recoveryIsUsed: user.credInfo.recoveryIsUsed,
           },
         },
+        profileInfo: {
+          create: {},
+        },
       },
     });
     return result.id;

@@ -8,7 +8,6 @@ import {
   MaxFileSizeValidator,
   NotFoundException,
   ParseFilePipe,
-  Post,
   Put,
   Req,
   UploadedFile,
@@ -20,12 +19,8 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  CreateProfileInputModel,
-  UpdateProfileInputModel,
-} from '../types/user-profile-input.models';
+import { UpdateProfileInputModel } from '../types/user-profile-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
-import { CreateProfileCommand } from '../application/use-cases/create-profile.use-case';
 import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
 import { DeleteProfileCommand } from '../application/use-cases/delete-profile.use-case';
 import { ProfileUserViewModel } from '../types/user-profile-view.models';
@@ -61,7 +56,7 @@ export class UserController {
     return result;
   }
 
-  @ApiBearerAuth()
+  /*  @ApiBearerAuth()
   @ApiResponse({
     status: 204,
     description: 'The profile has been successfully created.',
@@ -93,7 +88,7 @@ export class UserController {
       new CreateProfileCommand(req.user.userId, file, createProfileInputModel),
     );
     return;
-  }
+  }*/
 
   @ApiBearerAuth()
   @ApiResponse({

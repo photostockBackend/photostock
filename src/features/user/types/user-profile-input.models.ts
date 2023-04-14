@@ -19,13 +19,13 @@ export class CreateProfileInputModel {
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
-  name: string;
+  firstName: string;
 
   @ApiProperty({ description: 'user surname' })
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
-  surName: string;
+  lastName: string;
 
   @ApiProperty({ description: 'user birthday' })
   @Transform(dateWithoutTimezone)
@@ -61,13 +61,13 @@ export class UpdateProfileInputModel {
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
-  name: string;
+  firstName: string;
 
   @ApiProperty({ description: 'user surname' })
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
-  surName: string;
+  lastName: string;
 
   @ApiProperty({ description: 'user birthday' })
   @Transform(dateWithoutTimezone)

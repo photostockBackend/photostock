@@ -6,18 +6,19 @@ import { ProfileUserUpdateType } from '../../user/types/profile-user-update.type
 @Injectable()
 export class ProfileUserDomain {
   constructor(private profileDto: ProfileUserCreateType) {
-    this.name = profileDto.name;
-    this.surName = profileDto.surName;
-    this.dateOfBirthday = profileDto.dateOfBirthday;
+    this.id = profileDto.id;
+    this.firstName = profileDto.firstName;
+    this.lastName = profileDto.lastName;
+    this.birthday = profileDto.birthday;
     this.city = profileDto.city;
-    this.aboutMe = profileDto.aboutMe || '';
-    this.profilePhotoLink = profileDto.profilePhotoLink || '';
+    this.aboutMe = profileDto.aboutMe;
+    this.profilePhotoLink = profileDto.profilePhotoLink;
     this.userId = profileDto.userId;
   }
   id: number;
-  name: string;
-  surName: string;
-  dateOfBirthday: Date;
+  firstName: string;
+  lastName: string;
+  birthday: Date;
   city: string;
   aboutMe: string;
   profilePhotoLink: string;
@@ -27,11 +28,11 @@ export class ProfileUserDomain {
     this.user = user;
   }
   async setAllWithoutIdAndUser(profileDto: ProfileUserUpdateType) {
-    this.name = profileDto.name;
-    this.surName = profileDto.surName;
-    this.dateOfBirthday = profileDto.dateOfBirthday;
-    this.city = profileDto.city;
-    this.aboutMe = profileDto.aboutMe || '';
+    this.firstName = profileDto?.firstName;
+    this.lastName = profileDto?.lastName;
+    this.birthday = profileDto?.birthday;
+    this.city = profileDto?.city;
+    this.aboutMe = profileDto?.aboutMe;
     this.profilePhotoLink = profileDto.profilePhotoLink;
   }
 }

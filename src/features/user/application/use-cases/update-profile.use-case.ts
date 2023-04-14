@@ -2,7 +2,7 @@ import { UpdateProfileInputModel } from '../../types/user-profile-input.models';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../adapters/files/files.service';
 import { AuthService } from '../../../auth/application/services/auth.service';
-import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import {
   IProfileUserRepo,
   PROFILE_USER_REPO,
@@ -31,35 +31,24 @@ export class UpdateProfileUseCase
     @Inject(USERS_REPO) private usersRepository: IUsersRepo,
   ) {}
   async execute(command: UpdateProfileCommand): Promise<void> {
-    const { username, name, surName, birthday, city, aboutMe } =
+    const { username, firstName, lastName, birthday, city, aboutMe } =
       command.updateProfileInputModel;
-    const profile = await this.profileRepository.findByUserId(command.userId);
-    if (!profile)
-      throw new BadRequestException({
-        message: [
-          {
-            field: 'profile',
-            message: 'profile is not exist',
-          },
-        ],
-      });
-    const user = await this.authService.findOneByFilter({ id: command.userId });
-    let link = '';
+    const user = await this.profileRepository.findUserWithProfileByUserId(
+      command.userId,
+    );
+    let link = user.profile.profilePhotoLink;
     if (command.file) {
       link = await this.filesService.saveAvatar(command.userId, command.file);
     }
-    await profile.setAllWithoutIdAndUser({
-      name,
-      surName,
-      dateOfBirthday: birthday,
+    user.username = username;
+    await user.profile.setAllWithoutIdAndUser({
+      firstName,
+      lastName,
+      birthday,
       city,
       aboutMe,
       profilePhotoLink: link,
     });
-    if (username !== user.username) {
-      user.username = username;
-      await this.usersRepository.update(user);
-    }
-    await this.profileRepository.update(profile);
+    await this.profileRepository.update(user);
   }
 }

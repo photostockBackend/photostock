@@ -42,12 +42,12 @@ model TokenInfoUser {
 
 model ProfileInfoUser {
   id                Int               @id @default(autoincrement())
-  name              String            
-  surName           String
-  dateOfBirthday    DateTime
-  city              String
-  aboutMe           String
-  profilePhotoLink  String  
+  firstName         String?
+  lastName          String?
+  birthday          DateTime?
+  city              String?
+  aboutMe           String?
+  profilePhotoLink  String?
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               @unique
 }

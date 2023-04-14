@@ -1,7 +1,7 @@
 export type ProfileUserUpdateType = {
-  name: string;
-  surName: string;
-  dateOfBirthday: Date;
+  firstName: string;
+  lastName: string;
+  birthday: Date;
   city: string;
   aboutMe: string;
   profilePhotoLink: string;

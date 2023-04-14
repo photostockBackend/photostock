@@ -1,9 +1,10 @@
 export type ProfileUserCreateType = {
-  name?: string;
-  surName?: string;
-  dateOfBirthday?: Date;
-  city?: string;
-  aboutMe?: string;
-  profilePhotoLink?: string;
+  id: number;
+  firstName: string;
+  lastName: string;
+  birthday: Date;
+  city: string;
+  aboutMe: string;
+  profilePhotoLink: string;
   userId: number;
 };
