@@ -1,10 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ResendEmailCommand } from './commands/resend-email.command';
 import { MailService } from '../../../../../adapters/mail/mail.service';
 import { AuthService } from '../../services/auth.service';
 import { Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
 
+export class ResendEmailCommand {
+  constructor(
+    public readonly email: string,
+    public readonly frontendAddress: string,
+  ) {}
+}
 @CommandHandler(ResendEmailCommand)
 export class ResendEmailUseCase implements ICommandHandler<ResendEmailCommand> {
   constructor(
@@ -19,10 +24,10 @@ export class ResendEmailUseCase implements ICommandHandler<ResendEmailCommand> {
     await user.updCode();
     if (await user.getEmailIsConfirmed()) return false;
     await this.mailService.sendEmail(
-      command.frontendAdress,
+      command.frontendAddress,
       user.email,
       user.credInfo.code,
-      'confirm-registration?code',
+      'auth/confirm-registration?code',
     );
     await this.usersRepository.update(user);
     return true;

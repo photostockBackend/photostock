@@ -1,7 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { AuthMeCommand } from '../commands/auth-me.command';
 import { AuthQueryRepo } from '../../../../infrastructure/query.repositories/auth.query.repo';
 import { AuthMeViewModel } from '../../../../types/auth-view.models';
+
+export class AuthMeCommand {
+  constructor(public readonly userId: number) {}
+}
 
 @QueryHandler(AuthMeCommand)
 export class AuthMeHandler implements IQueryHandler<AuthMeCommand> {

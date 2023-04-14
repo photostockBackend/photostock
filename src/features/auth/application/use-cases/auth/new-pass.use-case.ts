@@ -1,10 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NewPassCommand } from './commands/new-pass.command';
 import { AuthService } from '../../services/auth.service';
 import { Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
 import { emailRecoveryFlag } from '../../../../types/domain/user.domain';
+import { NewPasswordInputModel } from '../../../types/auth-input.models';
 
+export class NewPassCommand {
+  constructor(public readonly newPassDto: NewPasswordInputModel) {}
+}
 @CommandHandler(NewPassCommand)
 export class NewPassUseCase implements ICommandHandler<NewPassCommand> {
   constructor(

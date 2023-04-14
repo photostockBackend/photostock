@@ -24,11 +24,11 @@
 
 ## Deployment is located on
 
-[Vercel](https://test-backend-dev.vercel.app)
+[Vercel](https://photostock-wine.vercel.app)
 
 ## Swagger-documentation is located on
 
-[Swagger-documentation](https://test-backend-dev.vercel.app/swagger)
+[Swagger-documentation](https://photostock-wine.vercel.app/swagger)
 
 ## Description
 
