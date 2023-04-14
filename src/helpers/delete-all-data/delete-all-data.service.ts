@@ -6,11 +6,9 @@ import { FilesService } from '../../adapters/files/files.service';
 export class AllDataService {
   constructor(
     private prisma: PrismaService,
-    private filesService: FilesService,
   ) {}
 
   async deleteAllData(): Promise<void> {
-    this.filesService.deleteAll();
     await this.prisma.tokenInfoUser.deleteMany();
     await this.prisma.credInfoUser.deleteMany();
     await this.prisma.profileInfoUser.deleteMany();

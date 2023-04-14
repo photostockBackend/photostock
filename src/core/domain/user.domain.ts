@@ -6,7 +6,7 @@ import { CredInfoUserDomain } from './cred-info-user.domain';
 import { TokenInfoDomain } from './token-info.domain';
 import { FoundUserType } from '../../features/auth/types/found-user.type';
 import { ProfileUserDomain } from './profile-user.domain';
-import { ProfileUserCreateType } from '../../features/user-profile/types/profile-user-create.type';
+import { ProfileUserCreateType } from '../../features/user/types/profile-user-create.type';
 
 export enum emailRecoveryFlag {
   email = 'isActivated',

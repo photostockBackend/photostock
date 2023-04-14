@@ -244,7 +244,7 @@ window.onload = function() {
       },
       "/user/profile": {
         "get": {
-          "operationId": "UserController_getProfileForCurrentUser",
+          "operationId": "UserProfileController_getProfileForCurrentUser",
           "parameters": [],
           "responses": {
             "200": {
@@ -259,36 +259,9 @@ window.onload = function() {
             },
             "401": {
               "description": "The user-profile not identified."
-            }
-          },
-          "tags": [
-            "user"
-          ],
-          "security": [
-            {
-              "bearer": []
-            }
-          ]
-        },
-        "post": {
-          "operationId": "UserController_createProfileForCurrentUser",
-          "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateProfileInputModel"
-                }
-              }
-            }
-          },
-          "responses": {
-            "204": {
-              "description": "The profile has been successfully created."
             },
-            "401": {
-              "description": "The user-profile not identified."
+            "404": {
+              "description": "Profile for current user-profile doesnt exists."
             }
           },
           "tags": [
@@ -301,7 +274,7 @@ window.onload = function() {
           ]
         },
         "put": {
-          "operationId": "UserController_updateProfileForCurrentUser",
+          "operationId": "UserProfileController_updateProfileForCurrentUser",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -316,29 +289,6 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The profile has been successfully updated."
-            },
-            "400": {
-              "description": "The profile for update is not exists."
-            },
-            "401": {
-              "description": "The user-profile not identified."
-            }
-          },
-          "tags": [
-            "user"
-          ],
-          "security": [
-            {
-              "bearer": []
-            }
-          ]
-        },
-        "delete": {
-          "operationId": "UserController_deleteProfileForCurrentUser",
-          "parameters": [],
-          "responses": {
-            "204": {
-              "description": "The profile has been successfully deleted."
             },
             "400": {
               "description": "The profile for update is not exists."
@@ -499,13 +449,13 @@ window.onload = function() {
             "username": {
               "type": "string"
             },
-            "name": {
+            "firstName": {
               "type": "string"
             },
-            "surName": {
+            "lastName": {
               "type": "string"
             },
-            "dateOfBirthday": {
+            "birthday": {
               "format": "date-time",
               "type": "string"
             },
@@ -521,55 +471,12 @@ window.onload = function() {
           },
           "required": [
             "username",
-            "name",
-            "surName",
-            "dateOfBirthday",
-            "city",
-            "aboutMe",
-            "profilePhotoLink"
-          ]
-        },
-        "CreateProfileInputModel": {
-          "type": "object",
-          "properties": {
-            "username": {
-              "type": "string",
-              "description": "user-profile username"
-            },
-            "name": {
-              "type": "string",
-              "description": "user-profile name"
-            },
-            "surName": {
-              "type": "string",
-              "description": "user-profile surname"
-            },
-            "birthday": {
-              "format": "date-time",
-              "type": "string",
-              "description": "user-profile birthday"
-            },
-            "city": {
-              "type": "string",
-              "description": "user-profile city"
-            },
-            "aboutMe": {
-              "type": "string",
-              "description": "user-profile about"
-            },
-            "avatar": {
-              "type": "object",
-              "description": "user-profile avatar"
-            }
-          },
-          "required": [
-            "username",
-            "name",
-            "surName",
+            "firstName",
+            "lastName",
             "birthday",
             "city",
             "aboutMe",
-            "avatar"
+            "profilePhotoLink"
           ]
         },
         "UpdateProfileInputModel": {
@@ -579,11 +486,11 @@ window.onload = function() {
               "type": "string",
               "description": "user-profile username"
             },
-            "name": {
+            "firstName": {
               "type": "string",
               "description": "user-profile name"
             },
-            "surName": {
+            "lastName": {
               "type": "string",
               "description": "user-profile surname"
             },
@@ -607,8 +514,8 @@ window.onload = function() {
           },
           "required": [
             "username",
-            "name",
-            "surName",
+            "firstName",
+            "lastName",
             "birthday",
             "city",
             "aboutMe",
