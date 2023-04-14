@@ -56,40 +56,6 @@ export class UserController {
     return result;
   }
 
-  /*  @ApiBearerAuth()
-  @ApiResponse({
-    status: 204,
-    description: 'The profile has been successfully created.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'The user not identified.',
-  })
-  @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
-  @UseInterceptors(CheckUserNameInterceptor)
-  @UseInterceptors(FileInterceptor('avatar', {}))
-  @Post('profile')
-  async createProfileForCurrentUser(
-    @Req() req: RequestWithUser,
-    @Body() createProfileInputModel: CreateProfileInputModel,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: false,
-        validators: [
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-          new MaxFileSizeValidator({ maxSize: 1024 * 10000 }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-  ) {
-    await this.commandBus.execute(
-      new CreateProfileCommand(req.user.userId, file, createProfileInputModel),
-    );
-    return;
-  }*/
-
   @ApiBearerAuth()
   @ApiResponse({
     status: 204,
