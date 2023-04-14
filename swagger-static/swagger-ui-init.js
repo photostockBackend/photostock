@@ -78,7 +78,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "The user has been successfully logined. Return access-token in response, and refresh-token in cookie",
+              "description": "The user-profile has been successfully logined. Return access-token in response, and refresh-token in cookie",
               "content": {
                 "application/json": {
                   "schema": {
@@ -136,7 +136,7 @@ window.onload = function() {
           },
           "responses": {
             "204": {
-              "description": "The user has been successfully registration-confimated."
+              "description": "The user-profile has been successfully registration-confimated."
             },
             "400": {
               "description": "The confirmation-code is not valid."
@@ -163,10 +163,10 @@ window.onload = function() {
           },
           "responses": {
             "204": {
-              "description": "The user has been successfully registrated."
+              "description": "The user-profile has been successfully registrated."
             },
             "400": {
-              "description": "The user with the given email already exists."
+              "description": "The user-profile with the given email already exists."
             }
           },
           "tags": [
@@ -207,10 +207,10 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "204": {
-              "description": "The user has been successfully logout."
+              "description": "The user-profile has been successfully logout."
             },
             "401": {
-              "description": "The user is not authorized."
+              "description": "The user-profile is not authorized."
             }
           },
           "tags": [
@@ -224,7 +224,7 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The user has been successfully identified.",
+              "description": "The user-profile has been successfully identified.",
               "content": {
                 "application/json": {
                   "schema": {
@@ -234,7 +234,7 @@ window.onload = function() {
               }
             },
             "401": {
-              "description": "The user is not authorized."
+              "description": "The user-profile is not authorized."
             }
           },
           "tags": [
@@ -248,7 +248,7 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The profile get for current user.",
+              "description": "The profile get for current user-profile.",
               "content": {
                 "application/json": {
                   "schema": {
@@ -258,7 +258,7 @@ window.onload = function() {
               }
             },
             "401": {
-              "description": "The user not identified."
+              "description": "The user-profile not identified."
             }
           },
           "tags": [
@@ -288,7 +288,7 @@ window.onload = function() {
               "description": "The profile has been successfully created."
             },
             "401": {
-              "description": "The user not identified."
+              "description": "The user-profile not identified."
             }
           },
           "tags": [
@@ -321,7 +321,7 @@ window.onload = function() {
               "description": "The profile for update is not exists."
             },
             "401": {
-              "description": "The user not identified."
+              "description": "The user-profile not identified."
             }
           },
           "tags": [
@@ -344,7 +344,7 @@ window.onload = function() {
               "description": "The profile for update is not exists."
             },
             "401": {
-              "description": "The user not identified."
+              "description": "The user-profile not identified."
             }
           },
           "tags": [
@@ -378,7 +378,7 @@ window.onload = function() {
           "properties": {
             "email": {
               "type": "string",
-              "description": "user email"
+              "description": "user-profile email"
             }
           },
           "required": [
@@ -407,11 +407,11 @@ window.onload = function() {
           "properties": {
             "emailOrUsername": {
               "type": "string",
-              "description": "user name or user email"
+              "description": "user-profile name or user-profile email"
             },
             "password": {
               "type": "string",
-              "description": "user password"
+              "description": "user-profile password"
             }
           },
           "required": [
@@ -447,15 +447,15 @@ window.onload = function() {
           "properties": {
             "username": {
               "type": "string",
-              "description": "user name"
+              "description": "user-profile name"
             },
             "email": {
               "type": "string",
-              "description": "user email"
+              "description": "user-profile email"
             },
             "password": {
               "type": "string",
-              "description": "user password",
+              "description": "user-profile password",
               "minLength": 6,
               "maxLength": 20
             }
@@ -534,32 +534,32 @@ window.onload = function() {
           "properties": {
             "username": {
               "type": "string",
-              "description": "user username"
+              "description": "user-profile username"
             },
             "name": {
               "type": "string",
-              "description": "user name"
+              "description": "user-profile name"
             },
             "surName": {
               "type": "string",
-              "description": "user surname"
+              "description": "user-profile surname"
             },
             "birthday": {
               "format": "date-time",
               "type": "string",
-              "description": "user birthday"
+              "description": "user-profile birthday"
             },
             "city": {
               "type": "string",
-              "description": "user city"
+              "description": "user-profile city"
             },
             "aboutMe": {
               "type": "string",
-              "description": "user about"
+              "description": "user-profile about"
             },
             "avatar": {
               "type": "object",
-              "description": "user avatar"
+              "description": "user-profile avatar"
             }
           },
           "required": [
@@ -577,32 +577,32 @@ window.onload = function() {
           "properties": {
             "username": {
               "type": "string",
-              "description": "user username"
+              "description": "user-profile username"
             },
             "name": {
               "type": "string",
-              "description": "user name"
+              "description": "user-profile name"
             },
             "surName": {
               "type": "string",
-              "description": "user surname"
+              "description": "user-profile surname"
             },
             "birthday": {
               "format": "date-time",
               "type": "string",
-              "description": "user birthday"
+              "description": "user-profile birthday"
             },
             "city": {
               "type": "string",
-              "description": "user city"
+              "description": "user-profile city"
             },
             "aboutMe": {
               "type": "string",
-              "description": "user about"
+              "description": "user-profile about"
             },
             "avatar": {
               "type": "object",
-              "description": "user avatar"
+              "description": "user-profile avatar"
             }
           },
           "required": [

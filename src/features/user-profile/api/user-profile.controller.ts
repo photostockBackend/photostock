@@ -28,22 +28,22 @@ import { GetProfileUserCommand } from '../application/queries/handlers/get-profi
 
 @ApiTags('user')
 @Controller('user')
-export class UserController {
+export class UserProfileController {
   constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
 
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,
-    description: 'The profile get for current user.',
+    description: 'The profile get for current user-profile.',
     type: ProfileUserViewModel,
   })
   @ApiResponse({
     status: 401,
-    description: 'The user not identified.',
+    description: 'The user-profile not identified.',
   })
   @ApiResponse({
     status: 404,
-    description: 'Profile for current user doesnt exists.',
+    description: 'Profile for current user-profile doesnt exists.',
   })
   @UseGuards(BearerAuthGuard)
   @Get('profile')
@@ -67,7 +67,7 @@ export class UserController {
   })
   @ApiResponse({
     status: 401,
-    description: 'The user not identified.',
+    description: 'The user-profile not identified.',
   })
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
@@ -105,7 +105,7 @@ export class UserController {
   })
   @ApiResponse({
     status: 401,
-    description: 'The user not identified.',
+    description: 'The user-profile not identified.',
   })
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)

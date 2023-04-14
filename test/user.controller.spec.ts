@@ -1,8 +1,8 @@
-import { INestApplication } from '@nestjs/common';
+import {INestApplication} from '@nestjs/common';
 import * as request from 'supertest';
-import { createAppandServerForTests } from './utils/app';
+import {createAppandServerForTests} from './utils/app';
 import * as path from 'path';
-import { MailService } from '../src/adapters/mail/mail.service';
+import {MailService} from '../src/adapters/mail/mail.service';
 
 jest.setTimeout(60000);
 describe('AppController', () => {
@@ -25,7 +25,7 @@ describe('AppController', () => {
       await request(server).delete('/delete-all-data').expect(204);
     });
 
-    it('should registered user, confirmed email and login for get tokens', async () => {
+    it('should registered user-profile, confirmed email and login for get tokens', async () => {
       const mailService = app.get<MailService>(MailService);
       const sendEmail = jest.spyOn(mailService, 'sendEmail');
 

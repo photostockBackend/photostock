@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   LoginInputModel,
   NewPasswordInputModel,
@@ -105,7 +105,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description:
-      'The user has been successfully logined. Return access-token in response, and refresh-token in cookie',
+      'The user-profile has been successfully logined. Return access-token in response, and refresh-token in cookie',
     type: ViewModelToken,
   })
   @ApiResponse({
@@ -122,7 +122,7 @@ export class AuthController {
     >(
       new LoginCommand(
         req.user.userId,
-        String(req.headers['user-agent']),
+        String(req.headers['user-profile-agent']),
         req.ip,
       ),
     );
@@ -173,7 +173,8 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registration-confimated.',
+    description:
+      'The user-profile has been successfully registration-confimated.',
   })
   @ApiResponse({
     status: 400,
@@ -198,11 +199,11 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully registrated.',
+    description: 'The user-profile has been successfully registrated.',
   })
   @ApiResponse({
     status: 400,
-    description: 'The user with the given email already exists.',
+    description: 'The user-profile with the given email already exists.',
   })
   @UseInterceptors(CheckUserNameEmailInterceptor)
   @HttpCode(204)
@@ -254,11 +255,11 @@ export class AuthController {
 
   @ApiResponse({
     status: 204,
-    description: 'The user has been successfully logout.',
+    description: 'The user-profile has been successfully logout.',
   })
   @ApiResponse({
     status: 401,
-    description: 'The user is not authorized.',
+    description: 'The user-profile is not authorized.',
   })
   @UseGuards(RefreshAuthGuard)
   @HttpCode(204)
@@ -274,12 +275,12 @@ export class AuthController {
 
   @ApiResponse({
     status: 200,
-    description: 'The user has been successfully identified.',
+    description: 'The user-profile has been successfully identified.',
     type: AuthMeViewModel,
   })
   @ApiResponse({
     status: 401,
-    description: 'The user is not authorized.',
+    description: 'The user-profile is not authorized.',
   })
   @UseGuards(RefreshAuthGuard)
   @HttpCode(200)

@@ -1,21 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID, Length, Matches } from 'class-validator';
-import { Transform, TransformFnParams } from 'class-transformer';
+import {ApiProperty} from '@nestjs/swagger';
+import {IsString, IsUUID, Length, Matches} from 'class-validator';
+import {Transform, TransformFnParams} from 'class-transformer';
 
 export class RegistrationInputModel {
-  @ApiProperty({ description: 'user name' })
+  @ApiProperty({ description: 'user-profile name' })
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
   readonly username: string;
 
-  @ApiProperty({ description: 'user email' })
+  @ApiProperty({ description: 'user-profile email' })
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Matches(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4}$)/)
   readonly email: string;
 
-  @ApiProperty({ description: 'user password', minLength: 6, maxLength: 20 })
+  @ApiProperty({ description: 'user-profile password', minLength: 6, maxLength: 20 })
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(6, 20)
@@ -23,19 +23,19 @@ export class RegistrationInputModel {
 }
 
 export class LoginInputModel {
-  @ApiProperty({ description: 'user name or user email' })
+  @ApiProperty({ description: 'user-profile name or user-profile email' })
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @IsString()
   emailOrUsername: string;
 
-  @ApiProperty({ description: 'user password' })
+  @ApiProperty({ description: 'user-profile password' })
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @IsString()
   password: string;
 }
 
 export class PasswordRecoveryInputModel {
-  @ApiProperty({ description: 'user email' })
+  @ApiProperty({ description: 'user-profile email' })
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Matches(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4}$)/)

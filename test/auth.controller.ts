@@ -1,7 +1,7 @@
-import { INestApplication } from '@nestjs/common';
+import {INestApplication} from '@nestjs/common';
 import * as request from 'supertest';
-import { createAppandServerForTests } from './utils/app';
-import { MailService } from '../src/adapters/mail/mail.service';
+import {createAppandServerForTests} from './utils/app';
+import {MailService} from '../src/adapters/mail/mail.service';
 
 jest.setTimeout(60000);
 describe('AppController', () => {
@@ -37,7 +37,7 @@ describe('AppController', () => {
       await seedUsers(server)
     });*/
 
-    it('should registered user, and should registered new user, while prev user not confirmed', async () => {
+    it('should registered user-profile, and should registered new user-profile, while prev user-profile not confirmed', async () => {
       const mailService = app.get<MailService>(MailService);
       const sendEmail = jest.spyOn(mailService, 'sendEmail');
 
@@ -81,7 +81,7 @@ describe('AppController', () => {
       newCode = sendEmail.mock.lastCall[2];
     });
 
-    it('should try login user with confirm-profile and without confirm-profile', async () => {
+    it('should try login user-profile with confirm-profile and without confirm-profile', async () => {
       await request(server)
         .post('/auth/login')
         .send({ emailOrUsername: 'nickarbuzov@yandex.by', password: password })
@@ -115,7 +115,7 @@ describe('AppController', () => {
       refreshToken = res.header['set-cookie'];
     });
 
-    it('should try login user with incorrect credentials', async () => {
+    it('should try login user-profile with incorrect credentials', async () => {
       await request(server)
         .post('/auth/login')
         .send({ email: 'incorrect mail', password: password })
