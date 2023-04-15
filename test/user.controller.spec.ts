@@ -21,6 +21,7 @@ describe('AppController', () => {
     let code;
     let accessToken;
     let refreshToken;
+    let postid;
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204);
     });
@@ -149,6 +150,39 @@ describe('AppController', () => {
         lastName: 'newsurName',
         username: 'Nickolay',
       });
+    });
+
+    it('should create post', async () => {
+      await request(server).post('/user/post').expect(401);
+      await request(server).post('/user/post')
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('description', 'description')
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .expect(201);
+    });
+
+    it('should update post', async () => {
+      await request(server).put(`/user/post/${postid}`).expect(401);
+      await request(server).put(`/user/post/${0}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
+      await request(server).put('/user/post')
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('description', 'newdescription')
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .expect(204);
+    });
+
+    it('should delete post', async () => {
+      await request(server).delete(`/user/post/${postid}`).expect(401);
+      await request(server).delete(`/user/post/${0}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(404);
+      await request(server).delete('/user/post')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(204);
     });
 
     it('should delete all data', async () => {

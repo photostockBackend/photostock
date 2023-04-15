@@ -10,9 +10,13 @@ import {UserProfileCommandRepo} from './infrastructure/command.repositories/user
 import {PROFILE_USER_REPO} from './types/interfaces/i-profile-user.repo';
 import {GetProfileForUserHandler} from './application/queries/handlers/get-profile-for-user.handler';
 import {UserProfileQueryRepo} from './infrastructure/query.repositories/user-profile.query.repo';
+import { CreatePostUseCase } from './application/use-cases/create-post.use-case';
+import { UserPostsCommandRepo } from './infrastructure/command.repositories/user-posts.command.repo';
+import { POSTS_USER_REPO } from './types/interfaces/i-posts-user.repo';
 
 const commands = [
   UpdateProfileUseCase,
+  CreatePostUseCase,
 ];
 const queries = [GetProfileForUserHandler];
 const services = [];
@@ -22,6 +26,10 @@ const repositories = [
     useClass: UserProfileCommandRepo,
   },
   UserProfileQueryRepo,
+  {
+    provide: POSTS_USER_REPO,
+    useClass: UserPostsCommandRepo,
+  },
 ];
 const strategies = [];
 const guards = [];

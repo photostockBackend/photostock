@@ -16,6 +16,7 @@ model User {
   credInfo          CredInfoUser?
   tokenInfo         TokenInfoUser[]
   profileInfo       ProfileInfoUser?
+  posts             Posts[]
 }
 
 model CredInfoUser {
@@ -50,4 +51,12 @@ model ProfileInfoUser {
   profilePhotoLink  String?
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               @unique
+}
+
+model Posts {
+  id                Int               @id @default(autoincrement())
+  description       String?
+  postPhotoLink     String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int               
 }

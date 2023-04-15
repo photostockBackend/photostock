@@ -314,7 +314,7 @@ window.onload = function() {
           "requestBody": {
             "required": true,
             "content": {
-              "application/json": {
+              "multipart/from-data": {
                 "schema": {
                   "$ref": "#/components/schemas/CreatePostInputModel"
                 }
@@ -346,7 +346,7 @@ window.onload = function() {
           "requestBody": {
             "required": true,
             "content": {
-              "application/json": {
+              "multipart/from-data": {
                 "schema": {
                   "$ref": "#/components/schemas/UpdatePostInputModel"
                 }
@@ -359,6 +359,9 @@ window.onload = function() {
             },
             "401": {
               "description": "The user not identified."
+            },
+            "404": {
+              "description": "The post for update did not found."
             }
           },
           "tags": [
@@ -379,6 +382,9 @@ window.onload = function() {
             },
             "401": {
               "description": "The user not identified."
+            },
+            "404": {
+              "description": "The post for delete did not found."
             }
           },
           "tags": [
@@ -549,7 +555,7 @@ window.onload = function() {
             "aboutMe": {
               "type": "string"
             },
-            "profilePhotoLink": {
+            "avatar": {
               "type": "string"
             }
           },
@@ -560,7 +566,7 @@ window.onload = function() {
             "birthday",
             "city",
             "aboutMe",
-            "profilePhotoLink"
+            "avatar"
           ]
         },
         "UpdateProfileInputModel": {
@@ -610,16 +616,14 @@ window.onload = function() {
           "type": "object",
           "properties": {
             "description": {
-              "type": "string",
-              "description": "user-post description"
+              "type": "string"
             },
             "postPhoto": {
-              "type": "object",
-              "description": "user-post photo"
+              "type": "string",
+              "format": "binary"
             }
           },
           "required": [
-            "description",
             "postPhoto"
           ]
         },
@@ -627,18 +631,13 @@ window.onload = function() {
           "type": "object",
           "properties": {
             "description": {
-              "type": "string",
-              "description": "user-post description"
+              "type": "string"
             },
             "postPhoto": {
-              "type": "object",
-              "description": "user-post photo"
+              "type": "string",
+              "format": "binary"
             }
-          },
-          "required": [
-            "description",
-            "postPhoto"
-          ]
+          }
         }
       }
     }

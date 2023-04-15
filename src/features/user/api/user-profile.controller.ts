@@ -16,7 +16,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import {CommandBus, QueryBus} from '@nestjs/cqrs';
-import {ApiBearerAuth, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags} from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import {BearerAuthGuard} from '../../auth/api/guards/strategies/jwt.strategy';
 import {FileInterceptor} from '@nestjs/platform-express';
@@ -26,6 +26,7 @@ import {UpdateProfileCommand} from '../application/use-cases/update-profile.use-
 import {ProfileUserViewModel} from '../types/user-profile-view.models';
 import {GetProfileUserCommand} from '../application/queries/handlers/get-profile-for-user.handler';
 import { CreatePostInputModel, UpdatePostInputModel } from '../types/user-post-input.models';
+import { CreatePostCommand } from '../application/use-cases/create-post.use-case';
 
 @ApiTags('user')
 @Controller('user')
@@ -104,6 +105,7 @@ export class UserProfileController {
     status: 401,
     description: 'The user not identified.',
   })
+  @ApiConsumes('multipart/from-data')
   @HttpCode(201)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(FileInterceptor('postPhoto', {}))
@@ -122,7 +124,10 @@ export class UserProfileController {
     )
     file: Express.Multer.File,
   ) {
-
+    console.log('createPostInputModel', createPostInputModel)
+    await this.commandBus.execute(
+      new CreatePostCommand(req.user.userId, file, createPostInputModel),
+    );
     return;
   }
 
@@ -135,6 +140,11 @@ export class UserProfileController {
     status: 401,
     description: 'The user not identified.',
   })
+  @ApiResponse({
+    status: 404,
+    description: 'The post for update did not found.',
+  })
+  @ApiConsumes('multipart/from-data')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(FileInterceptor('postPhoto', {}))
@@ -165,6 +175,10 @@ export class UserProfileController {
   @ApiResponse({
     status: 401,
     description: 'The user not identified.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'The post for delete did not found.',
   })
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
