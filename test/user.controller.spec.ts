@@ -67,7 +67,7 @@ describe('AppController', () => {
         birthday: null,
         city: null,
         aboutMe: null,
-        profilePhotoLink: null,
+        avatar: null,
       });
     });
 
@@ -97,7 +97,7 @@ describe('AppController', () => {
         city: 'city',
         birthday: expect.any(String),
         firstName: 'newname',
-        profilePhotoLink: expect.any(String),
+        avatar: expect.any(String),
         lastName: 'surName',
         username: 'Nickolay',
       });
@@ -145,7 +145,7 @@ describe('AppController', () => {
         city: 'city',
         birthday: expect.any(String),
         firstName: 'newname',
-        profilePhotoLink: expect.any(String),
+        avatar: expect.any(String),
         lastName: 'newsurName',
         username: 'Nickolay',
       });

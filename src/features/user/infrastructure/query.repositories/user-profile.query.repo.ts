@@ -33,7 +33,7 @@ export class UserProfileQueryRepo {
       birthday: profile[0].birthday,
       city: profile[0].city,
       aboutMe: profile[0].aboutMe,
-      profilePhotoLink: profile[0].profilePhotoLink,
+      avatar: profile[0].profilePhotoLink,
     };
   }
 }

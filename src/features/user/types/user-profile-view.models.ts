@@ -14,5 +14,5 @@ export class ProfileUserViewModel {
   @ApiProperty()
   aboutMe: string;
   @ApiProperty()
-  profilePhotoLink: string;
+  avatar: string;
 }
