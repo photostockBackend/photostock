@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   FileTypeValidator,
   Get,
   HttpCode,
   MaxFileSizeValidator,
   NotFoundException,
   ParseFilePipe,
+  Post,
   Put,
   Req,
   UploadedFile,
@@ -23,6 +25,7 @@ import {CheckUserNameInterceptor} from './interceptor/check-user-name.intercepto
 import {UpdateProfileCommand} from '../application/use-cases/update-profile.use-case';
 import {ProfileUserViewModel} from '../types/user-profile-view.models';
 import {GetProfileUserCommand} from '../application/queries/handlers/get-profile-for-user.handler';
+import { CreatePostInputModel, UpdatePostInputModel } from '../types/user-post-input.models';
 
 @ApiTags('user')
 @Controller('user')
@@ -91,4 +94,84 @@ export class UserProfileController {
     );
     return;
   }
+
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 201,
+    description: 'The post has been successfully created.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The user not identified.',
+  })
+  @HttpCode(201)
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(FileInterceptor('postPhoto', {}))
+  @Post('post')
+  async createPostForCurrentUser(
+    @Req() req: RequestWithUser,
+    @Body() createPostInputModel: CreatePostInputModel,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1000 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+
+    return;
+  }
+
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 204,
+    description: 'The post has been successfully updated.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The user not identified.',
+  })
+  @HttpCode(204)
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(FileInterceptor('postPhoto', {}))
+  @Put('post/:id')
+  async updatePostForCurrentUser(
+    @Req() req: RequestWithUser,
+    @Body() updatePostInputModel: UpdatePostInputModel,
+    @UploadedFile(
+      new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+          new MaxFileSizeValidator({ maxSize: 1024 * 1000 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+
+    return;
+  }
+
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 204,
+    description: 'The post has been successfully deleted.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The user not identified.',
+  })
+  @HttpCode(204)
+  @UseGuards(BearerAuthGuard)
+  @Delete('post/:id')
+  async deletePostForCurrentUser() {
+
+    return;
+  }
+
 }

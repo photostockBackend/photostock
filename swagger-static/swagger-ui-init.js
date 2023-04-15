@@ -306,6 +306,90 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/user/post": {
+        "post": {
+          "operationId": "UserProfileController_createPostForCurrentUser",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The post has been successfully created."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/user/post/{id}": {
+        "put": {
+          "operationId": "UserProfileController_updatePostForCurrentUser",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePostInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "The post has been successfully updated."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        },
+        "delete": {
+          "operationId": "UserProfileController_deletePostForCurrentUser",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "The post has been successfully deleted."
+            },
+            "401": {
+              "description": "The user not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
       }
     },
     "info": {
@@ -520,6 +604,40 @@ window.onload = function() {
             "city",
             "aboutMe",
             "avatar"
+          ]
+        },
+        "CreatePostInputModel": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "user-post description"
+            },
+            "postPhoto": {
+              "type": "object",
+              "description": "user-post photo"
+            }
+          },
+          "required": [
+            "description",
+            "postPhoto"
+          ]
+        },
+        "UpdatePostInputModel": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "user-post description"
+            },
+            "postPhoto": {
+              "type": "object",
+              "description": "user-post photo"
+            }
+          },
+          "required": [
+            "description",
+            "postPhoto"
           ]
         }
       }
