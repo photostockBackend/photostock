@@ -15,17 +15,25 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import {CommandBus, QueryBus} from '@nestjs/cqrs';
-import {ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags} from '@nestjs/swagger';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import {BearerAuthGuard} from '../../auth/api/guards/strategies/jwt.strategy';
-import {FileInterceptor} from '@nestjs/platform-express';
-import {UpdateProfileInputModel} from '../types/user-profile-input.models';
-import {CheckUserNameInterceptor} from './interceptor/check-user-name.interceptor';
-import {UpdateProfileCommand} from '../application/use-cases/update-profile.use-case';
-import {ProfileUserViewModel} from '../types/user-profile-view.models';
-import {GetProfileUserCommand} from '../application/queries/handlers/get-profile-for-user.handler';
-import { CreatePostInputModel, UpdatePostInputModel } from '../types/user-post-input.models';
+import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateProfileInputModel } from '../types/user-profile-input.models';
+import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
+import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
+import { ProfileUserViewModel } from '../types/user-profile-view.models';
+import { GetProfileUserCommand } from '../application/queries/handlers/get-profile-for-user.handler';
+import {
+  CreatePostInputModel,
+  UpdatePostInputModel,
+} from '../types/user-post-input.models';
 import { CreatePostCommand } from '../application/use-cases/create-post.use-case';
 
 @ApiTags('user')
@@ -124,7 +132,6 @@ export class UserProfileController {
     )
     file: Express.Multer.File,
   ) {
-    console.log('createPostInputModel', createPostInputModel)
     await this.commandBus.execute(
       new CreatePostCommand(req.user.userId, file, createPostInputModel),
     );
@@ -163,7 +170,6 @@ export class UserProfileController {
     )
     file: Express.Multer.File,
   ) {
-
     return;
   }
 
@@ -184,8 +190,6 @@ export class UserProfileController {
   @UseGuards(BearerAuthGuard)
   @Delete('post/:id')
   async deletePostForCurrentUser() {
-
     return;
   }
-
 }

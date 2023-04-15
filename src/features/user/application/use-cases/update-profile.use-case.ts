@@ -38,7 +38,9 @@ export class UpdateProfileUseCase
     );
     let link = user.profile.profilePhotoLink;
     if (command.file) {
-      const filePath = `content/user/${command.userId}/avatars/${command.userId}.${command.file.mimetype.split('/')[1]}`
+      const filePath = `content/user/${command.userId}/avatars/${
+        command.userId
+      }.${command.file.mimetype.split('/')[1]}`;
       link = await this.filesService.saveFile(filePath, command.file);
     }
     user.username = username;

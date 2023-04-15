@@ -7,15 +7,13 @@ import { IPostsUserRepo } from '../../types/interfaces/i-posts-user.repo';
 export class UserPostsCommandRepo implements IPostsUserRepo {
   constructor(private prisma: PrismaService) {}
   async create(post: PostDomain): Promise<boolean> {
-    
-    const result = await this.prisma.posts.create({
+    await this.prisma.posts.create({
       data: {
         description: post.description,
         postPhotoLink: post.postPhotoPhotoLink,
         user: { connect: { id: post.userId } },
       },
     });
-    console.log('result', result)
     return true;
   }
 }
