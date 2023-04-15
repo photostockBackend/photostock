@@ -1,6 +1,6 @@
-import {IsDate, IsOptional, IsString, Length} from 'class-validator';
-import {Transform, TransformFnParams} from 'class-transformer';
-import {ApiProperty} from '@nestjs/swagger';
+import { IsDate, IsOptional, IsString, Length } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 const dateWithoutTimezone = (params: TransformFnParams): any => {
   const d = Number(params.value.split('.')[0]);
@@ -58,23 +58,27 @@ export class UpdateProfileInputModel {
   username: string;
 
   @ApiProperty({ description: 'user-profile name' })
+  @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
   firstName: string;
 
   @ApiProperty({ description: 'user-profile surname' })
+  @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
   lastName: string;
 
   @ApiProperty({ description: 'user-profile birthday' })
+  @IsOptional()
   @Transform(dateWithoutTimezone)
   @IsDate()
-  birthday: Date; //возможно string, парсинг в дату происходит с часовым поясом
+  birthday: Date;
 
   @ApiProperty({ description: 'user-profile city' })
+  @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 30)
