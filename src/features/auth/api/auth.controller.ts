@@ -37,6 +37,8 @@ import { AuthMeCommand } from '../application/queries/auth/handlers/auth-me.hand
 import { LocalAuthGuard } from './guards/strategies/local.strategy';
 import { CheckUserNameEmailInterceptor } from './interceptors/check-user-name-email.interceptor';
 import { RefreshAuthGuard } from './guards/strategies/refresh.strategy';
+import { ApiResponseError } from '../../../helpers/common/swagger-decorators/error-api-swagger';
+import { ErrorSwagger } from '../../../helpers/common/types/errored';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -47,10 +49,7 @@ export class AuthController {
     status: 204,
     description: 'The code for pass-recovery sended to email.',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'The email for pass-recovery is not valid.',
-  })
+  @ApiResponseError(ErrorSwagger)
   @HttpCode(204)
   @Post('password-recovery')
   async passwordRecovery(
@@ -176,10 +175,7 @@ export class AuthController {
     description:
       'The user-profile has been successfully registration-confimated.',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'The confirmation-code is not valid.',
-  })
+  @ApiResponseError(ErrorSwagger)
   @HttpCode(204)
   @Post('registration-confirmation')
   async registrationConfirmation(
@@ -201,10 +197,7 @@ export class AuthController {
     status: 204,
     description: 'The user-profile has been successfully registrated.',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'The user-profile with the given email already exists.',
-  })
+  @ApiResponseError(ErrorSwagger)
   @UseInterceptors(CheckUserNameEmailInterceptor)
   @HttpCode(204)
   @Post('registration')
@@ -222,10 +215,7 @@ export class AuthController {
     status: 204,
     description: 'The new-code has been successfully sended.',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'The email incorrect or already confirmed.',
-  })
+  @ApiResponseError(ErrorSwagger)
   @HttpCode(204)
   @Post('registration-email-resending')
   async registrationEmailResending(
