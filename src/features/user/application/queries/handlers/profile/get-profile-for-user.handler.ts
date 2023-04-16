@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { UserProfileQueryRepo } from '../../../infrastructure/query.repositories/user-profile.query.repo';
-import { ProfileUserViewModel } from '../../../types/profile/user-profile-view.models';
+import { UserProfileQueryRepo } from '../../../../infrastructure/query.repositories/user-profile.query.repo';
+import { ProfileUserViewModel } from '../../../../types/profile/user-profile-view.models';
 
 export class GetProfileUserCommand {
   constructor(public readonly userId: number) {}

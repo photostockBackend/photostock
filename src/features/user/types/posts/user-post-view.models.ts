@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ProfileUserViewModel {
+export class PostUserViewModel {
   @ApiProperty()
-  id: string;
+  id: number;
   @ApiProperty()
   description: string;
   @ApiProperty()

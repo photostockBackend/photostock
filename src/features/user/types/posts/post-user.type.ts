@@ -4,7 +4,7 @@ export type PostUserCreateType = {
   userId: number;
 };
 
-export type FoundPostUserType = {
+export type PostUserFoundType = {
   id: number;
   description: string;
   postPhotoLink: string;

@@ -30,7 +30,7 @@ import { UpdateProfileInputModel } from '../types/profile/user-profile-input.mod
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
 import { UpdateProfileCommand } from '../application/use-cases/profile/update-profile.use-case';
 import { ProfileUserViewModel } from '../types/profile/user-profile-view.models';
-import { GetProfileUserCommand } from '../application/queries/handlers/get-profile-for-user.handler';
+import { GetProfileUserCommand } from '../application/queries/handlers/profile/get-profile-for-user.handler';
 import {
   CreatePostInputModel,
   UpdatePostInputModel,
@@ -38,6 +38,9 @@ import {
 import { CreatePostCommand } from '../application/use-cases/posts/create-post.use-case';
 import { UpdatePostCommand } from '../application/use-cases/posts/update-post.use-case';
 import { DeletePostCommand } from '../application/use-cases/posts/delete-post.use-case';
+import { FindPostByIdCommand } from '../application/queries/handlers/posts/find-post-by-id.handler';
+import { PostUserViewModel } from '../types/posts/user-post-view.models';
+import { IntTransformPipe } from '../../../helpers/common/pipes/int-transform.pipe';
 
 @ApiTags('user')
 @Controller('user')
@@ -107,6 +110,28 @@ export class UserProfileController {
     return;
   }
 
+  @ApiResponse({
+    status: 200,
+    description: 'The post get by id.',
+    type: ProfileUserViewModel,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post doesnt exists.',
+  })
+  @Get('post/:id')
+  async getPostById(
+    @Param('id', new IntTransformPipe()) id: number,
+    @Req() req: RequestWithUser,
+  ) {
+    const post = await this.queryBus.execute<
+      FindPostByIdCommand,
+      Promise<PostUserViewModel>
+    >(new FindPostByIdCommand(id));
+    if (!post) throw new NotFoundException();
+    return post;
+  }
+
   @ApiBearerAuth()
   @ApiResponse({
     status: 201,
@@ -135,11 +160,14 @@ export class UserProfileController {
     )
     file: Express.Multer.File,
   ) {
-    const result = await this.commandBus.execute<
+    const postId = await this.commandBus.execute<
       CreatePostCommand,
       Promise<number>
     >(new CreatePostCommand(req.user.userId, file, createPostInputModel));
-    return result;
+    return await this.queryBus.execute<
+      FindPostByIdCommand,
+      Promise<PostUserViewModel>
+    >(new FindPostByIdCommand(postId));
   }
 
   @ApiBearerAuth()
