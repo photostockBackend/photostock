@@ -120,10 +120,7 @@ export class UserProfileController {
     description: 'Post doesnt exists.',
   })
   @Get('post/:id')
-  async getPostById(
-    @Param('id', new IntTransformPipe()) id: number,
-    @Req() req: RequestWithUser,
-  ) {
+  async getPostById(@Param('id', new IntTransformPipe()) id: number) {
     const post = await this.queryBus.execute<
       FindPostByIdCommand,
       Promise<PostUserViewModel>
