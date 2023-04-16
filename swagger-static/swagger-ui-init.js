@@ -30,7 +30,28 @@ window.onload = function() {
               "description": "The code for pass-recovery sended to email."
             },
             "400": {
-              "description": "The email for pass-recovery is not valid."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -139,7 +160,28 @@ window.onload = function() {
               "description": "The user-profile has been successfully registration-confimated."
             },
             "400": {
-              "description": "The confirmation-code is not valid."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -166,7 +208,28 @@ window.onload = function() {
               "description": "The user-profile has been successfully registrated."
             },
             "400": {
-              "description": "The user-profile with the given email already exists."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -193,7 +256,28 @@ window.onload = function() {
               "description": "The new-code has been successfully sended."
             },
             "400": {
-              "description": "The email incorrect or already confirmed."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -289,9 +373,6 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The profile has been successfully updated."
-            },
-            "400": {
-              "description": "The profile for update is not exists."
             },
             "401": {
               "description": "The user-profile not identified."
@@ -431,6 +512,25 @@ window.onload = function() {
     "servers": [],
     "components": {
       "schemas": {
+        "Errored": {
+          "type": "object",
+          "properties": {}
+        },
+        "ErrorSwagger": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field",
+            "message"
+          ]
+        },
         "PasswordRecoveryInputModel": {
           "type": "object",
           "properties": {
