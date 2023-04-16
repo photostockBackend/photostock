@@ -14,7 +14,7 @@ export class UserPostsQueryRepo {
         "description",
         "postPhotoLink"
         FROM "Posts"
-        WHERE "id" = ${id};`,
+        WHERE "id" = %1$s;`,
       id,
     );
     const post = await this.prisma.$queryRawUnsafe<PostUserFoundType[]>(sql);
