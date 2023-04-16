@@ -1,5 +1,6 @@
 export type PostUserCreateType = {
+  id: number;
   description: string;
-  link: string;
+  postPhotoLink: string;
   userId: number;
 };

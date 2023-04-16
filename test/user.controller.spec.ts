@@ -21,7 +21,7 @@ describe('AppController', () => {
     let code;
     let accessToken;
     let refreshToken;
-    let postid;
+    let postId;
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204);
     });
@@ -154,20 +154,22 @@ describe('AppController', () => {
 
     it('should create post', async () => {
       await request(server).post('/user/post').expect(401);
-      await request(server).post('/user/post')
+      const res = await request(server).post('/user/post')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('description', 'description')
         .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .expect(201);
+      //expect(res.body).toBe(0)
+      postId = res.body.id
     });
 
     it('should update post', async () => {
-      await request(server).put(`/user/post/${postid}`).expect(401);
+      await request(server).put(`/user/post/${postId}`).expect(401);
       await request(server).put(`/user/post/${0}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
-      await request(server).put('/user/post')
+      await request(server).put(`/user/post/${postId}`)
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('description', 'newdescription')
@@ -176,11 +178,11 @@ describe('AppController', () => {
     });
 
     it('should delete post', async () => {
-      await request(server).delete(`/user/post/${postid}`).expect(401);
+      await request(server).delete(`/user/post/${postId}`).expect(401);
       await request(server).delete(`/user/post/${0}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
-      await request(server).delete('/user/post')
+      await request(server).delete(`/user/post/${postId}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(204);
     });

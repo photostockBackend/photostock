@@ -13,10 +13,14 @@ import {UserProfileQueryRepo} from './infrastructure/query.repositories/user-pro
 import { CreatePostUseCase } from './application/use-cases/create-post.use-case';
 import { UserPostsCommandRepo } from './infrastructure/command.repositories/user-posts.command.repo';
 import { POSTS_USER_REPO } from './types/interfaces/i-posts-user.repo';
+import { UpdatePostUseCase } from './application/use-cases/update-post.use-case';
+import { DeletePostUseCase } from './application/use-cases/delete-post.use-case';
 
 const commands = [
   UpdateProfileUseCase,
   CreatePostUseCase,
+  UpdatePostUseCase,
+  DeletePostUseCase,
 ];
 const queries = [GetProfileForUserHandler];
 const services = [];

@@ -57,7 +57,6 @@ export class TokenInfoCommandRepo implements ITokensInfoRepo {
       where: filter,
     });
     if (result.count !== 1) {
-      console.log(filter, result);
       return false;
     }
     return true;
