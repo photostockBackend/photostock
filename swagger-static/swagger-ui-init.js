@@ -388,39 +388,38 @@ window.onload = function() {
           ]
         }
       },
-      "/user/post": {
-        "post": {
-          "operationId": "UserProfileController_createPostForCurrentUser",
-          "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "multipart/from-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreatePostInputModel"
-                }
+      "/user/post/{id}": {
+        "get": {
+          "operationId": "UserProfileController_getPostById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
               }
             }
-          },
+          ],
           "responses": {
-            "201": {
-              "description": "The post has been successfully created."
+            "200": {
+              "description": "The post get by id.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ProfileUserViewModel"
+                  }
+                }
+              }
             },
-            "401": {
-              "description": "The user not identified."
+            "404": {
+              "description": "Post doesnt exists."
             }
           },
           "tags": [
             "user"
-          ],
-          "security": [
-            {
-              "bearer": []
-            }
           ]
-        }
-      },
-      "/user/post/{id}": {
+        },
         "put": {
           "operationId": "UserProfileController_updatePostForCurrentUser",
           "parameters": [
@@ -484,6 +483,38 @@ window.onload = function() {
             },
             "404": {
               "description": "The post for delete did not found."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/user/post": {
+        "post": {
+          "operationId": "UserProfileController_createPostForCurrentUser",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/from-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The post has been successfully created."
+            },
+            "401": {
+              "description": "The user not identified."
             }
           },
           "tags": [

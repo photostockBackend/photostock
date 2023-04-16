@@ -11,6 +11,8 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
       data: {
         description: postDto.description,
         postPhotoLink: postDto.postPhotoLink,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         user: { connect: { id: postDto.userId } },
       },
     });
@@ -26,6 +28,7 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
       data: {
         description: post.description,
         postPhotoLink: post.postPhotoLink,
+        updatedAt: new Date().toISOString(),
       },
     });
     return !!updatedPost.count;
