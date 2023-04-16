@@ -342,7 +342,16 @@ window.onload = function() {
       "/user/post/{id}": {
         "put": {
           "operationId": "UserProfileController_updatePostForCurrentUser",
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
           "requestBody": {
             "required": true,
             "content": {
@@ -375,7 +384,16 @@ window.onload = function() {
         },
         "delete": {
           "operationId": "UserProfileController_deletePostForCurrentUser",
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
           "responses": {
             "204": {
               "description": "The post has been successfully deleted."

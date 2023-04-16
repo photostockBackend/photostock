@@ -5,11 +5,18 @@ import { PostUserCreateType } from '../../features/user/types/post-user.type';
 export class PostDomain {
   constructor(private postDto: PostUserCreateType) {
     this.description = postDto.description;
-    this.postPhotoPhotoLink = postDto.link;
+    this.postPhotoLink = postDto.postPhotoLink;
     this.userId = postDto.userId;
   }
   id: number;
   description: string;
-  postPhotoPhotoLink: string;
+  postPhotoLink: string;
   userId: number;
+
+  setAll(postDto: PostUserCreateType) {
+    this.id = postDto.id;
+    this.description = postDto.description;
+    this.postPhotoLink = postDto.postPhotoLink;
+    this.userId = postDto.userId;
+  }
 }

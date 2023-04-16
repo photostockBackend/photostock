@@ -7,6 +7,7 @@ import {
   HttpCode,
   MaxFileSizeValidator,
   NotFoundException,
+  Param,
   ParseFilePipe,
   Post,
   Put,
@@ -35,6 +36,8 @@ import {
   UpdatePostInputModel,
 } from '../types/user-post-input.models';
 import { CreatePostCommand } from '../application/use-cases/create-post.use-case';
+import { UpdatePostCommand } from '../application/use-cases/update-post.use-case';
+import { DeletePostCommand } from '../application/use-cases/delete-post.use-case';
 
 @ApiTags('user')
 @Controller('user')
@@ -132,10 +135,10 @@ export class UserProfileController {
     )
     file: Express.Multer.File,
   ) {
-    await this.commandBus.execute(
+    const result = await this.commandBus.execute(
       new CreatePostCommand(req.user.userId, file, createPostInputModel),
     );
-    return;
+    return result;
   }
 
   @ApiBearerAuth()
@@ -158,6 +161,7 @@ export class UserProfileController {
   @Put('post/:id')
   async updatePostForCurrentUser(
     @Req() req: RequestWithUser,
+    @Param('id') id: string,
     @Body() updatePostInputModel: UpdatePostInputModel,
     @UploadedFile(
       new ParseFilePipe({
@@ -170,6 +174,9 @@ export class UserProfileController {
     )
     file: Express.Multer.File,
   ) {
+    await this.commandBus.execute(
+      new UpdatePostCommand(req.user.userId, +id, file, updatePostInputModel),
+    );
     return;
   }
 
@@ -189,7 +196,13 @@ export class UserProfileController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @Delete('post/:id')
-  async deletePostForCurrentUser() {
+  async deletePostForCurrentUser(
+    @Req() req: RequestWithUser,
+    @Param('id') id: string,
+  ) {
+    await this.commandBus.execute(
+      new DeletePostCommand(req.user.userId, +id),
+    );
     return;
   }
 }
