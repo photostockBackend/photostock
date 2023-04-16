@@ -1,16 +1,16 @@
-import { UpdateProfileInputModel } from '../../types/user-profile-input.models';
+import { UpdateProfileInputModel } from '../../../types/profile/user-profile-input.models';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { FilesService } from '../../../../adapters/files/files.service';
-import { AuthService } from '../../../auth/application/services/auth.service';
+import { FilesService } from '../../../../../adapters/files/files.service';
+import { AuthService } from '../../../../auth/application/services/auth.service';
 import { Inject } from '@nestjs/common';
 import {
   IProfileUserRepo,
   PROFILE_USER_REPO,
-} from '../../types/interfaces/i-profile-user.repo';
+} from '../../../types/interfaces/i-profile-user.repo';
 import {
   IUsersRepo,
   USERS_REPO,
-} from '../../../auth/types/interfaces/i-users.repo';
+} from '../../../../auth/types/interfaces/i-users.repo';
 
 export class UpdateProfileCommand {
   constructor(

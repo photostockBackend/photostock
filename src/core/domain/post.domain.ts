@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PostUserCreateType } from '../../features/user/types/post-user.type';
+import {
+  FoundPostUserType,
+  PostUserCreateType,
+} from '../../features/user/types/posts/post-user.type';
 
 @Injectable()
 export class PostDomain {
@@ -13,7 +16,7 @@ export class PostDomain {
   postPhotoLink: string;
   userId: number;
 
-  setAll(postDto: PostUserCreateType) {
+  setAll(postDto: FoundPostUserType) {
     this.id = postDto.id;
     this.description = postDto.description;
     this.postPhotoLink = postDto.postPhotoLink;

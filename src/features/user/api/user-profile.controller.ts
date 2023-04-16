@@ -26,18 +26,18 @@ import {
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateProfileInputModel } from '../types/user-profile-input.models';
+import { UpdateProfileInputModel } from '../types/profile/user-profile-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
-import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
-import { ProfileUserViewModel } from '../types/user-profile-view.models';
+import { UpdateProfileCommand } from '../application/use-cases/profile/update-profile.use-case';
+import { ProfileUserViewModel } from '../types/profile/user-profile-view.models';
 import { GetProfileUserCommand } from '../application/queries/handlers/get-profile-for-user.handler';
 import {
   CreatePostInputModel,
   UpdatePostInputModel,
-} from '../types/user-post-input.models';
-import { CreatePostCommand } from '../application/use-cases/create-post.use-case';
-import { UpdatePostCommand } from '../application/use-cases/update-post.use-case';
-import { DeletePostCommand } from '../application/use-cases/delete-post.use-case';
+} from '../types/posts/user-post-input.models';
+import { CreatePostCommand } from '../application/use-cases/posts/create-post.use-case';
+import { UpdatePostCommand } from '../application/use-cases/posts/update-post.use-case';
+import { DeletePostCommand } from '../application/use-cases/posts/delete-post.use-case';
 
 @ApiTags('user')
 @Controller('user')
@@ -135,9 +135,10 @@ export class UserProfileController {
     )
     file: Express.Multer.File,
   ) {
-    const result = await this.commandBus.execute(
-      new CreatePostCommand(req.user.userId, file, createPostInputModel),
-    );
+    const result = await this.commandBus.execute<
+      CreatePostCommand,
+      Promise<number>
+    >(new CreatePostCommand(req.user.userId, file, createPostInputModel));
     return result;
   }
 
@@ -200,9 +201,7 @@ export class UserProfileController {
     @Req() req: RequestWithUser,
     @Param('id') id: string,
   ) {
-    await this.commandBus.execute(
-      new DeletePostCommand(req.user.userId, +id),
-    );
+    await this.commandBus.execute(new DeletePostCommand(req.user.userId, +id));
     return;
   }
 }

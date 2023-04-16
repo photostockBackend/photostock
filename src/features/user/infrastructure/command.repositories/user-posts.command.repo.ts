@@ -6,18 +6,15 @@ import { IPostsUserRepo } from '../../types/interfaces/i-posts-user.repo';
 @Injectable()
 export class UserPostsCommandRepo implements IPostsUserRepo {
   constructor(private prisma: PrismaService) {}
-  async create(postDto: PostDomain): Promise<PostDomain> {
-    const createdPost = await this.prisma.posts.create({
+  async create(postDto: PostDomain): Promise<number> {
+    const result = await this.prisma.posts.create({
       data: {
         description: postDto.description,
         postPhotoLink: postDto.postPhotoLink,
         user: { connect: { id: postDto.userId } },
       },
     });
-    const post = new PostDomain(createdPost)
-    post.setAll(createdPost)
-    //TODO: need to return viewmodel
-    return post;
+    return result.id;
   }
 
   async update(post: PostDomain): Promise<boolean> {
@@ -29,10 +26,9 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
       data: {
         description: post.description,
         postPhotoLink: post.postPhotoLink,
-      }
-    })
-    const res = await this.prisma.posts.findMany()
-    return !!updatedPost.count
+      },
+    });
+    return !!updatedPost.count;
   }
 
   async delete(userId: number, postId: number): Promise<boolean> {
@@ -41,8 +37,8 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
         id: postId,
         userId: userId,
       },
-    })
-    return !!deletedPost.count
+    });
+    return !!deletedPost.count;
   }
 
   async findOne(userId: number, postId: number): Promise<PostDomain> {
@@ -51,12 +47,16 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
         id: postId,
         userId: userId,
       },
-    }) 
-    if(!foundedPost) {
-      return null
+    });
+    if (!foundedPost) {
+      return null;
     }
-    const post = new PostDomain(foundedPost)
-    post.setAll(foundedPost)
+    const post = new PostDomain({
+      postPhotoLink: foundedPost.postPhotoLink,
+      userId: foundedPost.userId,
+      description: foundedPost.description,
+    });
+    post.id = foundedPost.id;
     return post;
   }
 }

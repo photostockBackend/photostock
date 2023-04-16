@@ -1,13 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { FilesService } from '../../../../adapters/files/files.service';
+import { FilesService } from '../../../../../adapters/files/files.service';
 import { Inject } from '@nestjs/common';
 import { v4 } from 'uuid';
-import { CreatePostInputModel } from '../../types/user-post-input.models';
+import { CreatePostInputModel } from '../../../types/posts/user-post-input.models';
 import {
   IPostsUserRepo,
   POSTS_USER_REPO,
-} from '../../types/interfaces/i-posts-user.repo';
-import { PostDomain } from '../../../../core/domain/post.domain';
+} from '../../../types/interfaces/i-posts-user.repo';
+import { PostDomain } from '../../../../../core/domain/post.domain';
 
 export class CreatePostCommand {
   constructor(
@@ -24,7 +24,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
     @Inject(POSTS_USER_REPO) private postsRepository: IPostsUserRepo,
   ) {}
 
-  async execute(command: CreatePostCommand): Promise<PostDomain> {
+  async execute(command: CreatePostCommand): Promise<number> {
     const { description } = command.createPostInputModel;
 
     let postPhotoLink;
@@ -35,8 +35,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       postPhotoLink = await this.filesService.saveFile(filePath, command.file);
     }
     const userId = command.userId;
-    // TODO: refactor id-mock
-    const post = new PostDomain({ id: 0, description, postPhotoLink, userId });
+    const post = new PostDomain({ description, postPhotoLink, userId });
     return await this.postsRepository.create(post);
   }
 }

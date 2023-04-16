@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserDomain } from './user.domain';
-import { ProfileUserCreateType } from '../../features/user/types/profile-user-create.type';
-import { ProfileUserUpdateType } from '../../features/user/types/profile-user-update.type';
+import { ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
+import { ProfileUserUpdateType } from '../../features/user/types/profile/profile-user-update.type';
 
 @Injectable()
 export class ProfileUserDomain {

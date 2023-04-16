@@ -1,13 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { FilesService } from '../../../../adapters/files/files.service';
+import { FilesService } from '../../../../../adapters/files/files.service';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { v4 } from 'uuid';
-import { CreatePostInputModel } from '../../types/user-post-input.models';
+import { CreatePostInputModel } from '../../../types/posts/user-post-input.models';
 import {
   IPostsUserRepo,
   POSTS_USER_REPO,
-} from '../../types/interfaces/i-posts-user.repo';
-import { PostDomain } from '../../../../core/domain/post.domain';
+} from '../../../types/interfaces/i-posts-user.repo';
+import { PostDomain } from '../../../../../core/domain/post.domain';
 
 export class UpdatePostCommand {
   constructor(
@@ -27,8 +27,11 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
 
   async execute(command: UpdatePostCommand): Promise<void> {
     const { description } = command.createPostInputModel;
-    const foundedPost = await this.postsRepository.findOne(command.userId, command.postId)
-    if(!foundedPost){
+    const foundedPost = await this.postsRepository.findOne(
+      command.userId,
+      command.postId,
+    );
+    if (!foundedPost) {
       throw new NotFoundException();
     }
     let postPhotoLink;
@@ -37,11 +40,11 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
         command.file.mimetype.split('/')[1]
       }`;
       postPhotoLink = await this.filesService.saveFile(filePath, command.file);
-      foundedPost.postPhotoLink = postPhotoLink
+      foundedPost.postPhotoLink = postPhotoLink;
     }
-    foundedPost.description = description
+    foundedPost.description = description;
     const post = new PostDomain(foundedPost);
-    post.setAll(foundedPost)
+    post.setAll(foundedPost);
     await this.postsRepository.update(post);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
-import { ProfileFoundType } from '../../types/profile-found.type';
-import { ProfileUserViewModel } from '../../types/user-profile-view.models';
+import { ProfileFoundType } from '../../types/profile/profile-found.type';
+import { ProfileUserViewModel } from '../../types/profile/user-profile-view.models';
 import format = require('pg-format');
 
 @Injectable()

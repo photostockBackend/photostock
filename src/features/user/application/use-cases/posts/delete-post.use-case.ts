@@ -3,13 +3,10 @@ import { Inject, NotFoundException } from '@nestjs/common';
 import {
   IPostsUserRepo,
   POSTS_USER_REPO,
-} from '../../types/interfaces/i-posts-user.repo';
+} from '../../../types/interfaces/i-posts-user.repo';
 
 export class DeletePostCommand {
-  constructor(
-    public readonly userId: number,
-    public readonly postId: number,
-  ) {}
+  constructor(public readonly userId: number, public readonly postId: number) {}
 }
 
 @CommandHandler(DeletePostCommand)
@@ -20,8 +17,8 @@ export class DeletePostUseCase implements ICommandHandler<DeletePostCommand> {
 
   async execute(command: DeletePostCommand): Promise<void> {
     const { userId, postId } = command;
-    const result = await this.postsRepository.delete(userId, postId)
-    if(!result){
+    const result = await this.postsRepository.delete(userId, postId);
+    if (!result) {
       throw new NotFoundException();
     }
   }
