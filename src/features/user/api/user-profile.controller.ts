@@ -78,10 +78,6 @@ export class UserProfileController {
     description: 'The profile has been successfully updated.',
   })
   @ApiResponse({
-    status: 400,
-    description: 'The profile for update is not exists.',
-  })
-  @ApiResponse({
     status: 401,
     description: 'The user-profile not identified.',
   })
