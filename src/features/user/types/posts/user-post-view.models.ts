@@ -6,5 +6,5 @@ export class PostUserViewModel {
   @ApiProperty()
   description: string;
   @ApiProperty()
-  postPhoto: string;
+  postPhotos: string[];
 }

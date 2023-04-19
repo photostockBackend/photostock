@@ -13,6 +13,7 @@ import {
   Put,
   Req,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -25,7 +26,7 @@ import {
 } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import {
   UpdateProfileInputModel,
   UpdateProfilePhotoInputModel,
@@ -163,26 +164,17 @@ export class UserProfileController {
   @ApiConsumes('multipart/from-data')
   @HttpCode(201)
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(FileInterceptor('postPhoto', {}))
+  @UseInterceptors(FilesInterceptor('postPhoto', 10))
   @Post('post')
   async createPostForCurrentUser(
     @Req() req: RequestWithUser,
     @Body() createPostInputModel: CreatePostInputModel,
-    @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: false,
-        validators: [
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-          new MaxFileSizeValidator({ maxSize: 1024 * 1000 }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const postId = await this.commandBus.execute<
       CreatePostCommand,
       Promise<number>
-    >(new CreatePostCommand(req.user.userId, file, createPostInputModel));
+    >(new CreatePostCommand(req.user.userId, files, createPostInputModel));
     return await this.queryBus.execute<
       FindPostByIdCommand,
       Promise<PostUserViewModel>

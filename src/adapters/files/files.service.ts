@@ -35,6 +35,28 @@ export class FilesService {
     }
   }
 
+  async saveFiles(filePaths: string[], files: Express.Multer.File[]): Promise<string[]> {
+    const paths = [] as string[]
+    for(let i=0; i<filePaths.length; i++) {
+      const bucketParams = {
+        Bucket: 'photostock',
+        Key: filePaths[i],
+        Body: files[i].buffer,
+        ContentType: 'image/jpeg',
+      };
+
+      const command = new PutObjectCommand(bucketParams);
+      try {
+        await s3.send(command);
+        paths.push(`https://photostock.storage.yandexcloud.net/${filePaths[i]}`);
+      } catch (e) {
+        console.log(e);
+        paths.push(null);
+      }
+    }
+    return paths
+  }
+
   async deleteAvatar(userId: number): Promise<string> {
     const listParams = {
       Bucket: 'photostock',

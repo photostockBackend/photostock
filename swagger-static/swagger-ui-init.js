@@ -356,9 +356,11 @@ window.onload = function() {
               "bearer": []
             }
           ]
-        },
+        }
+      },
+      "/user/profile/info": {
         "put": {
-          "operationId": "UserProfileController_updateProfileForCurrentUser",
+          "operationId": "UserProfileController_updateProfileInfo",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -373,6 +375,38 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The profile has been successfully updated."
+            },
+            "401": {
+              "description": "The user-profile not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/user/profile/photo": {
+        "put": {
+          "operationId": "UserProfileController_updateProfilePhoto",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProfilePhotoInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "The profile photo has been successfully updated."
             },
             "401": {
               "description": "The user-profile not identified."
@@ -745,10 +779,6 @@ window.onload = function() {
             "aboutMe": {
               "type": "string",
               "description": "user-profile about"
-            },
-            "avatar": {
-              "type": "object",
-              "description": "user-profile avatar"
             }
           },
           "required": [
@@ -757,7 +787,18 @@ window.onload = function() {
             "lastName",
             "birthday",
             "city",
-            "aboutMe",
+            "aboutMe"
+          ]
+        },
+        "UpdateProfilePhotoInputModel": {
+          "type": "object",
+          "properties": {
+            "avatar": {
+              "type": "object",
+              "description": "user-profile avatar"
+            }
+          },
+          "required": [
             "avatar"
           ]
         },

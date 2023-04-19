@@ -40,7 +40,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
         command.file.mimetype.split('/')[1]
       }`;
       postPhotoLink = await this.filesService.saveFile(filePath, command.file);
-      foundedPost.postPhotoLink = postPhotoLink;
+      foundedPost.postPhotoLinks = postPhotoLink;
     }
     foundedPost.description = description;
     const post = new PostDomain(foundedPost);

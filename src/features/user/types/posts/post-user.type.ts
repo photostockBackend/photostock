@@ -1,12 +1,12 @@
 export type PostUserCreateType = {
   description: string;
-  postPhotoLink: string;
+  postPhotoLinks: string[];
   userId: number;
 };
 
 export type PostUserFoundType = {
   id: number;
   description: string;
-  postPhotoLink: string;
+  postPhotoLinks: string[];
   userId: number;
 };

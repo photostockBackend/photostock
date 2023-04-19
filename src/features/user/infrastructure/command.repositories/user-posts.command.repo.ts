@@ -10,7 +10,7 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
     const result = await this.prisma.posts.create({
       data: {
         description: postDto.description,
-        postPhotoLink: postDto.postPhotoLink,
+        postPhotoLinks: postDto.postPhotoLinks,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         user: { connect: { id: postDto.userId } },
@@ -27,7 +27,7 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
       },
       data: {
         description: post.description,
-        postPhotoLink: post.postPhotoLink,
+        postPhotoLinks: post.postPhotoLinks,
         updatedAt: new Date().toISOString(),
       },
     });
@@ -55,7 +55,7 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
       return null;
     }
     const post = new PostDomain({
-      postPhotoLink: foundedPost.postPhotoLink,
+      postPhotoLinks: foundedPost.postPhotoLinks,
       userId: foundedPost.userId,
       description: foundedPost.description,
     });

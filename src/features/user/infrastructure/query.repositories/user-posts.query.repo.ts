@@ -12,7 +12,7 @@ export class UserPostsQueryRepo {
       `SELECT 
         "id",
         "description",
-        "postPhotoLink"
+        "postPhotoLinks"
         FROM "Posts"
         WHERE "id" = %1$s;`,
       id,
@@ -22,7 +22,7 @@ export class UserPostsQueryRepo {
     return {
       id: post[0].id,
       description: post[0].description,
-      postPhoto: post[0].postPhotoLink,
+      postPhotos: post[0].postPhotoLinks,
     };
   }
 }
