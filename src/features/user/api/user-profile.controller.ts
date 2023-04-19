@@ -26,9 +26,12 @@ import {
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateProfileInputModel } from '../types/profile/user-profile-input.models';
+import {
+  UpdateProfileInputModel,
+  UpdateProfilePhotoInputModel,
+} from '../types/profile/user-profile-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
-import { UpdateProfileCommand } from '../application/use-cases/profile/update-profile.use-case';
+import { UpdateProfileInfoCommand } from '../application/use-cases/profile/update-profile-info.use-case';
 import { ProfileUserViewModel } from '../types/profile/user-profile-view.models';
 import { GetProfileUserCommand } from '../application/queries/handlers/profile/get-profile-for-user.handler';
 import {
@@ -41,6 +44,7 @@ import { DeletePostCommand } from '../application/use-cases/posts/delete-post.us
 import { FindPostByIdCommand } from '../application/queries/handlers/posts/find-post-by-id.handler';
 import { PostUserViewModel } from '../types/posts/user-post-view.models';
 import { IntTransformPipe } from '../../../helpers/common/pipes/int-transform.pipe';
+import { UpdateProfilePhotoCommand } from '../application/use-cases/profile/update-profile-photo.use-case';
 
 @ApiTags('user')
 @Controller('user')
@@ -84,11 +88,33 @@ export class UserProfileController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(CheckUserNameInterceptor)
-  @UseInterceptors(FileInterceptor('avatar', {}))
-  @Put('profile')
-  async updateProfileForCurrentUser(
+  @Put('profile/info')
+  async updateProfileInfo(
     @Req() req: RequestWithUser,
     @Body() updateProfileInputModel: UpdateProfileInputModel,
+  ) {
+    await this.commandBus.execute(
+      new UpdateProfileInfoCommand(req.user.userId, updateProfileInputModel),
+    );
+    return;
+  }
+
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 204,
+    description: 'The profile photo has been successfully updated.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'The user-profile not identified.',
+  })
+  @HttpCode(204)
+  @UseGuards(BearerAuthGuard)
+  @UseInterceptors(FileInterceptor('avatar', {}))
+  @Put('profile/photo')
+  async updateProfilePhoto(
+    @Req() req: RequestWithUser,
+    @Body() updateProfilePhotoInputModel: UpdateProfilePhotoInputModel,
     @UploadedFile(
       new ParseFilePipe({
         fileIsRequired: false,
@@ -101,7 +127,7 @@ export class UserProfileController {
     file: Express.Multer.File,
   ) {
     await this.commandBus.execute(
-      new UpdateProfileCommand(req.user.userId, file, updateProfileInputModel),
+      new UpdateProfilePhotoCommand(req.user.userId, file),
     );
     return;
   }

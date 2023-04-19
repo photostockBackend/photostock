@@ -4,5 +4,4 @@ export type ProfileUserUpdateType = {
   birthday: Date;
   city: string;
   aboutMe: string;
-  profilePhotoLink: string;
 };

@@ -27,12 +27,11 @@ export class ProfileUserDomain {
   async setUser(user: UserDomain): Promise<void> {
     this.user = user;
   }
-  async setAllWithoutIdAndUser(profileDto: ProfileUserUpdateType) {
+  async setProfileInfo(profileDto: ProfileUserUpdateType) {
     this.firstName = profileDto?.firstName;
     this.lastName = profileDto?.lastName;
     this.birthday = profileDto?.birthday;
     this.city = profileDto?.city;
     this.aboutMe = profileDto?.aboutMe;
-    this.profilePhotoLink = profileDto.profilePhotoLink;
   }
 }

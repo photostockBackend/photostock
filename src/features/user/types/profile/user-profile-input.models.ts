@@ -90,7 +90,8 @@ export class UpdateProfileInputModel {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(0, 200)
   aboutMe: string;
-
+}
+export class UpdateProfilePhotoInputModel {
   @ApiProperty({ description: 'user-profile avatar' })
   @IsOptional()
   avatar: Express.Multer.File;

@@ -4,7 +4,7 @@ import { PrismaModule } from '../../database/prisma.module';
 import { UserProfileController } from './api/user-profile.controller';
 import { AuthModule } from '../auth/auth.module';
 import { CheckUserNameInterceptor } from './api/interceptor/check-user-name.interceptor';
-import { UpdateProfileUseCase } from './application/use-cases/profile/update-profile.use-case';
+import { UpdateProfileInfoUseCase } from './application/use-cases/profile/update-profile-info.use-case';
 import { FilesModule } from '../../adapters/files/files.module';
 import { UserProfileCommandRepo } from './infrastructure/command.repositories/user-profile.command.repo';
 import { PROFILE_USER_REPO } from './types/interfaces/i-profile-user.repo';
@@ -18,9 +18,11 @@ import { DeletePostUseCase } from './application/use-cases/posts/delete-post.use
 import { IntTransformPipe } from '../../helpers/common/pipes/int-transform.pipe';
 import { FindPostByIdHandler } from './application/queries/handlers/posts/find-post-by-id.handler';
 import { UserPostsQueryRepo } from './infrastructure/query.repositories/user-posts.query.repo';
+import { UpdateProfilePhotoUseCase } from './application/use-cases/profile/update-profile-photo.use-case';
 
 const commands = [
-  UpdateProfileUseCase,
+  UpdateProfileInfoUseCase,
+  UpdateProfilePhotoUseCase,
   CreatePostUseCase,
   UpdatePostUseCase,
   DeletePostUseCase,
