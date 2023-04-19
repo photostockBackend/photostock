@@ -73,18 +73,43 @@ describe('AppController', () => {
     });
 
     it('should update profile', async () => {
-      await request(server).put('/user/profile').expect(401);
+      await request(server).put('/user/profile/info').expect(401);
       const date = '01.01.2000';
       await request(server)
-        .put('/user/profile')
+        .put('/user/profile/info')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          username: 'Nickolay',
+          firstName: 'newname',
+          lastName: 'surName',
+          birthday: date,
+          city: 'city',
+          aboutMe: 'aboutMe',
+        })
+        .expect(204);
+    });
+
+    it('should get profile', async () => {
+      const res = await request(server)
+        .get('/user/profile')
+        .set('Authorization', `Bearer ${accessToken}`);
+      expect(res.body).toStrictEqual({
+        aboutMe: 'aboutMe',
+        city: 'city',
+        birthday: expect.any(String),
+        firstName: 'newname',
+        avatar: null,
+        lastName: 'surName',
+        username: 'Nickolay',
+      });
+    });
+
+    it('should update profile photo', async () => {
+      await request(server).put('/user/profile/photo').expect(401);
+      await request(server)
+        .put('/user/profile/photo')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
-        .field('username', 'Nickolay')
-        .field('firstName', 'newname')
-        .field('lastName', 'surName')
-        .field('birthday', date)
-        .field('city', 'city')
-        .field('aboutMe', 'aboutMe')
         .attach('avatar', path.join(__dirname, './1.jpeg'))
         .expect(204);
     });
@@ -105,35 +130,19 @@ describe('AppController', () => {
     });
 
     it('should update profile', async () => {
-      await request(server).put('/user/profile').expect(401);
+      await request(server).put('/user/profile/info').expect(401);
       const date = '10.10.2010';
       await request(server)
-        .put('/user/profile')
-        .set('Content-Type', 'multipart/form-data')
+        .put('/user/profile/info')
         .set('Authorization', `Bearer ${accessToken}`)
-        .field('username', 'Nickolay')
-        .field('firstName', 'newnewname')
-        .field('lastName', 'newnewsurName')
-        .field('birthday', date)
-        .field('city', 'newcity')
-        .field('aboutMe', 'aboutMe')
-        .attach('avatar', path.join(__dirname, './1.jpeg'))
-        .expect(204);
-    });
-
-    it('should update profile without file', async () => {
-      await request(server).put('/user/profile').expect(401);
-      const date = '20.20.2020';
-      await request(server)
-        .put('/user/profile')
-        .set('Content-Type', 'multipart/form-data')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .field('username', 'Nickolay')
-        .field('firstName', 'newname')
-        .field('lastName', 'newsurName')
-        .field('birthday', date)
-        .field('city', 'city')
-        .field('aboutMe', 'aboutMe')
+        .send({
+          username: 'Nickolay',
+          firstName: 'newnewname',
+          lastName: 'newnewsurName',
+          birthday: date,
+          city: 'newcity',
+          aboutMe: 'aboutMe',
+        })
         .expect(204);
     });
 
@@ -143,33 +152,36 @@ describe('AppController', () => {
         .set('Authorization', `Bearer ${accessToken}`);
       expect(res.body).toStrictEqual({
         aboutMe: 'aboutMe',
-        city: 'city',
+        city: 'newcity',
         birthday: expect.any(String),
-        firstName: 'newname',
+        firstName: 'newnewname',
         avatar: expect.any(String),
-        lastName: 'newsurName',
+        lastName: 'newnewsurName',
         username: 'Nickolay',
       });
     });
 
     it('should create post', async () => {
       await request(server).post('/user/post').expect(401);
-      const res = await request(server).post('/user/post')
+      const res = await request(server)
+        .post('/user/post')
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('description', 'description')
         .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .expect(201);
       //expect(res.body).toBe(0)
-      postId = res.body.id
+      postId = res.body.id;
     });
 
     it('should update post', async () => {
       await request(server).put(`/user/post/${postId}`).expect(401);
-      await request(server).put(`/user/post/${0}`)
+      await request(server)
+        .put(`/user/post/${0}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
-      await request(server).put(`/user/post/${postId}`)
+      await request(server)
+        .put(`/user/post/${postId}`)
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('description', 'newdescription')
@@ -179,10 +191,12 @@ describe('AppController', () => {
 
     it('should delete post', async () => {
       await request(server).delete(`/user/post/${postId}`).expect(401);
-      await request(server).delete(`/user/post/${0}`)
+      await request(server)
+        .delete(`/user/post/${0}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
-      await request(server).delete(`/user/post/${postId}`)
+      await request(server)
+        .delete(`/user/post/${postId}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(204);
     });
