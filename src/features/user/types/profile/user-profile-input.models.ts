@@ -57,34 +57,34 @@ export class UpdateProfileInputModel {
   @Length(1, 20)
   username: string;
 
-  @ApiProperty({ description: 'user-profile name' })
+  @ApiProperty({ description: 'user-profile name', required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
   firstName: string;
 
-  @ApiProperty({ description: 'user-profile surname' })
+  @ApiProperty({ description: 'user-profile surname', required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 20)
   lastName: string;
 
-  @ApiProperty({ description: 'user-profile birthday' })
+  @ApiProperty({ description: 'user-profile birthday', required: false })
   @IsOptional()
   @Transform(dateWithoutTimezone)
   @IsDate()
   birthday: Date;
 
-  @ApiProperty({ description: 'user-profile city' })
+  @ApiProperty({ description: 'user-profile city', required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 30)
   city: string;
 
-  @ApiProperty({ description: 'user-profile about' })
+  @ApiProperty({ description: 'user-profile about', required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
@@ -92,7 +92,12 @@ export class UpdateProfileInputModel {
   aboutMe: string;
 }
 export class UpdateProfilePhotoInputModel {
-  @ApiProperty({ description: 'user-profile avatar' })
+  @ApiProperty({
+    description: 'user-profile avatar',
+    type: 'string',
+    format: 'binary',
+    required: false,
+  })
   @IsOptional()
   avatar: Express.Multer.File;
 }

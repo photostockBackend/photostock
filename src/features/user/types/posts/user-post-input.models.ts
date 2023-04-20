@@ -1,9 +1,9 @@
 import { IsOptional, IsString, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePostInputModel {
-  @ApiPropertyOptional()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
@@ -15,14 +15,14 @@ export class CreatePostInputModel {
 }
 
 export class UpdatePostInputModel {
-  @ApiPropertyOptional()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 500)
   description: string;
 
-  @ApiPropertyOptional({ type: 'string', format: 'binary' })
+  @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()
   postPhoto: Express.Multer.File;
 }
