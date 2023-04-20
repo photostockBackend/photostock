@@ -2,10 +2,8 @@ import {
   Body,
   Controller,
   Delete,
-  FileTypeValidator,
   Get,
   HttpCode,
-  MaxFileSizeValidator,
   NotFoundException,
   Param,
   ParseFilePipe,
@@ -46,6 +44,7 @@ import { FindPostByIdCommand } from '../application/queries/handlers/posts/find-
 import { PostUserViewModel } from '../types/posts/user-post-view.models';
 import { IntTransformPipe } from '../../../helpers/common/pipes/int-transform.pipe';
 import { UpdateProfilePhotoCommand } from '../application/use-cases/profile/update-profile-photo.use-case';
+import { parseFilePipeValidationsOptions } from '../../../helpers/common/pipes/options.constans/parse-file-pipe-validations.options.constant';
 
 @ApiTags('user')
 @Controller('user')
@@ -111,19 +110,13 @@ export class UserProfileController {
   })
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(FileInterceptor('avatar', {}))
+  @UseInterceptors(FileInterceptor('avatar'))
   @Put('profile/photo')
   async updateProfilePhoto(
     @Req() req: RequestWithUser,
     @Body() updateProfilePhotoInputModel: UpdateProfilePhotoInputModel,
     @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: false,
-        validators: [
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-          new MaxFileSizeValidator({ maxSize: 1024 * 1000 }),
-        ],
-      }),
+      new ParseFilePipe(parseFilePipeValidationsOptions('avatar', 1000)),
     )
     file: Express.Multer.File,
   ) {
@@ -169,7 +162,10 @@ export class UserProfileController {
   async createPostForCurrentUser(
     @Req() req: RequestWithUser,
     @Body() createPostInputModel: CreatePostInputModel,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles(
+      new ParseFilePipe(parseFilePipeValidationsOptions('postPhoto', 1000)),
+    )
+    files: Express.Multer.File[],
   ) {
     const postId = await this.commandBus.execute<
       CreatePostCommand,
@@ -197,20 +193,14 @@ export class UserProfileController {
   @ApiConsumes('multipart/from-data')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(FileInterceptor('postPhoto', {}))
+  @UseInterceptors(FileInterceptor('postPhoto'))
   @Put('post/:id')
   async updatePostForCurrentUser(
     @Req() req: RequestWithUser,
     @Param('id') id: string,
     @Body() updatePostInputModel: UpdatePostInputModel,
     @UploadedFile(
-      new ParseFilePipe({
-        fileIsRequired: false,
-        validators: [
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-          new MaxFileSizeValidator({ maxSize: 1024 * 1000 }),
-        ],
-      }),
+      new ParseFilePipe(parseFilePipeValidationsOptions('postPhoto', 1000)),
     )
     file: Express.Multer.File,
   ) {
