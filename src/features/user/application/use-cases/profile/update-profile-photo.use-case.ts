@@ -25,7 +25,7 @@ export class UpdateProfilePhotoUseCase
     const user = await this.profileRepository.findUserWithProfileByUserId(
       userId,
     );
-    let link = user.profile.profilePhotoLink;
+    let link = null;
     if (file) {
       const filePath = `content/user/${userId}/avatars/${userId}.${
         file.mimetype.split('/')[1]
