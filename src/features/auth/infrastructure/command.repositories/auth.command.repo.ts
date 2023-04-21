@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
-import { UserDomain } from '../../../types/domain/user.domain';
+import { UserDomain } from '../../../../core/domain/user.domain';
 import { FindFilterUserType } from '../../types/find-filter-user.type';
 import { IUsersRepo } from '../../types/interfaces/i-users.repo';
 
@@ -22,6 +22,9 @@ export class AuthCommandRepo implements IUsersRepo {
             codeExpiresAt: user.credInfo.codeExpiresAt,
             recoveryIsUsed: user.credInfo.recoveryIsUsed,
           },
+        },
+        profileInfo: {
+          create: {},
         },
       },
     });

@@ -4,9 +4,9 @@ export class ProfileUserViewModel {
   @ApiProperty()
   username: string;
   @ApiProperty()
-  name: string;
+  firstName: string;
   @ApiProperty()
-  surName: string;
+  lastName: string;
   @ApiProperty()
   birthday: Date;
   @ApiProperty()
@@ -14,5 +14,5 @@ export class ProfileUserViewModel {
   @ApiProperty()
   aboutMe: string;
   @ApiProperty()
-  profilePhotoLink: string;
+  avatar: string;
 }

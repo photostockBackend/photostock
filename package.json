@@ -20,7 +20,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json --watch --runInBand",
     "t": "jest --config ./test/jest-e2e.json --watch --runInBand",
-    "rimraf": "./node_modules/rimraf/bin.js"
+    "rimraf": "./node_modules/rimraf/bin.js",
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.309.0",

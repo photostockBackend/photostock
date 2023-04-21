@@ -8,7 +8,7 @@ import {
   ITokensInfoRepo,
   TOKEN_INFO_REPO,
 } from '../../../types/interfaces/i-tokens-info.repo';
-import { TokenInfoDomain } from '../../../../types/domain/token-info.domain';
+import { TokenInfoDomain } from '../../../../../core/domain/token-info.domain';
 import { TokensType } from '../../../types/tokens.type';
 
 export class LoginCommand {

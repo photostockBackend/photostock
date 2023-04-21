@@ -17,12 +17,10 @@ const s3 = new S3Client({
 
 @Injectable()
 export class FilesService {
-  async saveAvatar(userId: number, file: Express.Multer.File): Promise<string> {
+  async saveFile(filePath: string, file: Express.Multer.File): Promise<string> {
     const bucketParams = {
       Bucket: 'photostock',
-      Key: `content/user/${userId}/avatars/${userId}.${
-        file.mimetype.split('/')[1]
-      }`,
+      Key: filePath,
       Body: file.buffer,
       ContentType: 'image/jpeg',
     };
@@ -30,13 +28,33 @@ export class FilesService {
     const command = new PutObjectCommand(bucketParams);
     try {
       await s3.send(command);
-      return `https://photostock.storage.yandexcloud.net/content/user/${userId}/avatars/${userId}.${
-        file.mimetype.split('/')[1]
-      }`;
+      return `https://photostock.storage.yandexcloud.net/${filePath}`;
     } catch (e) {
       console.log(e);
       return null;
     }
+  }
+
+  async saveFiles(filePaths: string[], files: Express.Multer.File[]): Promise<string[]> {
+    const paths = [] as string[]
+    for(let i=0; i<filePaths.length; i++) {
+      const bucketParams = {
+        Bucket: 'photostock',
+        Key: filePaths[i],
+        Body: files[i].buffer,
+        ContentType: 'image/jpeg',
+      };
+
+      const command = new PutObjectCommand(bucketParams);
+      try {
+        await s3.send(command);
+        paths.push(`https://photostock.storage.yandexcloud.net/${filePaths[i]}`);
+      } catch (e) {
+        console.log(e);
+        paths.push(null);
+      }
+    }
+    return paths
   }
 
   async deleteAvatar(userId: number): Promise<string> {

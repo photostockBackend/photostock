@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
-import { ProfileFoundType } from '../../types/profile-found.type';
-import { ProfileUserViewModel } from '../../types/user-profile-view.models';
+import { ProfileFoundType } from '../../types/profile/profile-found.type';
+import { ProfileUserViewModel } from '../../types/profile/user-profile-view.models';
 import format = require('pg-format');
 
 @Injectable()
@@ -10,9 +10,9 @@ export class UserProfileQueryRepo {
   async findProfileUserByUserId(userId: number): Promise<ProfileUserViewModel> {
     const sql = format(
       `SELECT
-                "name",
-                "surName", 
-                "dateOfBirthday", 
+                "firstName",
+                "lastName", 
+                "birthday", 
                 "city",
                 "aboutMe",
                 "profilePhotoLink",
@@ -28,12 +28,12 @@ export class UserProfileQueryRepo {
     if (!profile.length) return null;
     return {
       username: profile[0].username,
-      name: profile[0].name,
-      surName: profile[0].surName,
-      birthday: profile[0].dateOfBirthday,
+      firstName: profile[0].firstName,
+      lastName: profile[0].lastName,
+      birthday: profile[0].birthday,
       city: profile[0].city,
       aboutMe: profile[0].aboutMe,
-      profilePhotoLink: profile[0].profilePhotoLink,
+      avatar: profile[0].profilePhotoLink,
     };
   }
 }

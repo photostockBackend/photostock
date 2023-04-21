@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserDomain } from '../../../../types/domain/user.domain';
+import { UserDomain } from '../../../../../core/domain/user.domain';
 import { MailService } from '../../../../../adapters/mail/mail.service';
 import { AuthService } from '../../services/auth.service';
-import { Inject } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 import { IUsersRepo, USERS_REPO } from '../../../types/interfaces/i-users.repo';
 import { RegistrationInputModel } from '../../../types/auth-input.models';
 
@@ -24,9 +24,24 @@ export class RegistrationUseCase
   async execute(command: RegistrationCommand): Promise<void> {
     const { username, email, password } = command.userDto;
     const foundUser = await this.authService.findOneByFilter({
-      username: username,
       email: email,
     });
+    const foundUserByUsername = await this.authService.findOneByFilter({
+      username: username,
+    });
+    if (
+      foundUser &&
+      foundUserByUsername &&
+      foundUser.id !== foundUserByUsername.id
+    )
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'username',
+            message: 'username already used',
+          },
+        ],
+      });
     const passwordHash = await this.authService.getPassHash(password);
     const user = new UserDomain({
       username,
@@ -42,7 +57,16 @@ export class RegistrationUseCase
     if (foundUser) {
       user.id = foundUser.id;
       await this.usersRepository.update(user);
-    } else await this.usersRepository.create(user);
+    } else if (foundUserByUsername)
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'username',
+            message: 'username already used',
+          },
+        ],
+      });
+    else await this.usersRepository.create(user);
     return;
   }
 }

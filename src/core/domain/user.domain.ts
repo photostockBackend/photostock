@@ -1,10 +1,12 @@
 import { add } from 'date-fns';
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { UserCreateType } from '../../auth/types/user.types';
+import { UserCreateType } from '../../features/auth/types/user.types';
 import { CredInfoUserDomain } from './cred-info-user.domain';
 import { TokenInfoDomain } from './token-info.domain';
-import { FoundUserType } from '../../auth/types/found-user.type';
+import { FoundUserType } from '../../features/auth/types/found-user.type';
+import { ProfileUserDomain } from './profile-user.domain';
+import { ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
 
 export enum emailRecoveryFlag {
   email = 'isActivated',
@@ -24,6 +26,7 @@ export class UserDomain {
   email: string;
   createdAt: string;
   credInfo: CredInfoUserDomain;
+  profile: ProfileUserDomain;
   tokenInfo: TokenInfoDomain[];
 
   async confirmCode(flag: emailRecoveryFlag): Promise<boolean> {
@@ -59,5 +62,8 @@ export class UserDomain {
     this.credInfo.isActivated = userDto.credInfo.isActivated;
     this.credInfo.userId = userDto.credInfo.userId;
     this.credInfo.recoveryIsUsed = userDto.credInfo.recoveryIsUsed;
+  }
+  async setProfile(profileDto: ProfileUserCreateType) {
+    this.profile = new ProfileUserDomain(profileDto);
   }
 }

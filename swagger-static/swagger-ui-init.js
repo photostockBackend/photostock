@@ -30,7 +30,28 @@ window.onload = function() {
               "description": "The code for pass-recovery sended to email."
             },
             "400": {
-              "description": "The email for pass-recovery is not valid."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -78,7 +99,7 @@ window.onload = function() {
           },
           "responses": {
             "200": {
-              "description": "The user has been successfully logined. Return access-token in response, and refresh-token in cookie",
+              "description": "The user-profile has been successfully logined. Return access-token in response, and refresh-token in cookie",
               "content": {
                 "application/json": {
                   "schema": {
@@ -136,10 +157,31 @@ window.onload = function() {
           },
           "responses": {
             "204": {
-              "description": "The user has been successfully registration-confimated."
+              "description": "The user-profile has been successfully registration-confimated."
             },
             "400": {
-              "description": "The confirmation-code is not valid."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -163,10 +205,31 @@ window.onload = function() {
           },
           "responses": {
             "204": {
-              "description": "The user has been successfully registrated."
+              "description": "The user-profile has been successfully registrated."
             },
             "400": {
-              "description": "The user with the given email already exists."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -193,7 +256,28 @@ window.onload = function() {
               "description": "The new-code has been successfully sended."
             },
             "400": {
-              "description": "The email incorrect or already confirmed."
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           },
           "tags": [
@@ -207,10 +291,10 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "204": {
-              "description": "The user has been successfully logout."
+              "description": "The user-profile has been successfully logout."
             },
             "401": {
-              "description": "The user is not authorized."
+              "description": "The user-profile is not authorized."
             }
           },
           "tags": [
@@ -224,7 +308,7 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The user has been successfully identified.",
+              "description": "The user-profile has been successfully identified.",
               "content": {
                 "application/json": {
                   "schema": {
@@ -234,7 +318,7 @@ window.onload = function() {
               }
             },
             "401": {
-              "description": "The user is not authorized."
+              "description": "The user-profile is not authorized."
             }
           },
           "tags": [
@@ -244,11 +328,11 @@ window.onload = function() {
       },
       "/user/profile": {
         "get": {
-          "operationId": "UserController_getProfileForCurrentUser",
+          "operationId": "UserProfileController_getProfileForCurrentUser",
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The profile get for current user.",
+              "description": "The profile get for current user-profile.",
               "content": {
                 "application/json": {
                   "schema": {
@@ -258,37 +342,10 @@ window.onload = function() {
               }
             },
             "401": {
-              "description": "The user not identified."
-            }
-          },
-          "tags": [
-            "user"
-          ],
-          "security": [
-            {
-              "bearer": []
-            }
-          ]
-        },
-        "post": {
-          "operationId": "UserController_createProfileForCurrentUser",
-          "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateProfileInputModel"
-                }
-              }
-            }
-          },
-          "responses": {
-            "204": {
-              "description": "The profile has been successfully created."
+              "description": "The user-profile not identified."
             },
-            "401": {
-              "description": "The user not identified."
+            "404": {
+              "description": "Profile for current user-profile doesnt exists."
             }
           },
           "tags": [
@@ -299,9 +356,11 @@ window.onload = function() {
               "bearer": []
             }
           ]
-        },
+        }
+      },
+      "/user/profile/info": {
         "put": {
-          "operationId": "UserController_updateProfileForCurrentUser",
+          "operationId": "UserProfileController_updateProfileInfo",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -317,11 +376,115 @@ window.onload = function() {
             "204": {
               "description": "The profile has been successfully updated."
             },
-            "400": {
-              "description": "The profile for update is not exists."
+            "401": {
+              "description": "The user-profile not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/user/profile/photo": {
+        "put": {
+          "operationId": "UserProfileController_updateProfilePhoto",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProfilePhotoInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "The profile photo has been successfully updated."
+            },
+            "401": {
+              "description": "The user-profile not identified."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/user/post/{id}": {
+        "get": {
+          "operationId": "UserProfileController_getPostById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The post get by id.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ProfileUserViewModel"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Post doesnt exists."
+            }
+          },
+          "tags": [
+            "user"
+          ]
+        },
+        "put": {
+          "operationId": "UserProfileController_updatePostForCurrentUser",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/from-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePostInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "The post has been successfully updated."
             },
             "401": {
               "description": "The user not identified."
+            },
+            "404": {
+              "description": "The post for update did not found."
             }
           },
           "tags": [
@@ -334,14 +497,55 @@ window.onload = function() {
           ]
         },
         "delete": {
-          "operationId": "UserController_deleteProfileForCurrentUser",
-          "parameters": [],
+          "operationId": "UserProfileController_deletePostForCurrentUser",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
           "responses": {
             "204": {
-              "description": "The profile has been successfully deleted."
+              "description": "The post has been successfully deleted."
             },
-            "400": {
-              "description": "The profile for update is not exists."
+            "401": {
+              "description": "The user not identified."
+            },
+            "404": {
+              "description": "The post for delete did not found."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/user/post": {
+        "post": {
+          "operationId": "UserProfileController_createPostForCurrentUser",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/from-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The post has been successfully created."
             },
             "401": {
               "description": "The user not identified."
@@ -373,12 +577,31 @@ window.onload = function() {
     "servers": [],
     "components": {
       "schemas": {
+        "Errored": {
+          "type": "object",
+          "properties": {}
+        },
+        "ErrorSwagger": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "field",
+            "message"
+          ]
+        },
         "PasswordRecoveryInputModel": {
           "type": "object",
           "properties": {
             "email": {
               "type": "string",
-              "description": "user email"
+              "description": "user-profile email"
             }
           },
           "required": [
@@ -407,11 +630,11 @@ window.onload = function() {
           "properties": {
             "emailOrUsername": {
               "type": "string",
-              "description": "user name or user email"
+              "description": "user-profile name or user-profile email"
             },
             "password": {
               "type": "string",
-              "description": "user password"
+              "description": "user-profile password"
             }
           },
           "required": [
@@ -447,15 +670,15 @@ window.onload = function() {
           "properties": {
             "username": {
               "type": "string",
-              "description": "user name"
+              "description": "user-profile name"
             },
             "email": {
               "type": "string",
-              "description": "user email"
+              "description": "user-profile email"
             },
             "password": {
               "type": "string",
-              "description": "user password",
+              "description": "user-profile password",
               "minLength": 6,
               "maxLength": 20
             }
@@ -499,73 +722,30 @@ window.onload = function() {
             "username": {
               "type": "string"
             },
-            "name": {
+            "firstName": {
               "type": "string"
             },
-            "surName": {
+            "lastName": {
               "type": "string"
-            },
-            "dateOfBirthday": {
-              "format": "date-time",
-              "type": "string"
-            },
-            "city": {
-              "type": "string"
-            },
-            "aboutMe": {
-              "type": "string"
-            },
-            "profilePhotoLink": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "username",
-            "name",
-            "surName",
-            "dateOfBirthday",
-            "city",
-            "aboutMe",
-            "profilePhotoLink"
-          ]
-        },
-        "CreateProfileInputModel": {
-          "type": "object",
-          "properties": {
-            "username": {
-              "type": "string",
-              "description": "user username"
-            },
-            "name": {
-              "type": "string",
-              "description": "user name"
-            },
-            "surName": {
-              "type": "string",
-              "description": "user surname"
             },
             "birthday": {
               "format": "date-time",
-              "type": "string",
-              "description": "user birthday"
+              "type": "string"
             },
             "city": {
-              "type": "string",
-              "description": "user city"
+              "type": "string"
             },
             "aboutMe": {
-              "type": "string",
-              "description": "user about"
+              "type": "string"
             },
             "avatar": {
-              "type": "object",
-              "description": "user avatar"
+              "type": "string"
             }
           },
           "required": [
             "username",
-            "name",
-            "surName",
+            "firstName",
+            "lastName",
             "birthday",
             "city",
             "aboutMe",
@@ -577,43 +757,77 @@ window.onload = function() {
           "properties": {
             "username": {
               "type": "string",
-              "description": "user username"
+              "description": "user-profile username"
             },
-            "name": {
+            "firstName": {
               "type": "string",
-              "description": "user name"
+              "description": "user-profile name"
             },
-            "surName": {
+            "lastName": {
               "type": "string",
-              "description": "user surname"
+              "description": "user-profile surname"
             },
             "birthday": {
               "format": "date-time",
               "type": "string",
-              "description": "user birthday"
+              "description": "user-profile birthday"
             },
             "city": {
               "type": "string",
-              "description": "user city"
+              "description": "user-profile city"
             },
             "aboutMe": {
               "type": "string",
-              "description": "user about"
-            },
-            "avatar": {
-              "type": "object",
-              "description": "user avatar"
+              "description": "user-profile about"
             }
           },
           "required": [
             "username",
-            "name",
-            "surName",
+            "firstName",
+            "lastName",
             "birthday",
             "city",
-            "aboutMe",
+            "aboutMe"
+          ]
+        },
+        "UpdateProfilePhotoInputModel": {
+          "type": "object",
+          "properties": {
+            "avatar": {
+              "type": "object",
+              "description": "user-profile avatar"
+            }
+          },
+          "required": [
             "avatar"
           ]
+        },
+        "CreatePostInputModel": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "postPhoto": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "required": [
+            "postPhoto"
+          ]
+        },
+        "UpdatePostInputModel": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            },
+            "postPhoto": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
         }
       }
     }

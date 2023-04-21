@@ -16,6 +16,11 @@ model User {
   credInfo          CredInfoUser?
   tokenInfo         TokenInfoUser[]
   profileInfo       ProfileInfoUser?
+  banInfoUser       BanInfoUser?
+  posts             Posts[]
+  postsLikes        PostLikes[]
+  comments          Comments[]
+  commentLikes      CommentLikes[]
 }
 
 model CredInfoUser {
@@ -42,12 +47,59 @@ model TokenInfoUser {
 
 model ProfileInfoUser {
   id                Int               @id @default(autoincrement())
-  name              String            
-  surName           String
-  dateOfBirthday    DateTime
-  city              String
-  aboutMe           String
-  profilePhotoLink  String  
+  firstName         String?
+  lastName          String?
+  birthday          DateTime?
+  city              String?
+  aboutMe           String?
+  profilePhotoLink  String?
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               @unique
+}
+
+model BanInfoUser {
+  id                Int               @id @default(autoincrement())
+  banStatus         Boolean
+  banReason         String
+  banDate           String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int               @unique
+}
+
+model Posts {
+  id                Int               @id @default(autoincrement())
+  description       String?
+  postPhotoLinks    String[]
+  createdAt         String
+  updatedAt         String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int               
+  postsLikes        PostLikes[]
+}
+
+model PostLikes {
+  id                Int               @id @default(autoincrement())
+  createdAt         String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int           
+  post              Posts             @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId            Int    
+}
+
+model Comments {
+  id                Int               @id @default(autoincrement())
+  text              String
+  createdAt         String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int           
+  commentLikes      CommentLikes[]    
+}
+
+model CommentLikes {
+  id                Int               @id @default(autoincrement())
+  createdAt         String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int           
+  comment           Comments          @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId         Int    
 }
