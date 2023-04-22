@@ -42,7 +42,6 @@ export class UserPostsQueryRepo {
     const postsCount = await this.prisma.posts.count({
       where: { userId: userId },
     });
-    if (postsCount < 1) return null;
     return {
       pagesCount: Math.ceil(postsCount / query.pageSize),
       page: query.pageNumber,

@@ -168,12 +168,10 @@ export class UserProfileController {
     @Query(new QueryTransformPipe()) query: QueryPostInputModel,
     @Req() req: RequestWithUser,
   ) {
-    const posts = await this.queryBus.execute<
+    return await this.queryBus.execute<
       FindPostsByUserIdCommand,
       Promise<PostsUserWithPaginationViewModel>
     >(new FindPostsByUserIdCommand(req.user.userId, query));
-    if (!posts) throw new NotFoundException();
-    return posts;
   }
 
   @ApiBearerAuth()
