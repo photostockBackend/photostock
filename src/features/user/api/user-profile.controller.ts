@@ -20,6 +20,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
   ApiConsumes,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -136,7 +137,7 @@ export class UserProfileController {
   @ApiResponse({
     status: 200,
     description: 'The post get by id.',
-    type: ProfileUserViewModel,
+    type: PostUserViewModel,
   })
   @ApiResponse({
     status: 404,
@@ -153,10 +154,22 @@ export class UserProfileController {
   }
 
   @ApiBearerAuth()
+  @ApiQuery({
+    name: 'pageNumber',
+    schema: { type: 'integer', default: 1 },
+    description: 'pageNumber is number of portions that should be returned',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    schema: { type: 'integer', default: 8 },
+    description: 'pageSize is portions size that should be returned',
+    required: false,
+  })
   @ApiResponse({
     status: 200,
     description: 'The posts by user.',
-    type: ProfileUserViewModel,
+    type: PostsUserWithPaginationViewModel,
   })
   @ApiResponse({
     status: 404,
