@@ -9,6 +9,7 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Query,
   Req,
   UploadedFile,
   UploadedFiles,
@@ -35,16 +36,22 @@ import { ProfileUserViewModel } from '../types/profile/user-profile-view.models'
 import { GetProfileUserCommand } from '../application/queries/handlers/profile/get-profile-for-user.handler';
 import {
   CreatePostInputModel,
+  QueryPostInputModel,
   UpdatePostInputModel,
 } from '../types/posts/user-post-input.models';
 import { CreatePostCommand } from '../application/use-cases/posts/create-post.use-case';
 import { UpdatePostCommand } from '../application/use-cases/posts/update-post.use-case';
 import { DeletePostCommand } from '../application/use-cases/posts/delete-post.use-case';
 import { FindPostByIdCommand } from '../application/queries/handlers/posts/find-post-by-id.handler';
-import { PostUserViewModel } from '../types/posts/user-post-view.models';
+import {
+  PostsUserWithPaginationViewModel,
+  PostUserViewModel,
+} from '../types/posts/user-post-view.models';
 import { IntTransformPipe } from '../../../helpers/common/pipes/int-transform.pipe';
 import { UpdateProfilePhotoCommand } from '../application/use-cases/profile/update-profile-photo.use-case';
 import { parseFilePipeValidationsOptions } from '../../../helpers/common/pipes/options.constans/parse-file-pipe-validations.options.constant';
+import { FindPostsByUserIdCommand } from '../application/queries/handlers/posts/find-posts-by-user-id.handler';
+import { QueryTransformPipe } from '../../../helpers/common/pipes/query-transform.pipe';
 
 @ApiTags('user')
 @Controller('user')
@@ -143,6 +150,30 @@ export class UserProfileController {
     >(new FindPostByIdCommand(id));
     if (!post) throw new NotFoundException();
     return post;
+  }
+
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'The posts by user.',
+    type: ProfileUserViewModel,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Posts doesnt exists.',
+  })
+  @UseGuards(BearerAuthGuard)
+  @Get('post')
+  async getPostsByUserId(
+    @Query(new QueryTransformPipe()) query: QueryPostInputModel,
+    @Req() req: RequestWithUser,
+  ) {
+    const posts = await this.queryBus.execute<
+      FindPostsByUserIdCommand,
+      Promise<PostsUserWithPaginationViewModel>
+    >(new FindPostsByUserIdCommand(req.user.userId, query));
+    if (!posts) throw new NotFoundException();
+    return posts;
   }
 
   @ApiBearerAuth()

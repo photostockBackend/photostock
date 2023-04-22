@@ -8,3 +8,11 @@ export class PostUserViewModel {
   @ApiProperty()
   postPhotos: string[];
 }
+
+export class PostsUserWithPaginationViewModel {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  posts: PostUserViewModel[];
+}

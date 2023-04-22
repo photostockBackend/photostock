@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
 import { PostUserFoundType } from '../../types/posts/post-user.type';
-import { PostUserViewModel } from '../../types/posts/user-post-view.models';
+import {
+  PostsUserWithPaginationViewModel,
+  PostUserViewModel,
+} from '../../types/posts/user-post-view.models';
+import { QueryPostInputModel } from '../../types/posts/user-post-input.models';
 import format = require('pg-format');
 
 @Injectable()
@@ -23,6 +27,32 @@ export class UserPostsQueryRepo {
       id: post[0].id,
       description: post[0].description,
       postPhotos: post[0].postPhotoLinks,
+    };
+  }
+  async findPostsByUserId(
+    userId: number,
+    query: QueryPostInputModel,
+  ): Promise<PostsUserWithPaginationViewModel> {
+    const posts = await this.prisma.posts.findMany({
+      where: { userId: userId },
+      orderBy: { createdAt: 'asc' },
+      skip: (query.pageNumber - 1) * query.pageSize,
+      take: query.pageSize,
+    });
+    const postsCount = await this.prisma.posts.count({
+      where: { userId: userId },
+    });
+    if (postsCount < 1) return null;
+    return {
+      pagesCount: Math.ceil(postsCount / query.pageSize),
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: postsCount,
+      posts: posts.map((post) => ({
+        id: post.id,
+        description: post.description,
+        postPhotos: post.postPhotoLinks,
+      })),
     };
   }
 }
