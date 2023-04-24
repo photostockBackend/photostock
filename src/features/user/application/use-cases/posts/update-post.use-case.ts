@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../../adapters/files/files.service';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { v4 } from 'uuid';
-import { CreatePostInputModel } from '../../../types/posts/user-post-input.models';
+import { UpdatePostInputModel } from '../../../types/posts/user-post-input.models';
 import {
   IPostsUserRepo,
   POSTS_USER_REPO,
@@ -13,8 +13,8 @@ export class UpdatePostCommand {
   constructor(
     public readonly userId: number,
     public readonly postId: number,
-    public readonly file: Express.Multer.File,
-    public readonly createPostInputModel: CreatePostInputModel,
+    public readonly files: Express.Multer.File[],
+    public readonly updatePostInputModel: UpdatePostInputModel,
   ) {}
 }
 
@@ -26,7 +26,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<void> {
-    const { description } = command.createPostInputModel;
+    const { description } = command.updatePostInputModel;
     const foundedPost = await this.postsRepository.findOne(
       command.userId,
       command.postId,
@@ -34,14 +34,14 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     if (!foundedPost) {
       throw new NotFoundException();
     }
-    let postPhotoLink;
-    if (command.file) {
-      const filePath = `content/user/${command.userId}/posts/${v4()}.${
-        command.file.mimetype.split('/')[1]
-      }`;
-      postPhotoLink = await this.filesService.saveFile(filePath, command.file);
-      foundedPost.postPhotoLinks = postPhotoLink;
+
+    let postPhotoLinks = command.updatePostInputModel.existedPhotos;
+    if (command.files.length > 0) {
+      const filePaths = command.files.map((file) => `content/user/${command.userId}/posts/${v4()}.${file.mimetype.split('/')[1]}`)
+      const newPostPhotoLinks = await this.filesService.saveFiles(filePaths, command.files)
+      postPhotoLinks = [...postPhotoLinks, ...newPostPhotoLinks];
     }
+    foundedPost.postPhotoLinks = postPhotoLinks;
     foundedPost.description = description;
     const post = new PostDomain(foundedPost);
     post.setAll(foundedPost);

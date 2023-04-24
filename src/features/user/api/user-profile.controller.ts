@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -183,6 +184,10 @@ export class UserProfileController {
     description: 'The post has been successfully updated.',
   })
   @ApiResponse({
+    status: 400,
+    description: 'Too many photos for one post.',
+  })
+  @ApiResponse({
     status: 401,
     description: 'The user not identified.',
   })
@@ -193,19 +198,29 @@ export class UserProfileController {
   @ApiConsumes('multipart/from-data')
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(FileInterceptor('postPhoto'))
+  @UseInterceptors(FilesInterceptor('postPhoto', 10))
   @Put('post/:id')
   async updatePostForCurrentUser(
     @Req() req: RequestWithUser,
     @Param('id') id: string,
     @Body() updatePostInputModel: UpdatePostInputModel,
-    @UploadedFile(
+    @UploadedFiles(
       new ParseFilePipe(parseFilePipeValidationsOptions('postPhoto', 1000)),
     )
-    file: Express.Multer.File,
+    files: Express.Multer.File[],
   ) {
+    if(updatePostInputModel.existedPhotos && (updatePostInputModel.existedPhotos.length + files.length) > 10) {
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'postPhoto & existedPhotos',
+            message: 'a post can have no more than 10 photos in summ',
+          },
+        ],
+      });
+    }
     await this.commandBus.execute(
-      new UpdatePostCommand(req.user.userId, +id, file, updatePostInputModel),
+      new UpdatePostCommand(req.user.userId, +id, files, updatePostInputModel),
     );
     return;
   }

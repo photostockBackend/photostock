@@ -1,4 +1,4 @@
-import { IsOptional, IsString, Length } from 'class-validator';
+import { IsArray, IsOptional, IsString, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -21,6 +21,11 @@ export class UpdatePostInputModel {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 500)
   description: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  existedPhotos: string[];
 
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()
