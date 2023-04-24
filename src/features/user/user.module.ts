@@ -19,6 +19,8 @@ import { IntTransformPipe } from '../../helpers/common/pipes/int-transform.pipe'
 import { FindPostByIdHandler } from './application/queries/handlers/posts/find-post-by-id.handler';
 import { UserPostsQueryRepo } from './infrastructure/query.repositories/user-posts.query.repo';
 import { UpdateProfilePhotoUseCase } from './application/use-cases/profile/update-profile-photo.use-case';
+import { FindPostsByUserIdHandler } from './application/queries/handlers/posts/find-posts-by-user-id.handler';
+import { QueryTransformPipe } from '../../helpers/common/pipes/query-transform.pipe';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -27,7 +29,11 @@ const commands = [
   UpdatePostUseCase,
   DeletePostUseCase,
 ];
-const queries = [GetProfileForUserHandler, FindPostByIdHandler];
+const queries = [
+  GetProfileForUserHandler,
+  FindPostByIdHandler,
+  FindPostsByUserIdHandler,
+];
 const services = [];
 const repositories = [
   {
@@ -45,7 +51,7 @@ const repositories = [
 const strategies = [];
 const guards = [];
 const interceptors = [CheckUserNameInterceptor];
-const pipes = [IntTransformPipe];
+const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
   controllers: [UserProfileController],
