@@ -39,6 +39,7 @@ import { CheckUserNameEmailInterceptor } from './interceptors/check-user-name-em
 import { RefreshAuthGuard } from './guards/strategies/refresh.strategy';
 import { ApiResponseError } from '../../../helpers/common/swagger-decorators/error-api-swagger';
 import { ErrorSwagger } from '../../../helpers/common/types/errored';
+import { RecaptchaGuard } from './guards/recaptcha.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -50,6 +51,7 @@ export class AuthController {
     description: 'The code for pass-recovery sended to email.',
   })
   @ApiResponseError(ErrorSwagger)
+  @UseGuards(RecaptchaGuard)
   @HttpCode(204)
   @Post('password-recovery')
   async passwordRecovery(
