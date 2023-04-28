@@ -1,14 +1,14 @@
-import {INestApplication} from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import {createAppandServerForTests} from './utils/app';
-import {MailService} from '../src/adapters/mail/mail.service';
+import { createAppAndServerForTests } from './utils/app';
+import { MailService } from '../src/adapters/mail/mail.service';
 
 jest.setTimeout(60000);
 describe('AppController', () => {
   let app: INestApplication;
   let server: any;
   beforeAll(async () => {
-    app = await createAppandServerForTests();
+    app = await createAppAndServerForTests();
     server = app.getHttpServer();
 
     //const mailBox = new MailBoxImap();

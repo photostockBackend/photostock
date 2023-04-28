@@ -9,97 +9,100 @@ datasource db {
 }
 
 model User {
-  id                Int               @id @default(autoincrement())
-  username          String            @unique
-  email             String            @unique
-  createdAt         String
-  credInfo          CredInfoUser?
-  tokenInfo         TokenInfoUser[]
-  profileInfo       ProfileInfoUser?
-  banInfoUser       BanInfoUser?
-  posts             Posts[]
-  postsLikes        PostLikes[]
-  comments          Comments[]
-  commentLikes      CommentLikes[]
+  id           Int              @id @default(autoincrement())
+  username     String           @unique
+  email        String           @unique
+  createdAt    String
+  credInfo     CredInfoUser?
+  tokenInfo    TokenInfoUser[]
+  profileInfo  ProfileInfoUser?
+  banInfoUser  BanInfoUser?
+  posts        Posts[]
+  postsLikes   PostLikes[]
+  comments     Comments[]
+  commentLikes CommentLikes[]
 }
 
 model CredInfoUser {
-  id                Int               @id @default(autoincrement())
-  passwordHash      String
-  isActivated       Boolean
-  code              String
-  codeExpiresAt     DateTime
-  recoveryIsUsed    Boolean
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int               @unique
+  id             Int      @id @default(autoincrement())
+  passwordHash   String
+  isActivated    Boolean
+  code           String
+  codeExpiresAt  DateTime
+  recoveryIsUsed Boolean
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int      @unique
 }
 
 model TokenInfoUser {
-  id                Int               @id @default(autoincrement())
-  deviceIp          String
-  deviceName        String
-  deviceId          String
-  issuedAt          Int
-  expirationAt      Int
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int
+  id           Int    @id @default(autoincrement())
+  deviceIp     String
+  deviceName   String
+  deviceId     String
+  issuedAt     Int
+  expirationAt Int
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
 }
 
 model ProfileInfoUser {
-  id                Int               @id @default(autoincrement())
-  firstName         String?
-  lastName          String?
-  birthday          DateTime?
-  city              String?
-  aboutMe           String?
-  profilePhotoLink  String?
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int               @unique
+  id               Int       @id @default(autoincrement())
+  firstName        String?
+  lastName         String?
+  birthday         DateTime?
+  city             String?
+  aboutMe          String?
+  profilePhotoLink String?
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int       @unique
 }
 
 model BanInfoUser {
-  id                Int               @id @default(autoincrement())
-  banStatus         Boolean
-  banReason         String
-  banDate           String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int               @unique
+  id        Int     @id @default(autoincrement())
+  banStatus Boolean
+  banReason String
+  banDate   String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int     @unique
 }
 
 model Posts {
-  id                Int               @id @default(autoincrement())
-  description       String?
-  postPhotoLinks    String[]
-  createdAt         String
-  updatedAt         String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int               
-  postsLikes        PostLikes[]
+  id             Int         @id @default(autoincrement())
+  description    String?
+  postPhotoLinks String[]
+  createdAt      String
+  updatedAt      String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  postsLikes     PostLikes[]
+  comments       Comments[]
 }
 
 model PostLikes {
-  id                Int               @id @default(autoincrement())
-  createdAt         String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int           
-  post              Posts             @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId            Int    
+  id        Int    @id @default(autoincrement())
+  createdAt String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  post      Posts  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
 }
 
 model Comments {
-  id                Int               @id @default(autoincrement())
-  text              String
-  createdAt         String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int           
-  commentLikes      CommentLikes[]    
+  id           Int            @id @default(autoincrement())
+  text         String
+  createdAt    String
+  postId       Int
+  post         Posts          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  commentLikes CommentLikes[]
 }
 
 model CommentLikes {
-  id                Int               @id @default(autoincrement())
-  createdAt         String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int           
-  comment           Comments          @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId         Int    
+  id        Int      @id @default(autoincrement())
+  createdAt String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   Comments @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
 }

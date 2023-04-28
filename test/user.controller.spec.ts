@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { createAppandServerForTests } from './utils/app';
+import { createAppAndServerForTests } from './utils/app';
 import * as path from 'path';
 import { MailService } from '../src/adapters/mail/mail.service';
 
@@ -9,7 +9,7 @@ describe('AppController', () => {
   let app: INestApplication;
   let server: any;
   beforeAll(async () => {
-    app = await createAppandServerForTests();
+    app = await createAppAndServerForTests();
     server = app.getHttpServer();
   });
 
@@ -179,9 +179,9 @@ describe('AppController', () => {
     });
 
     it('should get specific post to check count of photos', async () => {
-      const res = await request(server).get(`/user/post/${postId}`)
-      expect(res.body.postPhotos.length).toBe(5)
-      existedPhotos = res.body.postPhotos
+      const res = await request(server).get(`/user/post/${postId}`);
+      expect(res.body.postPhotos.length).toBe(5);
+      existedPhotos = res.body.postPhotos;
     });
 
     it('should update post', async () => {
@@ -202,10 +202,10 @@ describe('AppController', () => {
         .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .expect(204);
-        
-      const res = await request(server).get(`/user/post/${postId}`)
-      expect(res.body.postPhotos.length).toBe(10)
-      existedPhotos = res.body.postPhotos
+
+      const res = await request(server).get(`/user/post/${postId}`);
+      expect(res.body.postPhotos.length).toBe(10);
+      existedPhotos = res.body.postPhotos;
     });
 
     it('should return error if try to update post with over 10 photos', async () => {
@@ -220,8 +220,8 @@ describe('AppController', () => {
     });
 
     it('should get specific post to check count of photos', async () => {
-      const res = await request(server).get(`/user/post/${postId}`)
-      expect(res.body.postPhotos.length).toBe(10)
+      const res = await request(server).get(`/user/post/${postId}`);
+      expect(res.body.postPhotos.length).toBe(10);
     });
 
     it('should update post to reduce of photos', async () => {
@@ -232,9 +232,9 @@ describe('AppController', () => {
         .field('description', 'newdescription')
         .field('existedPhotos', existedPhotos.slice(5))
         .expect(204);
-        
-      const res = await request(server).get(`/user/post/${postId}`)
-      expect(res.body.postPhotos.length).toBe(5)
+
+      const res = await request(server).get(`/user/post/${postId}`);
+      expect(res.body.postPhotos.length).toBe(5);
     });
 
     it('should delete post', async () => {
@@ -247,7 +247,7 @@ describe('AppController', () => {
         .delete(`/user/post/${postId}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(204);
-      await request(server).get(`/user/post/${postId}`).expect(404)
+      await request(server).get(`/user/post/${postId}`).expect(404);
     });
 
     it('should delete all data', async () => {

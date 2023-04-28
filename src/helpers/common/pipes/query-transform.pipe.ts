@@ -1,9 +1,10 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 import { QueryPostInputModel } from '../../../features/user/types/posts/user-post-input.models';
+import { PaginatorDto } from '../types/paginator.dto';
 
 @Injectable()
 export class QueryTransformPipe
-  implements PipeTransform<QueryPostInputModel, QueryPostInputModel>
+  implements PipeTransform<PaginatorDto, PaginatorDto>
 {
   transform(
     query: QueryPostInputModel,
