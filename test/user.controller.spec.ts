@@ -22,6 +22,7 @@ describe('AppController', () => {
     let accessToken;
     let refreshToken;
     let postId;
+    let existedPhotos;
     it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204);
     });
@@ -170,12 +171,20 @@ describe('AppController', () => {
         .field('description', 'description')
         .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .expect(201);
-      //expect(res.body).toBe(0)
       postId = res.body.id;
     });
 
-    /*it('should update post', async () => {
+    it('should get specific post to check count of photos', async () => {
+      const res = await request(server).get(`/user/post/${postId}`)
+      expect(res.body.postPhotos.length).toBe(5)
+      existedPhotos = res.body.postPhotos
+    });
+
+    it('should update post', async () => {
       await request(server).put(`/user/post/${postId}`).expect(401);
       await request(server)
         .put(`/user/post/${0}`)
@@ -186,9 +195,47 @@ describe('AppController', () => {
         .set('Content-Type', 'multipart/form-data')
         .set('Authorization', `Bearer ${accessToken}`)
         .field('description', 'newdescription')
+        .field('existedPhotos', existedPhotos)
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .attach('postPhoto', path.join(__dirname, './1.jpeg'))
         .expect(204);
-    });*/
+        
+      const res = await request(server).get(`/user/post/${postId}`)
+      expect(res.body.postPhotos.length).toBe(10)
+      existedPhotos = res.body.postPhotos
+    });
+
+    it('should return error if try to update post with over 10 photos', async () => {
+      await request(server)
+        .put(`/user/post/${postId}`)
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('description', 'newdescription')
+        .field('existedPhotos', existedPhotos)
+        .attach('postPhoto', path.join(__dirname, './1.jpeg'))
+        .expect(400);
+    });
+
+    it('should get specific post to check count of photos', async () => {
+      const res = await request(server).get(`/user/post/${postId}`)
+      expect(res.body.postPhotos.length).toBe(10)
+    });
+
+    it('should update post to reduce of photos', async () => {
+      await request(server)
+        .put(`/user/post/${postId}`)
+        .set('Content-Type', 'multipart/form-data')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('description', 'newdescription')
+        .field('existedPhotos', existedPhotos.slice(5))
+        .expect(204);
+        
+      const res = await request(server).get(`/user/post/${postId}`)
+      expect(res.body.postPhotos.length).toBe(5)
+    });
 
     it('should delete post', async () => {
       await request(server).delete(`/user/post/${postId}`).expect(401);
@@ -200,6 +247,7 @@ describe('AppController', () => {
         .delete(`/user/post/${postId}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(204);
+      await request(server).get(`/user/post/${postId}`).expect(404)
     });
 
     it('should delete all data', async () => {

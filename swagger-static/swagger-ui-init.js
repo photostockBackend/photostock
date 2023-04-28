@@ -782,25 +782,18 @@ window.onload = function() {
             }
           },
           "required": [
-            "username",
-            "firstName",
-            "lastName",
-            "birthday",
-            "city",
-            "aboutMe"
+            "username"
           ]
         },
         "UpdateProfilePhotoInputModel": {
           "type": "object",
           "properties": {
             "avatar": {
-              "type": "object",
-              "description": "user-profile avatar"
+              "type": "string",
+              "description": "user-profile avatar",
+              "format": "binary"
             }
-          },
-          "required": [
-            "avatar"
-          ]
+          }
         },
         "CreatePostInputModel": {
           "type": "object",

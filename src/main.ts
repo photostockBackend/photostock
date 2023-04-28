@@ -5,38 +5,35 @@ import { createWriteStream } from 'fs';
 import { get } from 'http';
 import { useContainer } from 'class-validator';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter } from './helpers/http-exeption.filter';
+import { BadExceptionFilter } from './helpers/bad-exception.filter';
 import cookieParser = require('cookie-parser');
 
 const PORT = process.env.PORT || 5000;
 const serverUrl = `http://localhost:${PORT}`;
 
 export async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: {
-    origin: ['http://localhost:3000', 'https://front-team.vercel.app'],
-    credentials: true
-  }})
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: ['http://localhost:3000', 'https://front-team.vercel.app'],
+      credentials: true,
+    },
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,
       transform: true,
       exceptionFactory: (errors) => {
-        const customErrors = [];
-        errors.forEach((e) => {
-          const keys = Object.keys(e.constraints);
-          keys.forEach((k) => {
-            customErrors.push({
-              message: e.constraints[k],
-              field: e.property,
-            });
-          });
-        });
-        throw new BadRequestException(customErrors);
+        throw new BadRequestException(
+          errors.map((e) => ({
+            field: e.property,
+            message: e.constraints[Object.keys(e.constraints)[0]],
+          })),
+        );
       },
     }),
   );
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new BadExceptionFilter());
   app.use(cookieParser());
 
   const config = new DocumentBuilder()
