@@ -1,15 +1,15 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { PublicPostsQueryRepo } from '../../../../infrastructure/query.repositories/public-posts.query.repo';
 
-export class FindPostByIdWithCommentsCommand {
+export class FindPostByIdWithNewestCommentsCommand {
   constructor(public readonly postId: number) {}
 }
-@QueryHandler(FindPostByIdWithCommentsCommand)
-export class FindPostByIdWithCommentsHandler
-  implements IQueryHandler<FindPostByIdWithCommentsCommand>
+@QueryHandler(FindPostByIdWithNewestCommentsCommand)
+export class FindPostByIdWithNewestCommentsHandler
+  implements IQueryHandler<FindPostByIdWithNewestCommentsCommand>
 {
   constructor(private queryRepo: PublicPostsQueryRepo) {}
-  async execute(query: FindPostByIdWithCommentsCommand) {
+  async execute(query: FindPostByIdWithNewestCommentsCommand) {
     const { postId } = query;
     return await this.queryRepo.findPostByIdWithNewestComments(postId);
   }
