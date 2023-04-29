@@ -1,12 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { PublicPostsQueryRepo } from '../../../../infrastructure/query.repositories/public-posts.query.repo';
-import { PaginatorDto } from '../../../../../../helpers/common/types/paginator.dto';
 
 export class FindPostByIdWithCommentsCommand {
-  constructor(
-    public readonly postId: number,
-    public readonly page: PaginatorDto,
-  ) {}
+  constructor(public readonly postId: number) {}
 }
 @QueryHandler(FindPostByIdWithCommentsCommand)
 export class FindPostByIdWithCommentsHandler
@@ -14,7 +10,7 @@ export class FindPostByIdWithCommentsHandler
 {
   constructor(private queryRepo: PublicPostsQueryRepo) {}
   async execute(query: FindPostByIdWithCommentsCommand) {
-    const { postId, page } = query;
-    return await this.queryRepo.findPostByIdWithComments(postId, page);
+    const { postId } = query;
+    return await this.queryRepo.findPostByIdWithNewestComments(postId);
   }
 }

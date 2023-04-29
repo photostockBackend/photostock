@@ -1,40 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
-import { PaginatorDto } from '../../../../helpers/common/types/paginator.dto';
-import { addPagination } from '../../../../helpers/paginator';
 
 @Injectable()
 export class PublicPostsQueryRepo {
   constructor(protected prisma: PrismaService) {}
-  async findPostByIdWithComments(id: number, page: PaginatorDto) {
+  async findPostByIdWithNewestComments(id: number) {
     const post = await this.prisma.posts.findUnique({
       where: { id: id },
       include: {
         comments: {
           orderBy: { createdAt: 'asc' },
-          skip: (page.pageNumber - 1) * page.pageSize,
-          take: page.pageSize,
+          take: 3,
+          include: { user: { include: { profileInfo: true } } },
         },
       },
     });
-    const commentsCountByPost = await this.prisma.comments.count({
-      where: { postId: id },
-    });
     if (!post) return null;
-    const pagination = addPagination(
-      commentsCountByPost,
-      page.pageSize,
-      page.pageNumber,
-    );
     return {
       id: post.id,
       description: post.description,
       postPhotos: post.postPhotoLinks,
-      comments: {
-        pagination,
+      newestComments: {
         items: post.comments.map((c) => ({
           id: c.id,
           text: c.text,
+          username: c.user.username,
+          avatar: c.user.profileInfo.profilePhotoLink,
         })),
       },
     };
