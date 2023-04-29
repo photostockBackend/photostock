@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../../adapters/files/files.service';
 import { Inject, NotFoundException } from '@nestjs/common';
-import { v4 } from 'uuid';
 import { UpdatePostInputModel } from '../../../types/posts/user-post-input.models';
 import {
   IPostsUserRepo,
@@ -18,6 +17,19 @@ export class UpdatePostCommand {
   ) {}
 }
 
+/*
+if(updatePostInputModel.existedPhotos && (updatePostInputModel.existedPhotos.length + files.length) > 10) {
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'postPhoto & existedPhotos',
+            message: 'a post can have no more than 10 photos in summ',
+          },
+        ],
+      });
+    }
+*/ 
+
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   constructor(
@@ -26,6 +38,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<void> {
+    
     const { description } = command.updatePostInputModel;
     const foundedPost = await this.postsRepository.findOne(
       command.userId,
@@ -35,10 +48,17 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
       throw new NotFoundException();
     }
 
+    let removedPhotoIds = command.updatePostInputModel.existedPhotos;
+    
+    //const removedLinks =  foundedPost.postPhotoLinks.filter(l => postPhotoLinks.every(l => inputL))
     let postPhotoLinks = command.updatePostInputModel.existedPhotos;
     if (command.files.length > 0) {
-      const filePaths = command.files.map((file) => `content/user/${command.userId}/posts/${v4()}.${file.mimetype.split('/')[1]}`)
-      const newPostPhotoLinks = await this.filesService.saveFiles(filePaths, command.files)
+      const files = [] 
+      command.files.forEach((file) => files.push(
+        this.filesService.getFileWrapper(command.userId, file)
+      ))
+
+      const newPostPhotoLinks = await this.filesService.saveFiles(files)
       postPhotoLinks = [...postPhotoLinks, ...newPostPhotoLinks];
     }
     foundedPost.postPhotoLinks = postPhotoLinks;
@@ -46,5 +66,8 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     const post = new PostDomain(foundedPost);
     post.setAll(foundedPost);
     await this.postsRepository.update(post);
+
+      // todo:  remove from
+      
   }
 }

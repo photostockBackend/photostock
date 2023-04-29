@@ -441,7 +441,7 @@ window.onload = function() {
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/ProfileUserViewModel"
+                    "$ref": "#/components/schemas/PostUserViewModel"
                   }
                 }
               }
@@ -479,6 +479,9 @@ window.onload = function() {
           "responses": {
             "204": {
               "description": "The post has been successfully updated."
+            },
+            "400": {
+              "description": "Too many photos for one post."
             },
             "401": {
               "description": "The user not identified."
@@ -530,6 +533,54 @@ window.onload = function() {
         }
       },
       "/user/post": {
+        "get": {
+          "operationId": "UserProfileController_getPostsByUserId",
+          "parameters": [
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 8
+              },
+              "description": "pageSize is portions size that should be returned"
+            },
+            {
+              "name": "pageNumber",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 1
+              },
+              "description": "pageNumber is number of portions that should be returned"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The posts by user.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostsUserWithPaginationViewModel"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Posts doesnt exists."
+            }
+          },
+          "tags": [
+            "user"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        },
         "post": {
           "operationId": "UserProfileController_createPostForCurrentUser",
           "parameters": [],
@@ -795,6 +846,55 @@ window.onload = function() {
             }
           }
         },
+        "PostUserViewModel": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "description": {
+              "type": "string"
+            },
+            "postPhotos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "description",
+            "postPhotos"
+          ]
+        },
+        "PostsUserWithPaginationViewModel": {
+          "type": "object",
+          "properties": {
+            "pagesCount": {
+              "type": "number"
+            },
+            "page": {
+              "type": "number"
+            },
+            "pageSize": {
+              "type": "number"
+            },
+            "totalCount": {
+              "type": "number"
+            },
+            "posts": {
+              "$ref": "#/components/schemas/PostUserViewModel"
+            }
+          },
+          "required": [
+            "pagesCount",
+            "page",
+            "pageSize",
+            "totalCount",
+            "posts"
+          ]
+        },
         "CreatePostInputModel": {
           "type": "object",
           "properties": {
@@ -816,11 +916,20 @@ window.onload = function() {
             "description": {
               "type": "string"
             },
+            "existedPhotos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
             "postPhoto": {
               "type": "string",
               "format": "binary"
             }
-          }
+          },
+          "required": [
+            "existedPhotos"
+          ]
         }
       }
     }
