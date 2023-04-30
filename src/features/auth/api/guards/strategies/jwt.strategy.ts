@@ -7,7 +7,6 @@ export class BearerAuthGuard extends AuthGuard('jwt') {}
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(public configService: ConfigService) {
-    console.log(configService.get('JWT_SECRET'))
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
