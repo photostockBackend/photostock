@@ -1,3 +1,10 @@
+import { PhotoLinks } from "./user-profile-view.models";
+
+export type ProfilePhoto = {
+  id: number
+  keys: PhotoLinks[]
+}
+
 export type ProfileUserCreateType = {
   id: number;
   firstName: string;
@@ -5,6 +12,6 @@ export type ProfileUserCreateType = {
   birthday: Date;
   city: string;
   aboutMe: string;
-  profilePhotoLink: string;
+  profilePhoto: ProfilePhoto;
   userId: number;
 };

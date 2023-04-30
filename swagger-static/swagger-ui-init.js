@@ -394,16 +394,6 @@ window.onload = function() {
         "put": {
           "operationId": "UserProfileController_updateProfilePhoto",
           "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateProfilePhotoInputModel"
-                }
-              }
-            }
-          },
           "responses": {
             "204": {
               "description": "The profile photo has been successfully updated."
@@ -767,6 +757,10 @@ window.onload = function() {
             "userId"
           ]
         },
+        "PhotoLinks": {
+          "type": "object",
+          "properties": {}
+        },
         "ProfileUserViewModel": {
           "type": "object",
           "properties": {
@@ -790,7 +784,7 @@ window.onload = function() {
               "type": "string"
             },
             "avatar": {
-              "type": "string"
+              "$ref": "#/components/schemas/PhotoLinks"
             }
           },
           "required": [
@@ -835,16 +829,6 @@ window.onload = function() {
           "required": [
             "username"
           ]
-        },
-        "UpdateProfilePhotoInputModel": {
-          "type": "object",
-          "properties": {
-            "avatar": {
-              "type": "string",
-              "description": "user-profile avatar",
-              "format": "binary"
-            }
-          }
         },
         "PostUserViewModel": {
           "type": "object",

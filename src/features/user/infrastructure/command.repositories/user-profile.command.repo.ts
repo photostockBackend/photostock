@@ -8,7 +8,9 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
   constructor(private prisma: PrismaService) {}
   async update(userWithProfile: UserDomain): Promise<boolean> {
     const result = await this.prisma.user.update({
-      where: { id: userWithProfile.id },
+      where: { 
+        id: userWithProfile.id,
+      },
       data: {
         username: userWithProfile.username,
         profileInfo: {
@@ -18,7 +20,23 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
             birthday: userWithProfile.profile.birthday,
             city: userWithProfile.profile.city,
             aboutMe: userWithProfile.profile.aboutMe,
-            profilePhotoLink: userWithProfile.profile.profilePhotoLink,
+            profilePhoto: {
+              update: {
+                keys: userWithProfile.profile.profilePhoto.keys[0]?.key ? {
+                  upsert: {
+                    where: {id: 1},
+                    update: {
+                      resolution: 'original',
+                      key: userWithProfile.profile.profilePhoto.keys[0]?.key ?? null
+                    },
+                    create: {
+                      resolution: 'original',
+                      key: userWithProfile.profile.profilePhoto.keys[0]?.key ?? null
+                    }
+                  }
+                } : {}
+              }
+            }
           },
         },
       },
@@ -28,7 +46,18 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
   async findUserWithProfileByUserId(userId: number): Promise<UserDomain> {
     const foundUser = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: { credInfo: true, profileInfo: true },
+      include: { 
+        credInfo: true, 
+        profileInfo: {
+          include: {
+            profilePhoto: {
+              include: {
+                keys: true
+              }
+            }
+          }
+        }
+      },
     });
     if (!foundUser) return null;
     const user = new UserDomain({

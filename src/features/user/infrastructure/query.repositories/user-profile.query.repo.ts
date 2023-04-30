@@ -10,18 +10,14 @@ export class UserProfileQueryRepo {
   async findProfileUserByUserId(userId: number): Promise<ProfileUserViewModel> {
     const sql = format(
       `SELECT
-                "firstName",
-                "lastName", 
-                "birthday", 
-                "city",
-                "aboutMe",
-                "profilePhotoLink",
+                "ProfileInfoUser".*,
                 "User"."username",
-                "userId"
+                "FileKeys".*,
+                "Files".*
                 FROM "ProfileInfoUser"
-                JOIN "User"
-                ON "User"."id" = %1$s
-                WHERE "ProfileInfoUser"."userId" = %1$s;`,
+                JOIN "User" ON "User"."id" = %1$s
+                LEFT JOIN "Files" ON "ProfileInfoUser"."id" = "Files"."profileId"
+                LEFT JOIN "FileKeys" ON "Files"."id" = "FileKeys"."fileId";`,
       userId,
     );
     const profile = await this.prisma.$queryRawUnsafe<ProfileFoundType[]>(sql);
@@ -33,7 +29,16 @@ export class UserProfileQueryRepo {
       birthday: profile[0].birthday,
       city: profile[0].city,
       aboutMe: profile[0].aboutMe,
-      avatar: profile[0].profilePhotoLink,
+      avatar: [
+        {
+          key: profile[0].key,
+          resolution: 'original',
+        }, 
+        {
+          key: profile[0].key,
+          resolution: 'thumbnail',
+        }
+      ],
     };
   }
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UserDomain } from './user.domain';
-import { ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
+import { ProfilePhoto, ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
 import { ProfileUserUpdateType } from '../../features/user/types/profile/profile-user-update.type';
+import { PhotoLinks } from '../../features/user/types/profile/user-profile-view.models';
 
 @Injectable()
 export class ProfileUserDomain {
@@ -12,7 +13,7 @@ export class ProfileUserDomain {
     this.birthday = profileDto.birthday;
     this.city = profileDto.city;
     this.aboutMe = profileDto.aboutMe;
-    this.profilePhotoLink = profileDto.profilePhotoLink;
+    this.profilePhoto = profileDto.profilePhoto;
     this.userId = profileDto.userId;
   }
   id: number;
@@ -21,7 +22,7 @@ export class ProfileUserDomain {
   birthday: Date;
   city: string;
   aboutMe: string;
-  profilePhotoLink: string;
+  profilePhoto: ProfilePhoto;
   user: UserDomain;
   userId: number;
   async setUser(user: UserDomain): Promise<void> {

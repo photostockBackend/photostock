@@ -52,7 +52,7 @@ model ProfileInfoUser {
   birthday          DateTime?
   city              String?
   aboutMe           String?
-  profilePhotoLink  String?
+  profilePhoto      Files?
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               @unique
 }
@@ -75,6 +75,38 @@ model Posts {
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               
   postsLikes        PostLikes[]
+}
+
+enum fileType {
+  avatar
+  post_image
+}
+enum fileStatus {
+  uploaded
+  deleted
+}
+model Files {
+  id                Int               @id @default(autoincrement())
+  profile           ProfileInfoUser?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId         Int?              @unique
+  keys              FileKeys[]
+  sizeInBytes       Int?
+  type              fileType?
+  status            fileStatus?
+  extension         String?
+  mimeType          String?
+}
+
+enum resolutions {
+  thumbnail
+  original
+}
+model FileKeys {
+  id                Int               @id @default(autoincrement())
+  file              Files?            @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId            Int?   
+  resolution        resolutions?
+  key               String?
 }
 
 model PostLikes {

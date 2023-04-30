@@ -32,7 +32,7 @@ export class UpdateProfilePhotoUseCase
       }`;
       link = await this.filesService.saveFile(filePath, file);
     }
-    user.profile.profilePhotoLink = link;
+    user.profile.profilePhoto.keys[0] = {key: link, resolution: link};
     await this.profileRepository.update(user);
   }
 }

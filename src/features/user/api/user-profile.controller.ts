@@ -123,7 +123,6 @@ export class UserProfileController {
   @Put('profile/photo')
   async updateProfilePhoto(
     @Req() req: RequestWithUser,
-    @Body() updateProfilePhotoInputModel: UpdateProfilePhotoInputModel,
     @UploadedFile(
       new ParseFilePipe(parseFilePipeValidationsOptions('avatar', 1000)),
     )

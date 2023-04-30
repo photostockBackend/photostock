@@ -69,7 +69,16 @@ describe('AppController', () => {
         birthday: null,
         city: null,
         aboutMe: null,
-        avatar: null,
+        avatar: [
+          {
+            key: null,
+            resolution: 'original',
+          }, 
+          {
+            key: null,
+            resolution: 'thumbnail',
+          }
+        ],
       });
     });
 
@@ -99,7 +108,16 @@ describe('AppController', () => {
         city: 'city',
         birthday: expect.any(String),
         firstName: 'newname',
-        avatar: null,
+        avatar: [
+          {
+            key: null,
+            resolution: 'original',
+          }, 
+          {
+            key: null,
+            resolution: 'thumbnail',
+          }
+        ],
         lastName: 'surName',
         username: 'Nickolay',
       });
@@ -124,7 +142,16 @@ describe('AppController', () => {
         city: 'city',
         birthday: expect.any(String),
         firstName: 'newname',
-        avatar: expect.any(String),
+        avatar: [
+          {
+            key: expect.any(String),
+            resolution: 'original',
+          }, 
+          {
+            key: expect.any(String),
+            resolution: 'thumbnail',
+          }
+        ],
         lastName: 'surName',
         username: 'Nickolay',
       });
@@ -156,7 +183,16 @@ describe('AppController', () => {
         city: 'newcity',
         birthday: expect.any(String),
         firstName: 'newnewname',
-        avatar: expect.any(String),
+        avatar: [
+          {
+            key: expect.any(String),
+            resolution: 'original',
+          }, 
+          {
+            key: expect.any(String),
+            resolution: 'thumbnail',
+          }
+        ],
         lastName: 'newnewsurName',
         username: 'Nickolay',
       });
