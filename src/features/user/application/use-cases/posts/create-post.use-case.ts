@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../../adapters/files/files.service';
 import { Inject } from '@nestjs/common';
-import { v4 } from 'uuid';
 import { CreatePostInputModel } from '../../../types/posts/user-post-input.models';
 import {
   IPostsUserRepo,
@@ -29,8 +28,11 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
 
     let postPhotoLinks;
     if (command.files.length > 0) {
-      const filePaths = command.files.map((file) => `content/user/${command.userId}/posts/${v4()}.${file.mimetype.split('/')[1]}`)
-      postPhotoLinks = await this.filesService.saveFiles(filePaths, command.files);
+      const files = [] 
+      command.files.forEach((file) => files.push(
+        this.filesService.getFileWrapper(command.userId, file)
+      ))
+      postPhotoLinks = await this.filesService.saveFiles(files);
     }
     const userId = command.userId;
     const post = new PostDomain({ description, postPhotoLinks, userId });

@@ -24,7 +24,13 @@ export class AuthCommandRepo implements IUsersRepo {
           },
         },
         profileInfo: {
-          create: {},
+          create: {
+            profilePhoto: {
+              create: {
+                keys: {}
+              }
+            }
+          },
         },
       },
     });

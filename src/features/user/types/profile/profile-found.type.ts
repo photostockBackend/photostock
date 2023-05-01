@@ -6,6 +6,6 @@ export type ProfileFoundType = {
   birthday: Date;
   city: string;
   aboutMe: string;
-  profilePhotoLink: string;
+  key: string;
   userId: number;
 };

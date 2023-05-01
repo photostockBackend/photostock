@@ -20,8 +20,6 @@ export class UpdateProfileInfoUseCase
   implements ICommandHandler<UpdateProfileInfoCommand>
 {
   constructor(
-    private filesService: FilesService,
-    private authService: AuthService,
     @Inject(PROFILE_USER_REPO) private profileRepository: IProfileUserRepo,
   ) {}
   async execute(command: UpdateProfileInfoCommand): Promise<void> {

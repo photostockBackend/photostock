@@ -1,3 +1,11 @@
+export type ProfilePhoto = {
+  id: number
+  keys: {
+    key: string;
+    resolution: string;
+  }[]
+}
+
 export type ProfileUserCreateType = {
   id: number;
   firstName: string;
@@ -5,6 +13,6 @@ export type ProfileUserCreateType = {
   birthday: Date;
   city: string;
   aboutMe: string;
-  profilePhotoLink: string;
+  profilePhoto: ProfilePhoto;
   userId: number;
 };

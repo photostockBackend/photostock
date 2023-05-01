@@ -5,18 +5,22 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-
-const s3 = new S3Client({
-  region: 'REGION',
-  endpoint: 'https://storage.yandexcloud.net',
-  credentials: {
-    accessKeyId: process.env.YANDEX_CLOUD_STORAGE_ID,
-    secretAccessKey: process.env.YANDEX_CLOUD_STORAGE_KEY,
-  },
-});
+import { v4 } from 'uuid';
 
 @Injectable()
 export class FilesService {
+  private readonly s3: S3Client;
+  constructor(){
+    this.s3 = new S3Client({
+      region: 'REGION',
+      endpoint: 'https://storage.yandexcloud.net',
+      credentials: {
+        accessKeyId: process.env.YANDEX_CLOUD_STORAGE_ID,
+        secretAccessKey: process.env.YANDEX_CLOUD_STORAGE_KEY,
+      },
+    });
+  }
+
   async saveFile(filePath: string, file: Express.Multer.File): Promise<string> {
     const bucketParams = {
       Bucket: 'photostock',
@@ -27,7 +31,7 @@ export class FilesService {
 
     const command = new PutObjectCommand(bucketParams);
     try {
-      await s3.send(command);
+      await this.s3.send(command);
       return `https://photostock.storage.yandexcloud.net/${filePath}`;
     } catch (e) {
       console.log(e);
@@ -35,20 +39,20 @@ export class FilesService {
     }
   }
 
-  async saveFiles(filePaths: string[], files: Express.Multer.File[]): Promise<string[]> {
+  async saveFiles(files: {filePath: string, file: Express.Multer.File}[]): Promise<string[]> {
     const paths = [] as string[]
-    for(let i=0; i<filePaths.length; i++) {
+    for(let i=0; i<files.length; i++) {
       const bucketParams = {
         Bucket: 'photostock',
-        Key: filePaths[i],
-        Body: files[i].buffer,
+        Key: files[i].filePath,
+        Body: files[i].file.buffer,
         ContentType: 'image/jpeg',
       };
 
       const command = new PutObjectCommand(bucketParams);
       try {
-        await s3.send(command);
-        paths.push(`https://photostock.storage.yandexcloud.net/${filePaths[i]}`);
+        await this.s3.send(command);
+        paths.push(`https://photostock.storage.yandexcloud.net/${files[i].filePath}`);
       } catch (e) {
         console.log(e);
         paths.push(null);
@@ -63,7 +67,7 @@ export class FilesService {
       Prefix: `content/user/${userId}/avatars/${userId}`,
     };
 
-    const { Contents } = await s3.send(new ListObjectsV2Command(listParams));
+    const { Contents } = await this.s3.send(new ListObjectsV2Command(listParams));
 
     if (!Contents || Contents.length === 0) {
       return;
@@ -80,11 +84,18 @@ export class FilesService {
 
     const command = new DeleteObjectsCommand(deleteParams);
     try {
-      s3.send(command);
+      this.s3.send(command);
       return;
     } catch (e) {
       console.log(e);
       return null;
+    }
+  }
+
+  getFileWrapper(userId: number, file: Express.Multer.File) {
+    return {
+      filePath: `content/user/${userId}/posts/${v4()}.${file.mimetype.split('/')[1]}`,
+      file: file,
     }
   }
 
@@ -94,7 +105,7 @@ export class FilesService {
       Prefix: `content`,
     };
 
-    const { Contents } = await s3.send(new ListObjectsV2Command(listParams));
+    const { Contents } = await this.s3.send(new ListObjectsV2Command(listParams));
 
     if (!Contents || Contents.length === 0) {
       return;
@@ -111,7 +122,7 @@ export class FilesService {
 
     const command = new DeleteObjectsCommand(deleteParams);
     try {
-      s3.send(command);
+      this.s3.send(command);
       return;
     } catch (e) {
       console.log(e);

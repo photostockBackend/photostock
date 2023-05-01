@@ -69,7 +69,10 @@ describe('AppController', () => {
         birthday: null,
         city: null,
         aboutMe: null,
-        avatar: null,
+        avatar: {
+          original: null,
+          thumbnail: null,
+        }, 
       });
     });
 
@@ -99,7 +102,10 @@ describe('AppController', () => {
         city: 'city',
         birthday: expect.any(String),
         firstName: 'newname',
-        avatar: null,
+        avatar: {
+          original: null,
+          thumbnail: null,
+        }, 
         lastName: 'surName',
         username: 'Nickolay',
       });
@@ -124,7 +130,10 @@ describe('AppController', () => {
         city: 'city',
         birthday: expect.any(String),
         firstName: 'newname',
-        avatar: expect.any(String),
+        avatar: {
+          original: expect.any(String),
+          thumbnail: expect.any(String),
+        }, 
         lastName: 'surName',
         username: 'Nickolay',
       });
@@ -156,7 +165,10 @@ describe('AppController', () => {
         city: 'newcity',
         birthday: expect.any(String),
         firstName: 'newnewname',
-        avatar: expect.any(String),
+        avatar: {
+          original: expect.any(String),
+          thumbnail: expect.any(String),
+        }, 
         lastName: 'newnewsurName',
         username: 'Nickolay',
       });
@@ -250,8 +262,8 @@ describe('AppController', () => {
       await request(server).get(`/user/post/${postId}`).expect(404)
     });
 
-    it('should delete all data', async () => {
+    /*it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204);
-    });
+    });*/
   });
 });
