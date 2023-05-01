@@ -29,16 +29,10 @@ export class UserProfileQueryRepo {
       birthday: profile[0].birthday,
       city: profile[0].city,
       aboutMe: profile[0].aboutMe,
-      avatar: [
-        {
-          key: profile[0].key,
-          resolution: 'original',
-        }, 
-        {
-          key: profile[0].key,
-          resolution: 'thumbnail',
-        }
-      ],
+      avatar: {
+        original: profile[0].key,
+        thumbnail: profile[0].key,
+      }
     };
   }
 }

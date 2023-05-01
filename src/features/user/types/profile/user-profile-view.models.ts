@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class PhotoLinks {
-  key: string;
-  resolution: string;
+  original: string
+  thumbnail: string
 }
 
 export class ProfileUserViewModel {
@@ -19,5 +19,5 @@ export class ProfileUserViewModel {
   @ApiProperty()
   aboutMe: string;
   @ApiProperty()
-  avatar: PhotoLinks[];
+  avatar: PhotoLinks;
 }
