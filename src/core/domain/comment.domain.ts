@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CommentCreateType } from '../../features/public/types/comment.types';
+import {
+  CommentCreateType,
+  CommentFoundType,
+} from '../../features/public/types/comment.types';
 import { UserDomain } from './user.domain';
 import { PostDomain } from './post.domain';
 
@@ -17,4 +20,11 @@ export class CommentDomain {
   user: UserDomain;
   postId: number;
   post: PostDomain;
+  async setAll(commentDto: CommentFoundType) {
+    this.id = commentDto.id;
+    this.text = commentDto.text;
+    this.userId = commentDto.userId;
+    this.postId = commentDto.postId;
+    this.createdAt = commentDto.createdAt;
+  }
 }
