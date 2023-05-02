@@ -4,9 +4,18 @@ import {
   IPostsUserRepo,
   POSTS_USER_REPO,
 } from '../../../../user/types/interfaces/i-posts-user.repo';
+import { CommentDomain } from '../../../../../core/domain/comment.domain';
+import {
+  COMMENTS_REPO,
+  ICommentsRepo,
+} from '../../../types/interfaces/i-comments.repo';
 
 export class CreateCommentForPostCommand {
-  constructor(public readonly postId: number, public readonly text: string) {}
+  constructor(
+    public readonly postId: number,
+    public readonly userId: number,
+    public readonly text: string,
+  ) {}
 }
 @CommandHandler(CreateCommentForPostCommand)
 export class CreateCommentForPostUseCase
@@ -14,11 +23,13 @@ export class CreateCommentForPostUseCase
 {
   constructor(
     @Inject(POSTS_USER_REPO) private postsRepository: IPostsUserRepo,
+    @Inject(COMMENTS_REPO) private commentsRepository: ICommentsRepo,
   ) {}
   async execute(command: CreateCommentForPostCommand): Promise<number> {
-    const { postId, text } = command;
+    const { postId, text, userId } = command;
     const post = await this.postsRepository.findOne({ id: postId });
     if (!post) throw new NotFoundException();
-    return 1;
+    const comment = new CommentDomain({ postId, userId, text });
+    return await this.commentsRepository.create(comment);
   }
 }
