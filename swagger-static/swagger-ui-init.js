@@ -326,6 +326,34 @@ window.onload = function() {
           ]
         }
       },
+      "/oauth2/google/login": {
+        "get": {
+          "operationId": "oAuth2Controller_googleLogin",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "oauth2"
+          ]
+        }
+      },
+      "/oauth2/github/login": {
+        "get": {
+          "operationId": "oAuth2Controller_githubLogin",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "oauth2"
+          ]
+        }
+      },
       "/user/profile": {
         "get": {
           "operationId": "UserProfileController_getProfileForCurrentUser",

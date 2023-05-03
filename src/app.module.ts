@@ -12,6 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './features/user/user.module';
 import { FilesModule } from './adapters/files/files.module';
 import { EventEmitterModule } from './adapters/eventEmitter/eventEmitter.module';
+import { OauthModule } from './adapters/oauth/oauth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { EventEmitterModule } from './adapters/eventEmitter/eventEmitter.module'
     UserModule,
     FilesModule,
     EventEmitterModule,
+    OauthModule,
   ],
   controllers: [AppController],
   providers: [

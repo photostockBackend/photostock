@@ -38,6 +38,9 @@ import { CheckOwnerDeviceInterceptor } from './api/interceptors/check.owner.devi
 import { TOKEN_INFO_REPO } from './types/interfaces/i-tokens-info.repo';
 import { USERS_REPO } from './types/interfaces/i-users.repo';
 import { CheckUserNameEmailInterceptor } from './api/interceptors/check-user-name-email.interceptor';
+import { oAuth2Controller } from './api/oauth2.controller';
+import { GoogleAuthGuard, GoogleStrategy } from './api/guards/strategies/google.strategy';
+import { GithubAuthGuard, GithubStrategy } from './api/guards/strategies/github.strategy';
 
 const commands = [
   RegistrationUseCase,
@@ -62,12 +65,21 @@ const repositories = [
     useClass: AuthCommandRepo,
   },
 ];
-const strategies = [BasicStrategy, LocalStrategy, JwtStrategy, RefreshStrategy];
+const strategies = [
+  BasicStrategy, 
+  LocalStrategy, 
+  JwtStrategy, 
+  RefreshStrategy, 
+  GoogleStrategy,
+  GithubStrategy,
+];
 const guards = [
   BearerAuthGuard,
   BasicAuthGuard,
   LocalAuthGuard,
   RefreshAuthGuard,
+  GoogleAuthGuard,
+  GithubAuthGuard,
 ];
 const interceptors = [
   CheckUserNameEmailInterceptor,
@@ -75,7 +87,7 @@ const interceptors = [
 ];
 
 @Module({
-  controllers: [AuthController],
+  controllers: [AuthController, oAuth2Controller],
   imports: [MailModule, CqrsModule, PrismaModule],
   providers: [
     JwtService,
