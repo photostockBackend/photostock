@@ -1,8 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { Allow } from 'class-validator';
 
 export class PaginatorDto {
-    @ApiProperty({required: false, default: '1'})
-    readonly pageNumber: string;
-    @ApiProperty({required: false, default: '10'})
-    readonly pageSize: string;
+  @Allow()
+  pageNumber: number;
+  @Allow()
+  pageSize: number;
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
 import { PostDomain } from '../../../../core/domain/post.domain';
 import { IPostsUserRepo } from '../../types/interfaces/i-posts-user.repo';
+import { FindPostFilterType } from '../../types/posts/find-post-filter.type';
 
 @Injectable()
 export class UserPostsCommandRepo implements IPostsUserRepo {
@@ -44,12 +45,9 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
     return !!deletedPost.count;
   }
 
-  async findOne(userId: number, postId: number): Promise<PostDomain> {
+  async findOne(filter: FindPostFilterType): Promise<PostDomain> {
     const foundedPost = await this.prisma.posts.findFirst({
-      where: {
-        id: postId,
-        userId: userId,
-      },
+      where: filter,
     });
     if (!foundedPost) {
       return null;

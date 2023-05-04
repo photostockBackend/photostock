@@ -5,7 +5,7 @@ import { AppModule } from '../../src/app.module';
 import { HttpExceptionFilter } from '../../src/helpers/http-exeption.filter';
 import cookieParser = require('cookie-parser');
 
-export async function createAppandServerForTests() {
+export async function createAppAndServerForTests() {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();

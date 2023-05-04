@@ -28,7 +28,7 @@ if(updatePostInputModel.existedPhotos && (updatePostInputModel.existedPhotos.len
         ],
       });
     }
-*/ 
+*/
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
@@ -38,27 +38,26 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<void> {
-    
     const { description } = command.updatePostInputModel;
-    const foundedPost = await this.postsRepository.findOne(
-      command.userId,
-      command.postId,
-    );
+    const foundedPost = await this.postsRepository.findOne({
+      id: command.postId,
+      user: { id: command.userId },
+    });
     if (!foundedPost) {
       throw new NotFoundException();
     }
 
-    let removedPhotoIds = command.updatePostInputModel.existedPhotos;
-    
+    const removedPhotoIds = command.updatePostInputModel.existedPhotos;
+
     //const removedLinks =  foundedPost.postPhotoLinks.filter(l => postPhotoLinks.every(l => inputL))
     let postPhotoLinks = command.updatePostInputModel.existedPhotos;
     if (command.files.length > 0) {
-      const files = [] 
-      command.files.forEach((file) => files.push(
-        this.filesService.getFileWrapper(command.userId, file)
-      ))
+      const files = [];
+      command.files.forEach((file) =>
+        files.push(this.filesService.getFileWrapper(command.userId, file)),
+      );
 
-      const newPostPhotoLinks = await this.filesService.saveFiles(files)
+      const newPostPhotoLinks = await this.filesService.saveFiles(files);
       postPhotoLinks = [...postPhotoLinks, ...newPostPhotoLinks];
     }
     foundedPost.postPhotoLinks = postPhotoLinks;
@@ -67,7 +66,6 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     post.setAll(foundedPost);
     await this.postsRepository.update(post);
 
-      // todo:  remove from
-      
+    // todo:  remove from
   }
 }

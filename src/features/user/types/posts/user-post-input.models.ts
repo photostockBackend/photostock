@@ -1,4 +1,4 @@
-import { Allow, IsArray, IsOptional, IsString, Length } from 'class-validator';
+import { IsArray, IsOptional, IsString, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -30,11 +30,4 @@ export class UpdatePostInputModel {
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()
   postPhoto: Express.Multer.File;
-}
-
-export class QueryPostInputModel {
-  @Allow()
-  pageNumber: number;
-  @Allow()
-  pageSize: number;
 }

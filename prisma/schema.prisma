@@ -67,14 +67,15 @@ model BanInfoUser {
 }
 
 model Posts {
-  id                Int               @id @default(autoincrement())
-  description       String?
-  postPhotoLinks    String[]
-  createdAt         String
-  updatedAt         String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int               
-  postsLikes        PostLikes[]
+  id             Int         @id @default(autoincrement())
+  description    String?
+  postPhotoLinks String[]
+  createdAt      String
+  updatedAt      String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  postsLikes     PostLikes[]
+  comments       Comments[]
 }
 
 enum fileType {
@@ -104,7 +105,7 @@ enum resolutions {
 model FileKeys {
   id                Int               @id @default(autoincrement())
   file              Files?            @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  fileId            Int?   
+  fileId            Int?
   resolution        resolutions?
   key               String?
 }
@@ -119,19 +120,21 @@ model PostLikes {
 }
 
 model Comments {
-  id                Int               @id @default(autoincrement())
-  text              String
-  createdAt         String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int           
-  commentLikes      CommentLikes[]    
+  id           Int            @id @default(autoincrement())
+  text         String
+  createdAt    String
+  postId       Int
+  post         Posts          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  commentLikes CommentLikes[]
 }
 
 model CommentLikes {
-  id                Int               @id @default(autoincrement())
-  createdAt         String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            Int           
-  comment           Comments          @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId         Int    
+  id        Int      @id @default(autoincrement())
+  createdAt String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   Comments @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
 }

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export abstract class Paginated<T> {
-  abstract items: T;
+  abstract items: T[];
 
   @ApiProperty()
   totalCount: number;
@@ -13,5 +13,5 @@ export abstract class Paginated<T> {
   page: number;
 
   @ApiProperty()
-  size: number;
+  pageSize: number;
 }
