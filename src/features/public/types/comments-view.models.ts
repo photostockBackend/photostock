@@ -8,7 +8,7 @@ export class CommentViewModel {
   @ApiProperty()
   username: string;
   @ApiProperty()
-  avatar: string;
+  avatarId: number;
 }
 export class CommentsByPostWithPaginationViewModel {
   @ApiProperty()

@@ -14,7 +14,11 @@ export class PublicPostsQueryRepo {
         comments: {
           orderBy: { createdAt: 'asc' },
           take: 3,
-          include: { user: { include: { profileInfo: true } } },
+          include: {
+            user: {
+              include: { profileInfo: { include: { profilePhoto: true } } },
+            },
+          },
         },
       },
     });
@@ -27,7 +31,7 @@ export class PublicPostsQueryRepo {
         id: c.id,
         text: c.text,
         username: c.user.username,
-        avatar: c.user.profileInfo.profilePhotoLink,
+        avatarId: c.user.profileInfo.profilePhoto.id,
       })),
     };
   }

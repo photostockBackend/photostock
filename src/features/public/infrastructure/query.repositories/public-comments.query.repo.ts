@@ -13,7 +13,7 @@ export class PublicCommentsQueryRepo {
     const comment = await this.prisma.comments.findUnique({
       where: { id: id },
       include: {
-        user: { include: { profileInfo: true } },
+        user: { include: { profileInfo: { include: { profilePhoto: true } } } },
       },
     });
     if (!comment) return null;
@@ -21,7 +21,7 @@ export class PublicCommentsQueryRepo {
       id: comment.id,
       text: comment.text,
       username: comment.user.username,
-      avatar: comment.user.profileInfo.profilePhotoLink,
+      avatarId: comment.user.profileInfo.profilePhoto.id,
     };
   }
   async findCommentsByPost(
@@ -30,7 +30,9 @@ export class PublicCommentsQueryRepo {
   ): Promise<CommentsByPostWithPaginationViewModel> {
     const comments = await this.prisma.comments.findMany({
       where: { postId: postId },
-      include: { user: { include: { profileInfo: true } } },
+      include: {
+        user: { include: { profileInfo: { include: { profilePhoto: true } } } },
+      },
       orderBy: { createdAt: 'asc' },
       skip: (page.pageNumber - 1) * page.pageSize,
       take: page.pageSize,
@@ -49,7 +51,7 @@ export class PublicCommentsQueryRepo {
         id: c.id,
         text: c.text,
         username: c.user.username,
-        avatar: c.user.profileInfo.profilePhotoLink,
+        avatarId: c.user.profileInfo.profilePhoto.id,
       })),
     };
   }
