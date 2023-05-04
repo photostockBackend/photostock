@@ -34,6 +34,13 @@ export class LoginInputModel {
   password: string;
 }
 
+export class Oauth2InputModel {
+  @ApiProperty({ description: 'code from oauth2-service' })
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @IsString()
+  oauth2code: string;
+}
+
 export class PasswordRecoveryInputModel {
   @ApiProperty({ description: 'user-profile email' })
   @IsString()
