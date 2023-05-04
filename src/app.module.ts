@@ -12,6 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './features/user/user.module';
 import { FilesModule } from './adapters/files/files.module';
 import { EventEmitterModule } from './adapters/eventEmitter/eventEmitter.module';
+import { PublicModule } from './features/public/public.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { EventEmitterModule } from './adapters/eventEmitter/eventEmitter.module'
     AuthModule,
     PrismaModule,
     UserModule,
+    PublicModule,
     FilesModule,
     EventEmitterModule,
   ],

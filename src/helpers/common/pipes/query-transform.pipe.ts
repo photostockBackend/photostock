@@ -1,15 +1,11 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-import { QueryPostInputModel } from '../../../features/user/types/posts/user-post-input.models';
 import { PaginatorDto } from '../types/paginator.dto';
 
 @Injectable()
 export class QueryTransformPipe
   implements PipeTransform<PaginatorDto, PaginatorDto>
 {
-  transform(
-    query: QueryPostInputModel,
-    metadata: ArgumentMetadata,
-  ): QueryPostInputModel {
+  transform(query: PaginatorDto, metadata: ArgumentMetadata): PaginatorDto {
     let pageNumber = query.pageNumber || 1;
     if (Number(pageNumber) < 1 || isNaN(Number(pageNumber))) pageNumber = 1;
     let pageSize = query.pageSize || 8;

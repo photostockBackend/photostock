@@ -5,7 +5,7 @@ import {
   PostsUserWithPaginationViewModel,
   PostUserViewModel,
 } from '../../types/posts/user-post-view.models';
-import { QueryPostInputModel } from '../../types/posts/user-post-input.models';
+import { PaginatorDto } from '../../../../helpers/common/types/paginator.dto';
 import format = require('pg-format');
 
 @Injectable()
@@ -31,21 +31,21 @@ export class UserPostsQueryRepo {
   }
   async findPostsByUserId(
     userId: number,
-    query: QueryPostInputModel,
+    page: PaginatorDto,
   ): Promise<PostsUserWithPaginationViewModel> {
     const posts = await this.prisma.posts.findMany({
       where: { userId: userId },
       orderBy: { createdAt: 'asc' },
-      skip: (query.pageNumber - 1) * query.pageSize,
-      take: query.pageSize,
+      skip: (page.pageNumber - 1) * page.pageSize,
+      take: page.pageSize,
     });
     const postsCount = await this.prisma.posts.count({
       where: { userId: userId },
     });
     return {
-      pagesCount: Math.ceil(postsCount / query.pageSize),
-      page: query.pageNumber,
-      pageSize: query.pageSize,
+      pagesCount: Math.ceil(postsCount / page.pageSize),
+      page: page.pageNumber,
+      pageSize: page.pageSize,
       totalCount: postsCount,
       posts: posts.map((post) => ({
         id: post.id,

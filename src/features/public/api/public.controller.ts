@@ -1,13 +1,37 @@
-import { Controller, Get, NotFoundException, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ProfileUserViewModel } from '../../user/types/profile/user-profile-view.models';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import { GetProfileUserCommand } from '../../user/application/queries/handlers/profile/get-profile-for-user.handler';
 import { PostsUserWithPaginationViewModel } from '../../user/types/posts/user-post-view.models';
 import { QueryTransformPipe } from '../../../helpers/common/pipes/query-transform.pipe';
-import { QueryPostInputModel } from '../../user/types/posts/user-post-input.models';
-import { FindPostsByUserIdCommand } from '../../user/application/queries/handlers/posts/find-posts-by-user-id.handler';
+import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
+import { IntTransformPipe } from '../../../helpers/common/pipes/int-transform.pipe';
+import {
+  CreateCommentInputModel,
+  UpdateCommentInputModel,
+} from '../types/comments-input.models';
+import { CreateCommentForPostCommand } from '../application/use-cases/comments/create-comment-for-post.use-case';
+import { UpdateCommentForPostCommand } from '../application/use-cases/comments/update-comment-for-post.use-case';
+import { DeleteCommentForPostCommand } from '../application/use-cases/comments/delete-comment-for-post.use-case';
+import { FindPostByIdWithNewestCommentsCommand } from '../application/queries/handlers/posts/find-post-by-id-with-newest-comments.handler';
+import { FindCommentForPostCommand } from '../application/queries/handlers/comments/find-comment-for-post.handler';
+import { CommentViewModel } from '../types/comments-view.models';
+import { PaginatorDto } from '../../../helpers/common/types/paginator.dto';
+import { FindCommentsForPostCommand } from '../application/queries/handlers/comments/find-comments-for-post.handler';
+import { PostWithNewestCommentsViewModel } from '../types/posts-view.models';
 
 @ApiTags('public')
 @Controller('public')
@@ -16,18 +40,20 @@ export class PublicController {
   @ApiResponse({
     status: 200,
     description: 'The profile get for current user-profile.',
-    type: ProfileUserViewModel,
+    type: PostWithNewestCommentsViewModel,
   })
   @ApiResponse({
     status: 404,
     description: 'Profile for current user-profile doesnt exists.',
   })
   @Get('post/:postId')
-  async getPostByIdWithComments(@Req() req: RequestWithUser) {
+  async getPostByIdWithComments(
+    @Param('postId', new IntTransformPipe()) postId: number,
+  ) {
     const result = await this.queryBus.execute<
-      GetProfileUserCommand,
-      Promise<ProfileUserViewModel>
-    >(new GetProfileUserCommand(req.user.userId));
+      FindPostByIdWithNewestCommentsCommand,
+      Promise<PostWithNewestCommentsViewModel>
+    >(new FindPostByIdWithNewestCommentsCommand(postId));
     if (!result) throw new NotFoundException();
     return result;
   }
@@ -54,47 +80,59 @@ export class PublicController {
   })
   @Get(':postId/comments')
   async getCommentsByPostId(
-    @Query(new QueryTransformPipe()) query: QueryPostInputModel,
-    @Req() req: RequestWithUser,
+    @Param('postId', new IntTransformPipe()) postId: number,
+    @Query(new QueryTransformPipe()) query: PaginatorDto,
   ) {
     return await this.queryBus.execute<
-      FindPostsByUserIdCommand,
+      FindCommentsForPostCommand,
       Promise<PostsUserWithPaginationViewModel>
-    >(new FindPostsByUserIdCommand(req.user.userId, query));
+    >(new FindCommentsForPostCommand(postId, query));
   }
-  /*@UseGuards(BearerAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Post(':postId/comments')
   async createCommentByPostId(
-    @Param('id', new IntTransformPipe()) id: number,
-    @Body() commentDto: CommentInputDto,
+    @Param('postId', new IntTransformPipe()) postId: number,
+    @Body() commentDto: CreateCommentInputModel,
     @Req() req: RequestWithUser,
   ) {
     const commentId = await this.commandBus.execute<
-      CreateCommentCommand,
+      CreateCommentForPostCommand,
       Promise<number>
     >(
-      new CreateCommentCommand({
-        content: commentDto.content,
-        userId: req.user.userId,
-        postId: id,
-      }),
+      new CreateCommentForPostCommand(postId, req.user.userId, commentDto.text),
     );
-    if (!commentId) throw new InternalServerErrorException();
-    return await this.commentsQueryRepository.findCommentById(commentId);
+    return await this.queryBus.execute<
+      FindCommentForPostCommand,
+      Promise<CommentViewModel>
+    >(new FindCommentForPostCommand(commentId));
   }
   @UseGuards(BearerAuthGuard)
-  @UseInterceptors(CheckOwnerCommentInterceptor)
   @HttpCode(204)
-  @Put(':postId/comments/:commentId')
+  @Put('/comments/:commentId')
   async updComment(
-    @Param('id', new IntTransformPipe()) id: number,
-    @Body() commentDto: CommentUpdateDto,
+    @Param('commentId', new IntTransformPipe()) commentId: number,
+    @Body() commentDto: UpdateCommentInputModel,
+    @Req() req: RequestWithUser,
   ) {
-    const result = await this.commandBus.execute<
-      UpdateCommentCommand,
-      Promise<boolean>
-    >(new UpdateCommentCommand(id, commentDto));
-    if (!result) throw new InternalServerErrorException();
+    await this.commandBus.execute<UpdateCommentForPostCommand, Promise<void>>(
+      new UpdateCommentForPostCommand(
+        commentId,
+        req.user.userId,
+        commentDto.text,
+      ),
+    );
     return;
-  }*/
+  }
+  @UseGuards(BearerAuthGuard)
+  @HttpCode(204)
+  @Delete('/comments/:commentId')
+  async deleteComment(
+    @Param('id', new IntTransformPipe()) id: number,
+    @Req() req: RequestWithUser,
+  ) {
+    await this.commandBus.execute<DeleteCommentForPostCommand, Promise<void>>(
+      new DeleteCommentForPostCommand(id, req.user.userId),
+    );
+    return;
+  }
 }

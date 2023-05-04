@@ -38,7 +38,6 @@ import { ProfileUserViewModel } from '../types/profile/user-profile-view.models'
 import { GetProfileUserCommand } from '../application/queries/handlers/profile/get-profile-for-user.handler';
 import {
   CreatePostInputModel,
-  QueryPostInputModel,
   UpdatePostInputModel,
 } from '../types/posts/user-post-input.models';
 import { CreatePostCommand } from '../application/use-cases/posts/create-post.use-case';
@@ -54,6 +53,7 @@ import { UpdateProfilePhotoCommand } from '../application/use-cases/profile/upda
 import { parseFilePipeValidationsOptions } from '../../../helpers/common/pipes/options.constans/parse-file-pipe-validations.options.constant';
 import { FindPostsByUserIdCommand } from '../application/queries/handlers/posts/find-posts-by-user-id.handler';
 import { QueryTransformPipe } from '../../../helpers/common/pipes/query-transform.pipe';
+import { PaginatorDto } from '../../../helpers/common/types/paginator.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -179,7 +179,7 @@ export class UserProfileController {
   @UseGuards(BearerAuthGuard)
   @Get('post')
   async getPostsByUserId(
-    @Query(new QueryTransformPipe()) query: QueryPostInputModel,
+    @Query(new QueryTransformPipe()) query: PaginatorDto,
     @Req() req: RequestWithUser,
   ) {
     return await this.queryBus.execute<
@@ -251,7 +251,10 @@ export class UserProfileController {
     )
     files: Express.Multer.File[],
   ) {
-    if(updatePostInputModel.existedPhotos && (updatePostInputModel.existedPhotos.length + files.length) > 10) {
+    if (
+      updatePostInputModel.existedPhotos &&
+      updatePostInputModel.existedPhotos.length + files.length > 10
+    ) {
       throw new BadRequestException({
         message: [
           {
