@@ -41,6 +41,9 @@ import { CheckUserNameEmailInterceptor } from './api/interceptors/check-user-nam
 import { oAuth2Controller } from './api/oauth2.controller';
 import { GoogleAuthGuard, GoogleStrategy } from './api/guards/strategies/google.strategy';
 import { GithubAuthGuard, GithubStrategy } from './api/guards/strategies/github.strategy';
+import { AuthWithGithubUseCase } from './application/use-cases/oauth2/registrationWithGithub.use-case';
+import { AuthWithGoogleCommand } from './application/use-cases/oauth2/registrationWithGoogle.use-case';
+import { OauthModule } from '../../adapters/oauth/oauth.module';
 
 const commands = [
   RegistrationUseCase,
@@ -51,6 +54,8 @@ const commands = [
   ResendEmailUseCase,
   LogoutUseCase,
   CreateNewPairTokensUseCase,
+  AuthWithGithubUseCase,
+  AuthWithGoogleCommand,
 ];
 const queries = [AuthMeHandler];
 const services = [AuthService];
@@ -88,7 +93,7 @@ const interceptors = [
 
 @Module({
   controllers: [AuthController, oAuth2Controller],
-  imports: [MailModule, CqrsModule, PrismaModule],
+  imports: [MailModule, CqrsModule, PrismaModule, OauthModule],
   providers: [
     JwtService,
     JWT,

@@ -330,9 +330,32 @@ window.onload = function() {
         "get": {
           "operationId": "oAuth2Controller_googleLogin",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Oauth2InputModel"
+                }
+              }
+            }
+          },
           "responses": {
             "200": {
-              "description": ""
+              "description": "The user-profile has been successfully logined. Return access-token in response, and refresh-token in cookie",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ViewModelToken"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Code not transferred."
+            },
+            "401": {
+              "description": "Auth with google not success."
             }
           },
           "tags": [
@@ -344,9 +367,32 @@ window.onload = function() {
         "get": {
           "operationId": "oAuth2Controller_githubLogin",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Oauth2InputModel"
+                }
+              }
+            }
+          },
           "responses": {
             "200": {
-              "description": ""
+              "description": "The user-profile has been successfully logined. Return access-token in response, and refresh-token in cookie",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ViewModelToken"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Code not transferred."
+            },
+            "401": {
+              "description": "Auth with github not success."
             }
           },
           "tags": [
@@ -783,6 +829,18 @@ window.onload = function() {
           "required": [
             "email",
             "userId"
+          ]
+        },
+        "Oauth2InputModel": {
+          "type": "object",
+          "properties": {
+            "oauth2code": {
+              "type": "string",
+              "description": "code from oauth2-service"
+            }
+          },
+          "required": [
+            "oauth2code"
           ]
         },
         "PhotoLinks": {
