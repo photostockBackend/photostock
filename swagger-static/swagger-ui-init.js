@@ -601,16 +601,6 @@ window.onload = function() {
           "operationId": "UserProfileController_getPostsByUserId",
           "parameters": [
             {
-              "name": "pageSize",
-              "required": false,
-              "in": "query",
-              "schema": {
-                "type": "integer",
-                "default": 8
-              },
-              "description": "pageSize is portions size that should be returned"
-            },
-            {
               "name": "pageNumber",
               "required": false,
               "in": "query",
@@ -619,6 +609,16 @@ window.onload = function() {
                 "default": 1
               },
               "description": "pageNumber is number of portions that should be returned"
+            },
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 8
+              },
+              "description": "pageSize is portions size that should be returned"
             }
           ],
           "responses": {
@@ -673,6 +673,184 @@ window.onload = function() {
             {
               "bearer": []
             }
+          ]
+        }
+      },
+      "/public/post/{postId}": {
+        "get": {
+          "operationId": "PublicController_getPostByIdWithComments",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The profile get for current user-profile.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostWithNewestCommentsViewModel"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Profile for current user-profile doesnt exists."
+            }
+          },
+          "tags": [
+            "public"
+          ]
+        }
+      },
+      "/public/{postId}/comments": {
+        "get": {
+          "operationId": "PublicController_getCommentsByPostId",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
+              }
+            },
+            {
+              "name": "pageNumber",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 1
+              },
+              "description": "pageNumber is number of portions that should be returned"
+            },
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 8
+              },
+              "description": "pageSize is portions size that should be returned"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The posts by user.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostsUserWithPaginationViewModel"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Posts doesnt exists."
+            }
+          },
+          "tags": [
+            "public"
+          ]
+        },
+        "post": {
+          "operationId": "PublicController_createCommentByPostId",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCommentInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CommentViewModel"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "public"
+          ]
+        }
+      },
+      "/public/comments/{commentId}": {
+        "put": {
+          "operationId": "PublicController_updComment",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCommentInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "public"
+          ]
+        },
+        "delete": {
+          "operationId": "PublicController_deleteComment",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "public"
           ]
         }
       }
@@ -999,6 +1177,81 @@ window.onload = function() {
           },
           "required": [
             "existedPhotos"
+          ]
+        },
+        "CommentViewModel": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "text": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "avatarId": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "id",
+            "text",
+            "username",
+            "avatarId"
+          ]
+        },
+        "PostWithNewestCommentsViewModel": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "description": {
+              "type": "string"
+            },
+            "postPhotos": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "newestComments": {
+              "maxItems": 3,
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CommentViewModel"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "description",
+            "postPhotos",
+            "newestComments"
+          ]
+        },
+        "CreateCommentInputModel": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        "UpdateCommentInputModel": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
           ]
         }
       }
