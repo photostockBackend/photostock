@@ -1,10 +1,11 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
-import { PaymentAdapter } from './payment.service';
+import { StripeAdapter } from './stripe.service';
+import { PaypalAdapter } from './paypal.service';
 
 @Module({
   imports: [],
-  providers: [PaymentAdapter],
-  exports: [PaymentAdapter],
+  providers: [StripeAdapter, PaypalAdapter],
+  exports: [StripeAdapter, PaypalAdapter],
 })
 export class PaymentModule {}

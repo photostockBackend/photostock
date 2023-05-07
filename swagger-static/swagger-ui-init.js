@@ -676,6 +676,34 @@ window.onload = function() {
           ]
         }
       },
+      "/payments/strapi/createcustomer": {
+        "post": {
+          "operationId": "PaymentController_strapiCreateCustomer",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The user for payment-service has been successfully created"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/paypal/createcustomer": {
+        "post": {
+          "operationId": "PaymentController_paypalCreateCustomer",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The user for payment-service has been successfully created"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
       "/public/post/{postId}": {
         "get": {
           "operationId": "PublicController_getPostByIdWithComments",

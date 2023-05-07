@@ -14,26 +14,30 @@ import RequestWithUser from '../../types/interfaces/request-with-user.interface'
 
 @ApiTags('payments')
 @Controller('payments')
-export class oAuth2Controller {
+export class PaymentController {
   constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
 
   @ApiResponse({
     status: 200,
     description:
-      'The user-profile has been successfully logined. Return access-token in response, and refresh-token in cookie',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Code not transferred.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Auth with google not success.',
+      'The user for payment-service has been successfully created',
   })
   @HttpCode(200)
-  @Post('createcustomer')
-  async createCustomer(@Req() req: RequestWithUser) {
+  @Post('strapi/createcustomer')
+  async strapiCreateCustomer(@Req() req: RequestWithUser) {
+    
+  }
+
+  @ApiResponse({
+    status: 200,
+    description:
+      'The user for payment-service has been successfully created',
+  })
+  @HttpCode(200)
+  @Post('paypal/createcustomer')
+  async paypalCreateCustomer(@Req() req: RequestWithUser) {
     
   }
 
 }
+

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class PaymentAdapter {
+export class StripeAdapter {
   private readonly stripe: Stripe
   
   constructor(

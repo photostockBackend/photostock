@@ -21,6 +21,7 @@ import { UserPostsQueryRepo } from './infrastructure/query.repositories/user-pos
 import { UpdateProfilePhotoUseCase } from './application/use-cases/profile/update-profile-photo.use-case';
 import { FindPostsByUserIdHandler } from './application/queries/handlers/posts/find-posts-by-user-id.handler';
 import { QueryTransformPipe } from '../../helpers/common/pipes/query-transform.pipe';
+import { PaymentController } from './api/payments.controller';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -54,7 +55,7 @@ const interceptors = [CheckUserNameInterceptor];
 const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
-  controllers: [UserProfileController],
+  controllers: [UserProfileController, PaymentController],
   imports: [CqrsModule, PrismaModule, AuthModule, FilesModule],
   providers: [
     ...commands,
