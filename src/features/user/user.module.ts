@@ -22,6 +22,7 @@ import { UpdateProfilePhotoUseCase } from './application/use-cases/profile/updat
 import { FindPostsByUserIdHandler } from './application/queries/handlers/posts/find-posts-by-user-id.handler';
 import { QueryTransformPipe } from '../../helpers/common/pipes/query-transform.pipe';
 import { PaymentController } from './api/payments.controller';
+import { PaymentModule } from '../../adapters/payment/payment.module';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -56,7 +57,7 @@ const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
   controllers: [UserProfileController, PaymentController],
-  imports: [CqrsModule, PrismaModule, AuthModule, FilesModule],
+  imports: [CqrsModule, PrismaModule, AuthModule, FilesModule, PaymentModule],
   providers: [
     ...commands,
     ...queries,

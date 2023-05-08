@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class StripeAdapter {
   private readonly stripe: Stripe
-  
+  private product: any
   constructor(
     private readonly configService: ConfigService
   ) {
@@ -13,13 +13,30 @@ export class StripeAdapter {
       this.configService.get('STRIPE_SECRET_KEY'),
       {apiVersion: '2022-11-15'},
     );
+    this.initProduct()
   }
 
-  createCustomer() {
-    this.stripe.customers.create()
+  async initProduct() {
+    this.product = await this.stripe.products.create({name: 'Inctagram subscription'})
   }
 
-  async createPaymentMethod(cardNumber, expMonth, expYear, cvc) {
+  async createCustomer(email: string): Promise<string> {
+    /*const res = await this.stripe.customers.list()
+    for(let i=0; i<res.data.length; i++){
+      this.stripe.customers.del(res.data[i].id)
+    }*/
+
+    const result = await this.stripe.customers.list({email: email})
+    /*if(result.data.length > 0) {
+      return false
+    }*/
+    const customer = await this.stripe.customers.create({
+      email
+    })
+    return customer.id
+  }
+
+  async createPaymentMethod({cardNumber, expMonth, expYear, cvc}) {
     try {
       const paymentMethod = await this.stripe.paymentMethods.create({
         type: 'card',
@@ -30,7 +47,7 @@ export class StripeAdapter {
           cvc: cvc,
         },
       });
-      return paymentMethod;
+      return paymentMethod.id;
     } catch (error) {
       console.error(error);
       throw error;
@@ -39,17 +56,41 @@ export class StripeAdapter {
 
   async attachPaymentMethodToCustomer(customerId, paymentMethodId) {
     try {
-      const customer = await this.stripe.customers.update(customerId, {
+      await this.stripe.paymentMethods.attach(
+        paymentMethodId,
+        {customer: customerId}
+      );
+      await this.stripe.customers.update(customerId, {
         invoice_settings: {
           default_payment_method: paymentMethodId,
         },
-      });
-      return customer;
+      })
+      const result = await this.stripe.customers.list()
+      return true;
     } catch (error) {
-      console.error(error);
+      console.error('attacherror', error);
       throw error;
     }
   };
+
+  async createSubcription(customerId: string){
+    const plan = await this.stripe.plans.create({
+      amount: 1,
+      currency: 'usd',
+      interval: 'day',
+      product: this.product.id,
+    });
+    this.stripe.subscriptions.create(
+      {
+        customer: customerId, 
+        items: [
+          {
+            plan: plan.id, 
+          },
+        ],
+      },
+    );
+  }
 
   async detachPaymentMethodFromCustomer(customerId, paymentMethodId) {
     try {
