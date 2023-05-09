@@ -14,7 +14,7 @@ const serverUrl = `http://localhost:${PORT}`;
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['http://localhost:3000', 'https://front-team.vercel.app'],
+      origin: ['http://localhost:3000', 'http://localhost:3001', 'https://front-team.vercel.app'],
       credentials: true,
     },
   });

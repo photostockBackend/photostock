@@ -676,13 +676,23 @@ window.onload = function() {
           ]
         }
       },
-      "/payments/strapi/createcustomer": {
+      "/payments/strapi/attachcard": {
         "post": {
-          "operationId": "PaymentController_strapiCreateCustomer",
+          "operationId": "PaymentController_strapiAttachCustomer",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachCardInputModel"
+                }
+              }
+            }
+          },
           "responses": {
-            "200": {
-              "description": "The user for payment-service has been successfully created"
+            "201": {
+              "description": "The card has been successfully attached"
             }
           },
           "tags": [
@@ -690,13 +700,51 @@ window.onload = function() {
           ]
         }
       },
-      "/payments/paypal/createcustomer": {
+      "/payments/strapi/createsubcription": {
         "post": {
-          "operationId": "PaymentController_paypalCreateCustomer",
+          "operationId": "PaymentController_strapiCreateSubscription",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSubscriptionInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The subscription has been successfully created"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/getallpayments": {
+        "get": {
+          "operationId": "PaymentController_getAllPayments",
           "parameters": [],
           "responses": {
             "200": {
-              "description": "The user for payment-service has been successfully created"
+              "description": "The list of payments has been successfully returned"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/getcurrentsubscription": {
+        "get": {
+          "operationId": "PaymentController_getCurrentPayment",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The current subscription has been successfully returned"
             }
           },
           "tags": [
@@ -1206,6 +1254,14 @@ window.onload = function() {
           "required": [
             "existedPhotos"
           ]
+        },
+        "AttachCardInputModel": {
+          "type": "object",
+          "properties": {}
+        },
+        "CreateSubscriptionInputModel": {
+          "type": "object",
+          "properties": {}
         },
         "CommentViewModel": {
           "type": "object",

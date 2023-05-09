@@ -5,68 +5,75 @@ import {
   HttpCode,
   Post,
   Req,
-  Res,
+  UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
-import { StripeAdapter } from '../../../adapters/payment/stripe.service';
-import { PaypalAdapter } from '../../../adapters/payment/paypal.service';
+import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
+import { StrapiAttachCardCommand } from '../application/use-cases/payment/strapi-attach-card.use-case';
+import { StrapiCreateSubscriptionCommand } from '../application/use-cases/payment/strapi-create-subscription.use-case';
+import { PaymentsQueryRepo } from '../infrastructure/query.repositories/payments.query.repo';
+import { AttachCardInputModel, CreateSubscriptionInputModel } from '../types/payments/payments-input.models';
 
 @ApiTags('payments')
 @Controller('payments')
 export class PaymentController {
   constructor(
-    private commandBus: CommandBus, private queryBus: QueryBus,
-    private stripe: StripeAdapter,
-    private paypal: PaypalAdapter,
+    private commandBus: CommandBus, 
+    private paymentsQueryRepo: PaymentsQueryRepo,
   ) {}
 
   @ApiResponse({
-    status: 200,
+    status: 201,
     description:
-      'The user for payment-service has been successfully created',
+      'The card has been successfully attached',
   })
-  @HttpCode(200)
-  @Post('strapi/createcustomer')
-  async strapiCreateCustomer(@Req() req: RequestWithUser, @Body() body: {email: string}): Promise<{customerId: string}> {
-    const result = await this.stripe.createCustomer(body.email)
-    return {customerId: result}
-  }
-
-  @ApiResponse({
-    status: 200,
-    description:
-      'The user for payment-service has been successfully created',
-  })
-  @HttpCode(200)
+  @HttpCode(201)
+  @UseGuards(BearerAuthGuard)
   @Post('strapi/attachcard')
-  async strapiAttachCustomer(@Req() req: RequestWithUser, @Body() body: any) {
-    const paymentMethodId = await this.stripe.createPaymentMethod(body)
-    await this.stripe.attachPaymentMethodToCustomer(body.customerId, paymentMethodId)
+  async strapiAttachCustomer(@Req() req: RequestWithUser, @Body() attachCardInputModel: AttachCardInputModel) {
+    await this.commandBus.execute(new StrapiAttachCardCommand(req.user.userId, attachCardInputModel));
+    return;
   }
 
   @ApiResponse({
-    status: 200,
+    status: 201,
     description:
-      'The user for payment-service has been successfully created',
+      'The subscription has been successfully created',
   })
-  @HttpCode(200)
+  @HttpCode(201)
+  @UseGuards(BearerAuthGuard)
   @Post('strapi/createsubcription')
-  async strapiCreateSubscription(@Req() req: RequestWithUser, @Body() body: any) {
-    await this.stripe.createSubcription(body.customerId)
+  async strapiCreateSubscription(@Req() req: RequestWithUser, @Body() createSubscriptionInputModel: CreateSubscriptionInputModel) {
+    await this.commandBus.execute(new StrapiCreateSubscriptionCommand(req.user.userId, createSubscriptionInputModel));
+    return;
   }
 
   @ApiResponse({
     status: 200,
     description:
-      'The user for payment-service has been successfully created',
+      'The list of payments has been successfully returned',
   })
   @HttpCode(200)
-  @Post('paypal/createcustomer')
-  async paypalCreateCustomer(@Req() req: RequestWithUser) {
-    await this.paypal.createCustomer()
+  @UseGuards(BearerAuthGuard)
+  @Get('getallpayments')
+  async getAllPayments(@Req() req: RequestWithUser, @Body() body: any) {
+    
+    return
+  }
+
+  @ApiResponse({
+    status: 200,
+    description:
+      'The current subscription has been successfully returned',
+  })
+  @HttpCode(200)
+  @UseGuards(BearerAuthGuard)
+  @Get('getcurrentsubscription')
+  async getCurrentPayment(@Req() req: RequestWithUser, @Body() body: any) {
+    
+    return
   }
 
 }

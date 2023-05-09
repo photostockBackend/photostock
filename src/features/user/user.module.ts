@@ -23,6 +23,10 @@ import { FindPostsByUserIdHandler } from './application/queries/handlers/posts/f
 import { QueryTransformPipe } from '../../helpers/common/pipes/query-transform.pipe';
 import { PaymentController } from './api/payments.controller';
 import { PaymentModule } from '../../adapters/payment/payment.module';
+import { StrapiAttachCardUseCase } from './application/use-cases/payment/strapi-attach-card.use-case';
+import { StrapiCreateSubscriptionUseCase } from './application/use-cases/payment/strapi-create-subscription.use-case';
+import { PaymentsQueryRepo } from './infrastructure/query.repositories/payments.query.repo';
+import { PaymentsCommandRepo } from './infrastructure/command.repositories/payments.command.repo';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -30,6 +34,8 @@ const commands = [
   CreatePostUseCase,
   UpdatePostUseCase,
   DeletePostUseCase,
+  StrapiAttachCardUseCase,
+  StrapiCreateSubscriptionUseCase,
 ];
 const queries = [
   GetProfileForUserHandler,
@@ -42,13 +48,14 @@ const repositories = [
     provide: PROFILE_USER_REPO,
     useClass: UserProfileCommandRepo,
   },
-
   {
     provide: POSTS_USER_REPO,
     useClass: UserPostsCommandRepo,
   },
   UserProfileQueryRepo,
   UserPostsQueryRepo,
+  PaymentsQueryRepo,
+  PaymentsCommandRepo,
 ];
 const strategies = [];
 const guards = [];
@@ -57,7 +64,13 @@ const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
   controllers: [UserProfileController, PaymentController],
-  imports: [CqrsModule, PrismaModule, AuthModule, FilesModule, PaymentModule],
+  imports: [
+    CqrsModule, 
+    PrismaModule, 
+    AuthModule, 
+    FilesModule, 
+    PaymentModule,
+  ],
   providers: [
     ...commands,
     ...queries,

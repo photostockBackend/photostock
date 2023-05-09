@@ -1,9 +1,9 @@
 import { Stripe } from 'stripe';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class StripeAdapter {
+export class StripeAdapter implements OnModuleInit {
   private readonly stripe: Stripe
   private product: any
   constructor(
@@ -13,10 +13,9 @@ export class StripeAdapter {
       this.configService.get('STRIPE_SECRET_KEY'),
       {apiVersion: '2022-11-15'},
     );
-    this.initProduct()
   }
-
-  async initProduct() {
+  
+  async onModuleInit(){
     this.product = await this.stripe.products.create({name: 'Inctagram subscription'})
   }
 
@@ -72,6 +71,19 @@ export class StripeAdapter {
       throw error;
     }
   };
+
+  async createCharge(amount: number, currency: string, paymentMethodId: string): Promise<Stripe.Charge> {
+    try {
+      const charge = await this.stripe.charges.create({
+        amount,
+        currency,
+        source: paymentMethodId,
+      });
+      return charge;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async createSubcription(customerId: string){
     const plan = await this.stripe.plans.create({

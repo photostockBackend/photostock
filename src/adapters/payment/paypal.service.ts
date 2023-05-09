@@ -58,8 +58,8 @@ export class PaypalAdapter {
         });
       });
     }
-    const pay = await createBillingPlan(billingPlan)
-    console.log('pay', pay)
+    const result = await createBillingPlan(billingPlan)
+    return result
   }
 
   async createPaymentMethod({cardNumber, expMonth, expYear, cvc}) {

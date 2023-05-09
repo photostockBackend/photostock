@@ -77,9 +77,9 @@ describe('AppController', () => {
         .send({customerId})
     });
 
-    it('should test paypal', async () => {
+    /*it('should test paypal', async () => {
       const res = await request(server).post('/payments/paypal/createcustomer')
-    });
+    });*/
 
     /*it('should delete all data', async () => {
       await request(server).delete('/delete-all-data').expect(204);
