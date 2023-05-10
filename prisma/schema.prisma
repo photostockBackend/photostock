@@ -17,6 +17,7 @@ model User {
   tokenInfo         TokenInfoUser[]
   profileInfo       ProfileInfoUser?
   banInfoUser       BanInfoUser?
+  paymentsInfo      PaymentsInfoUser[]
   posts             Posts[]
   postsLikes        PostLikes[]
   comments          Comments[]
@@ -67,15 +68,15 @@ model BanInfoUser {
 }
 
 model Posts {
-  id             Int         @id @default(autoincrement())
-  description    String?
-  postPhotoLinks String[]
-  createdAt      String
-  updatedAt      String
-  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         Int
-  postsLikes     PostLikes[]
-  comments       Comments[]
+  id                Int               @id @default(autoincrement())
+  description       String?
+  postPhotoLinks    String[]
+  createdAt         String
+  updatedAt         String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int
+  postsLikes        PostLikes[]
+  comments          Comments[]
 }
 
 enum fileType {
@@ -110,6 +111,32 @@ model FileKeys {
   key               String?
 }
 
+enum paymentService {
+  stripe
+  paypal
+  roboKassa
+}
+model PaymentsInfoUser {
+  id                Int               @id @default(autoincrement())
+  paymentMethodId   String
+  customerId        String
+  paymentService    paymentService
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int               
+  payments          Payments[]
+}
+
+model Payments {
+  id                Int               @id @default(autoincrement())
+  periodStart       Int
+  periodEnd         Int
+  amount            Int
+  currency          String
+  product           String
+  paymentInfo       PaymentsInfoUser  @relation(fields: [paymentInfoId], references: [id], onDelete: Cascade)
+  paymentInfoId     Int               
+}
+
 model PostLikes {
   id                Int               @id @default(autoincrement())
   createdAt         String
@@ -120,21 +147,21 @@ model PostLikes {
 }
 
 model Comments {
-  id           Int            @id @default(autoincrement())
-  text         String
-  createdAt    String
-  postId       Int
-  post         Posts          @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       Int
-  commentLikes CommentLikes[]
+  id                Int               @id @default(autoincrement())
+  text              String
+  createdAt         String
+  postId            Int
+  post              Posts             @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int
+  commentLikes      CommentLikes[]
 }
 
 model CommentLikes {
-  id        Int      @id @default(autoincrement())
-  createdAt String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  comment   Comments @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId Int
+  id                Int               @id @default(autoincrement())
+  createdAt         String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            Int
+  comment           Comments          @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId         Int
 }

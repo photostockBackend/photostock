@@ -676,6 +676,82 @@ window.onload = function() {
           ]
         }
       },
+      "/payments/stripe/attachcard": {
+        "post": {
+          "operationId": "PaymentController_stripeAttachCustomer",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachCardInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The card has been successfully attached"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/stripe/createsubcription": {
+        "post": {
+          "operationId": "PaymentController_stripeCreateSubscription",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSubscriptionInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The subscription has been successfully created"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/getallpayments": {
+        "get": {
+          "operationId": "PaymentController_getAllPayments",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The list of payments has been successfully returned"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/getcurrentsubscription": {
+        "get": {
+          "operationId": "PaymentController_getCurrentPayment",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The current subscription has been successfully returned"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
       "/public/post/{postId}": {
         "get": {
           "operationId": "PublicController_getPostByIdWithComments",
@@ -1178,6 +1254,14 @@ window.onload = function() {
           "required": [
             "existedPhotos"
           ]
+        },
+        "AttachCardInputModel": {
+          "type": "object",
+          "properties": {}
+        },
+        "CreateSubscriptionInputModel": {
+          "type": "object",
+          "properties": {}
         },
         "CommentViewModel": {
           "type": "object",
