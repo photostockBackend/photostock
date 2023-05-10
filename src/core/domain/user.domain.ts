@@ -7,6 +7,8 @@ import { TokenInfoDomain } from './token-info.domain';
 import { FoundUserType } from '../../features/auth/types/found-user.type';
 import { ProfileUserDomain } from './profile-user.domain';
 import { ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
+import { PaymentInfoCreateType } from '../../features/user/types/payments/payments-create.type';
+import { PaymentDomain } from './payment.domain';
 
 export enum emailRecoveryFlag {
   email = 'isActivated',
@@ -28,6 +30,7 @@ export class UserDomain {
   credInfo: CredInfoUserDomain;
   profile: ProfileUserDomain;
   tokenInfo: TokenInfoDomain[];
+  payments: PaymentDomain;
 
   async confirmCode(flag: emailRecoveryFlag): Promise<boolean> {
     if (
@@ -65,5 +68,8 @@ export class UserDomain {
   }
   async setProfile(profileDto: ProfileUserCreateType) {
     this.profile = new ProfileUserDomain(profileDto);
+  }
+  async setPayments(paymentDto: PaymentInfoCreateType) {
+    this.payments = new PaymentDomain(paymentDto)
   }
 }

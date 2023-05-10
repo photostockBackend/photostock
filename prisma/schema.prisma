@@ -119,6 +119,7 @@ enum paymentService {
 model PaymentsInfoUser {
   id                Int               @id @default(autoincrement())
   paymentMethodId   String
+  customerId        String
   paymentService    paymentService
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               

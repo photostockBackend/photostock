@@ -29,7 +29,7 @@ export class PaymentsQueryRepo {
       postPhotos: post[0].postPhotoLinks,
     };
   }
-  async findPostsByUserId(
+  async findPaymentsByUserId(
     userId: number,
     page: PaginatorDto,
   ): Promise<PostsUserWithPaginationViewModel> {

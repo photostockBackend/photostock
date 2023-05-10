@@ -6,7 +6,7 @@ import { get } from 'http';
 import { useContainer } from 'class-validator';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { BadExceptionFilter } from './helpers/bad-exception.filter';
-import cookieParser = require('cookie-parser');
+import cookieParser from 'cookie-parser'
 
 const PORT = process.env.PORT || 5000;
 const serverUrl = `http://localhost:${PORT}`;

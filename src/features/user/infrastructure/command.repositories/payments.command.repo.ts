@@ -3,9 +3,10 @@ import { PrismaService } from '../../../../database/prisma.service';
 import { PostDomain } from '../../../../core/domain/post.domain';
 import { IPostsUserRepo } from '../../types/interfaces/i-posts-user.repo';
 import { FindPostFilterType } from '../../types/posts/find-post-filter.type';
+import { UserDomain } from '../../../../core/domain/user.domain';
 
 @Injectable()
-export class PaymentsCommandRepo implements IPostsUserRepo {
+export class PaymentsCommandRepo {
   constructor(private prisma: PrismaService) {}
   async create(postDto: PostDomain): Promise<number> {
     const result = await this.prisma.posts.create({
@@ -45,19 +46,26 @@ export class PaymentsCommandRepo implements IPostsUserRepo {
     return !!deletedPost.count;
   }
 
-  async findOne(filter: FindPostFilterType): Promise<PostDomain> {
-    const foundedPost = await this.prisma.posts.findFirst({
-      where: filter,
+  async findUserWithPaymentsByUserId(userId: number): Promise<UserDomain> {
+    const foundUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { 
+        credInfo: true,
+        paymentsInfo: {
+          include: {
+            payments: true
+          }
+        }, 
+      },
     });
-    if (!foundedPost) {
-      return null;
-    }
-    const post = new PostDomain({
-      postPhotoLinks: foundedPost.postPhotoLinks,
-      userId: foundedPost.userId,
-      description: foundedPost.description,
+    if (!foundUser) return null;
+    const user = new UserDomain({
+      username: foundUser.username,
+      email: foundUser.email,
+      passwordHash: foundUser.credInfo.passwordHash,
     });
-    post.id = foundedPost.id;
-    return post;
+    await user.setAll(foundUser);
+    await user.setPayments(foundUser.paymentsInfo);
+    return user;
   }
 }

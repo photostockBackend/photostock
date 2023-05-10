@@ -7,6 +7,7 @@ import {
   PROFILE_USER_REPO,
 } from '../../../types/interfaces/i-profile-user.repo';
 import { AttachCardInputModel } from '../../../types/payments/payments-input.models';
+import { PaymentsCommandRepo } from '../../../../user/infrastructure/command.repositories/payments.command.repo';
 
 export class StrapiAttachCardCommand {
   constructor(
@@ -21,9 +22,10 @@ export class StrapiAttachCardUseCase
 {
   constructor(
     private stripe: StripeAdapter,
-    @Inject(PROFILE_USER_REPO) private profileRepository: IProfileUserRepo,
+    private paymentsCommandRepo: PaymentsCommandRepo,
   ) {}
   async execute(command: StrapiAttachCardCommand): Promise<void> {
+    const user = await this.paymentsCommandRepo.findUserWithPaymentsByUserId(command.userId)
     
   }
 }

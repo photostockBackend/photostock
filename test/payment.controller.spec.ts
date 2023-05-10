@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { createAppAndServerForTests } from './utils/app';
-import * as path from 'path';
 import { MailService } from '../src/adapters/mail/mail.service';
 
 jest.setTimeout(60000);
@@ -21,8 +20,6 @@ describe('AppController', () => {
     let code;
     let accessToken;
     let refreshToken;
-    let customerId;
-    const customerEmail = 'mail@mail.com'
     const cardNumber = '4242424242424242'
     const expMonth = '12'
     const expYear = '34'
@@ -61,20 +58,15 @@ describe('AppController', () => {
       refreshToken = res.header['set-cookie'];
     });
 
-    it('should create customer', async () => {
-      const res = await request(server).post('/payments/strapi/createcustomer')
-        .send({email: customerEmail})
-      customerId = res.body.customerId
-    });
-
-    it('should create and attach card to existing customer', async () => {
+    it('should create and attach card to existing customer or with prev-creating customer', async () => {
       const res = await request(server).post('/payments/strapi/attachcard')
-        .send({customerId, cardNumber, expMonth, expYear, cvc})
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({cardNumber, expMonth, expYear, cvc})
     });
 
     it('should create subscription', async () => {
       const res = await request(server).post('/payments/strapi/createsubcription')
-        .send({customerId})
+        .set('Authorization', `Bearer ${accessToken}`)
     });
 
     /*it('should test paypal', async () => {
