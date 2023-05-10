@@ -35,17 +35,29 @@ export class StripeCreateSubscriptionUseCase
       });
     }
     if(command.createSubscriptionInputModel.renewal) {
-      await this.stripe.createSubcription(
+      const result = await this.stripe.createSubcription(
         user.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].customerId
       )
+      user.paymentsInfo.forEach(p => {
+        if (p.paymentService === 'stripe'){
+          p.payments.push({
+            periodStart: result.subscription.current_period_start,
+            periodEnd: result.subscription.current_period_end,
+            amount: command.createSubscriptionInputModel.amount, 
+            currency: 'usd', 
+            product: result.plan.product.toString(),
+          })
+        }
+      })
     } 
     if(!command.createSubscriptionInputModel.renewal) {
-      await this.stripe.createCharge(
+      const result = await this.stripe.createCharge(
         command.createSubscriptionInputModel.amount, 
         'usd', 
         user.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].paymentMethodId
       )
+      console.log('charge', result)
     } 
-
+    await this.paymentsCommandRepo.update(user)
   }
 }

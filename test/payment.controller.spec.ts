@@ -70,12 +70,12 @@ describe('AppController', () => {
         .send({amount: 1, period: 1, renewal: false})
     });
 
-    /*it('should create subscription with renewal', async () => {
+    it('should create subscription with renewal', async () => {
       const res = await request(server).post('/payments/stripe/createsubcription')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({amount: 1, period: 1, renewal: true})
       expect(res).toBe(0)
-    });*/
+    });
 
     /*it('should test paypal', async () => {
       const res = await request(server).post('/payments/paypal/createcustomer')

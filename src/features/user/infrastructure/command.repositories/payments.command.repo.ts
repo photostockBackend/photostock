@@ -20,6 +20,15 @@ export class PaymentsCommandRepo {
             update: {
               paymentMethodId: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].paymentMethodId,
               customerId: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].customerId,
+              payments: {
+                create: {
+                  periodStart: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].payments[0]?.periodStart,
+                  periodEnd: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].payments[0]?.periodEnd,
+                  amount: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].payments[0]?.amount,
+                  currency: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].payments[0]?.currency,
+                  product: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].payments[0]?.product,
+                }
+              }
             },
             create: {
               paymentMethodId: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].paymentMethodId,

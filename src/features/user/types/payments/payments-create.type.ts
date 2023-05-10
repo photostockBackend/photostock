@@ -1,6 +1,7 @@
 export type Payments = {
   id?: number
-  createdAt: string
+  periodStart: number
+  periodEnd: number
   amount: number
   currency: string
   product: string

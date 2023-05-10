@@ -128,7 +128,8 @@ model PaymentsInfoUser {
 
 model Payments {
   id                Int               @id @default(autoincrement())
-  createdAt         String
+  periodStart       Int
+  periodEnd         Int
   amount            Int
   currency          String
   product           String

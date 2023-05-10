@@ -92,7 +92,7 @@ export class StripeAdapter implements OnModuleInit {
       interval: 'day',
       product: this.product.id,
     });
-    this.stripe.subscriptions.create(
+    const subscription = await this.stripe.subscriptions.create(
       {
         customer: customerId, 
         items: [
@@ -102,6 +102,7 @@ export class StripeAdapter implements OnModuleInit {
         ],
       },
     );
+    return {plan, subscription}
   }
 
   async detachPaymentMethodFromCustomer(customerId, paymentMethodId) {
