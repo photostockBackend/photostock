@@ -52,12 +52,7 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
     if (!foundedPost) {
       return null;
     }
-    const post = new PostDomain({
-      postPhotoLinks: foundedPost.postPhotoLinks,
-      userId: foundedPost.userId,
-      description: foundedPost.description,
-    });
-    post.id = foundedPost.id;
+    const post = await PostDomain.makeInstanceWithId(foundedPost);
     return post;
   }
 }
