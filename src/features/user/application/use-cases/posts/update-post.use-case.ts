@@ -6,7 +6,6 @@ import {
   IPostsUserRepo,
   POSTS_USER_REPO,
 } from '../../../types/interfaces/i-posts-user.repo';
-import { PostDomain } from '../../../../../core/domain/post.domain';
 
 export class UpdatePostCommand {
   constructor(
@@ -62,9 +61,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     }
     foundedPost.postPhotoLinks = postPhotoLinks;
     foundedPost.description = description;
-    const post = new PostDomain(foundedPost);
-    post.setAll(foundedPost);
-    await this.postsRepository.update(post);
+    await this.postsRepository.update(foundedPost);
 
     // todo:  remove from
   }
