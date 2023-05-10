@@ -23,10 +23,11 @@ import { FindPostsByUserIdHandler } from './application/queries/handlers/posts/f
 import { QueryTransformPipe } from '../../helpers/common/pipes/query-transform.pipe';
 import { PaymentController } from './api/payments.controller';
 import { PaymentModule } from '../../adapters/payment/payment.module';
-import { StrapiAttachCardUseCase } from './application/use-cases/payment/strapi-attach-card.use-case';
-import { StrapiCreateSubscriptionUseCase } from './application/use-cases/payment/strapi-create-subscription.use-case';
+import { StripeAttachCardUseCase } from './application/use-cases/payment/stripe-attach-card.use-case';
+import { StripeCreateSubscriptionUseCase } from './application/use-cases/payment/stripe-create-subscription.use-case';
 import { PaymentsQueryRepo } from './infrastructure/query.repositories/payments.query.repo';
 import { PaymentsCommandRepo } from './infrastructure/command.repositories/payments.command.repo';
+import { StripeWebhookSubscriptionUpdatedUseCase } from './application/use-cases/payment/stripe-webhook-subscriptionupdated.use-case';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -34,8 +35,9 @@ const commands = [
   CreatePostUseCase,
   UpdatePostUseCase,
   DeletePostUseCase,
-  StrapiAttachCardUseCase,
-  StrapiCreateSubscriptionUseCase,
+  StripeAttachCardUseCase,
+  StripeCreateSubscriptionUseCase,
+  StripeWebhookSubscriptionUpdatedUseCase,
 ];
 const queries = [
   GetProfileForUserHandler,

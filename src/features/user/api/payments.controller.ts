@@ -11,10 +11,11 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
-import { StrapiAttachCardCommand } from '../application/use-cases/payment/strapi-attach-card.use-case';
-import { StrapiCreateSubscriptionCommand } from '../application/use-cases/payment/strapi-create-subscription.use-case';
+import { StripeAttachCardCommand } from '../application/use-cases/payment/stripe-attach-card.use-case';
+import { StripeCreateSubscriptionCommand } from '../application/use-cases/payment/stripe-create-subscription.use-case';
 import { PaymentsQueryRepo } from '../infrastructure/query.repositories/payments.query.repo';
 import { AttachCardInputModel, CreateSubscriptionInputModel } from '../types/payments/payments-input.models';
+import { StripeWebhookSubscriptionUpdatedCommand } from '../application/use-cases/payment/stripe-webhook-subscriptionupdated.use-case';
 
 @ApiTags('payments')
 @Controller('payments')
@@ -31,10 +32,10 @@ export class PaymentController {
   })
   @HttpCode(201)
   @UseGuards(BearerAuthGuard)
-  @Post('strapi/attachcard')
-  async strapiAttachCustomer(@Req() req: RequestWithUser, @Body() attachCardInputModel: AttachCardInputModel) {
-    await this.commandBus.execute(new StrapiAttachCardCommand(req.user.userId, attachCardInputModel));
-    return;
+  @Post('stripe/attachcard')
+  async stripeAttachCustomer(@Req() req: RequestWithUser, @Body() attachCardInputModel: AttachCardInputModel) {
+    const result = await this.commandBus.execute(new StripeAttachCardCommand(req.user.userId, attachCardInputModel));
+    return result
   }
 
   @ApiResponse({
@@ -44,10 +45,16 @@ export class PaymentController {
   })
   @HttpCode(201)
   @UseGuards(BearerAuthGuard)
-  @Post('strapi/createsubcription')
-  async strapiCreateSubscription(@Req() req: RequestWithUser, @Body() createSubscriptionInputModel: CreateSubscriptionInputModel) {
-    await this.commandBus.execute(new StrapiCreateSubscriptionCommand(req.user.userId, createSubscriptionInputModel));
-    return;
+  @Post('stripe/createsubcription')
+  async stripeCreateSubscription(@Req() req: RequestWithUser, @Body() createSubscriptionInputModel: CreateSubscriptionInputModel) {
+    const result = await this.commandBus.execute(new StripeCreateSubscriptionCommand(req.user.userId, createSubscriptionInputModel));
+    return result
+  }
+
+  @Post('stripe/webhook/subscriptionupdated')
+  async stripeWebhookSubscriptionUpdated(@Body() body: any) {
+    this.commandBus.execute(new StripeWebhookSubscriptionUpdatedCommand(body));
+    return 
   }
 
   @ApiResponse({

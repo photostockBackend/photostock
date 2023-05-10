@@ -1,5 +1,5 @@
 export type Payments = {
-  id: number
+  id?: number
   createdAt: string
   amount: number
   currency: string
@@ -7,10 +7,10 @@ export type Payments = {
 }
 
 export type PaymentInfoCreateType = {
-  id: number;        
+  id?: number;        
   paymentMethodId: string;
   customerId: string;
   paymentService: string;         
   userId: number;
-  payments: Payments[]
+  payments: Payments[] 
 };

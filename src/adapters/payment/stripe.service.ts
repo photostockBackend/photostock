@@ -16,19 +16,19 @@ export class StripeAdapter implements OnModuleInit {
   }
   
   async onModuleInit(){
+    const currentProduct = await this.stripe.products.list()
+    if(currentProduct.data.length > 0) {
+      this.product = currentProduct.data[0]
+      return
+    }
     this.product = await this.stripe.products.create({name: 'Inctagram subscription'})
   }
 
   async createCustomer(email: string): Promise<string> {
-    /*const res = await this.stripe.customers.list()
-    for(let i=0; i<res.data.length; i++){
-      this.stripe.customers.del(res.data[i].id)
-    }*/
-
-    const result = await this.stripe.customers.list({email: email})
-    /*if(result.data.length > 0) {
-      return false
-    }*/
+    const currentCustomer = await this.stripe.customers.list({email: email})
+    if(currentCustomer.data.length > 0) {
+      return currentCustomer.data[0].id
+    }
     const customer = await this.stripe.customers.create({
       email
     })
@@ -36,6 +36,7 @@ export class StripeAdapter implements OnModuleInit {
   }
 
   async createPaymentMethod({cardNumber, expMonth, expYear, cvc}) {
+    const res = await this.stripe.paymentMethods.list()
     try {
       const paymentMethod = await this.stripe.paymentMethods.create({
         type: 'card',
@@ -53,7 +54,7 @@ export class StripeAdapter implements OnModuleInit {
     }
   };
 
-  async attachPaymentMethodToCustomer(customerId, paymentMethodId) {
+  async attachPaymentMethodToCustomer(customerId: string, paymentMethodId: string) {
     try {
       await this.stripe.paymentMethods.attach(
         paymentMethodId,
@@ -64,7 +65,6 @@ export class StripeAdapter implements OnModuleInit {
           default_payment_method: paymentMethodId,
         },
       })
-      const result = await this.stripe.customers.list()
       return true;
     } catch (error) {
       console.error('attacherror', error);

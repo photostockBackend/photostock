@@ -676,9 +676,9 @@ window.onload = function() {
           ]
         }
       },
-      "/payments/strapi/attachcard": {
+      "/payments/stripe/attachcard": {
         "post": {
-          "operationId": "PaymentController_strapiAttachCustomer",
+          "operationId": "PaymentController_stripeAttachCustomer",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -700,9 +700,9 @@ window.onload = function() {
           ]
         }
       },
-      "/payments/strapi/createsubcription": {
+      "/payments/stripe/createsubcription": {
         "post": {
-          "operationId": "PaymentController_strapiCreateSubscription",
+          "operationId": "PaymentController_stripeCreateSubscription",
           "parameters": [],
           "requestBody": {
             "required": true,

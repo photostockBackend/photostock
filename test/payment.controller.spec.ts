@@ -59,15 +59,23 @@ describe('AppController', () => {
     });
 
     it('should create and attach card to existing customer or with prev-creating customer', async () => {
-      const res = await request(server).post('/payments/strapi/attachcard')
+      const res = await request(server).post('/payments/stripe/attachcard')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({cardNumber, expMonth, expYear, cvc})
     });
 
-    it('should create subscription', async () => {
-      const res = await request(server).post('/payments/strapi/createsubcription')
+    it('should create subscription without renewal', async () => {
+      const res = await request(server).post('/payments/stripe/createsubcription')
         .set('Authorization', `Bearer ${accessToken}`)
+        .send({amount: 1, period: 1, renewal: false})
     });
+
+    /*it('should create subscription with renewal', async () => {
+      const res = await request(server).post('/payments/stripe/createsubcription')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({amount: 1, period: 1, renewal: true})
+      expect(res).toBe(0)
+    });*/
 
     /*it('should test paypal', async () => {
       const res = await request(server).post('/payments/paypal/createcustomer')

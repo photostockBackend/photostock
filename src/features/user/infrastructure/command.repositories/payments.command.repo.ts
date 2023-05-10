@@ -8,42 +8,29 @@ import { UserDomain } from '../../../../core/domain/user.domain';
 @Injectable()
 export class PaymentsCommandRepo {
   constructor(private prisma: PrismaService) {}
-  async create(postDto: PostDomain): Promise<number> {
-    const result = await this.prisma.posts.create({
-      data: {
-        description: postDto.description,
-        postPhotoLinks: postDto.postPhotoLinks,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        user: { connect: { id: postDto.userId } },
-      },
-    });
-    return result.id;
-  }
-
-  async update(post: PostDomain): Promise<boolean> {
-    const updatedPost = await this.prisma.posts.updateMany({
+  async update(userWithPayment: UserDomain): Promise<boolean> {
+    const result = await this.prisma.user.update({
       where: {
-        id: post.id,
-        userId: post.userId,
+        id: userWithPayment.id
       },
       data: {
-        description: post.description,
-        postPhotoLinks: post.postPhotoLinks,
-        updatedAt: new Date().toISOString(),
-      },
+        paymentsInfo: {
+          upsert: {
+            where: {id: 1},
+            update: {
+              paymentMethodId: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].paymentMethodId,
+              customerId: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].customerId,
+            },
+            create: {
+              paymentMethodId: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].paymentMethodId,
+              customerId: userWithPayment.paymentsInfo.filter(p => p.paymentService === 'stripe')[0].customerId,
+              paymentService: 'stripe', 
+            }
+          }
+        }
+      }
     });
-    return !!updatedPost.count;
-  }
-
-  async delete(userId: number, postId: number): Promise<boolean> {
-    const deletedPost = await this.prisma.posts.deleteMany({
-      where: {
-        id: postId,
-        userId: userId,
-      },
-    });
-    return !!deletedPost.count;
+    return !!result;
   }
 
   async findUserWithPaymentsByUserId(userId: number): Promise<UserDomain> {

@@ -30,7 +30,7 @@ export class UserDomain {
   credInfo: CredInfoUserDomain;
   profile: ProfileUserDomain;
   tokenInfo: TokenInfoDomain[];
-  payments: PaymentDomain;
+  paymentsInfo: PaymentDomain[];
 
   async confirmCode(flag: emailRecoveryFlag): Promise<boolean> {
     if (
@@ -69,7 +69,7 @@ export class UserDomain {
   async setProfile(profileDto: ProfileUserCreateType) {
     this.profile = new ProfileUserDomain(profileDto);
   }
-  async setPayments(paymentDto: PaymentInfoCreateType) {
-    this.payments = new PaymentDomain(paymentDto)
+  async setPayments(paymentDto: PaymentInfoCreateType[]) {
+    this.paymentsInfo = paymentDto.map(p => new PaymentDomain(p))
   }
 }

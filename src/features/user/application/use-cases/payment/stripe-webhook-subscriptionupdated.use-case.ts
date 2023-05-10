@@ -7,25 +7,23 @@ import {
   PROFILE_USER_REPO,
 } from '../../../types/interfaces/i-profile-user.repo';
 import { AttachCardInputModel } from '../../../types/payments/payments-input.models';
-import { PaymentsCommandRepo } from '../../../../user/infrastructure/command.repositories/payments.command.repo';
+import { PaymentsCommandRepo } from '../../../infrastructure/command.repositories/payments.command.repo';
+import { PaymentDomain } from '../../../../../core/domain/payment.domain';
 
-export class StrapiAttachCardCommand {
+export class StripeWebhookSubscriptionUpdatedCommand {
   constructor(
-    public readonly userId: number,
-    public readonly attachCardInputModel: AttachCardInputModel,
+    public readonly body: any,
   ) {}
 }
-
-@CommandHandler(StrapiAttachCardCommand)
-export class StrapiAttachCardUseCase
-  implements ICommandHandler<StrapiAttachCardCommand>
+@CommandHandler(StripeWebhookSubscriptionUpdatedCommand)
+export class StripeWebhookSubscriptionUpdatedUseCase
+  implements ICommandHandler<StripeWebhookSubscriptionUpdatedCommand>
 {
   constructor(
     private stripe: StripeAdapter,
     private paymentsCommandRepo: PaymentsCommandRepo,
   ) {}
-  async execute(command: StrapiAttachCardCommand): Promise<void> {
-    const user = await this.paymentsCommandRepo.findUserWithPaymentsByUserId(command.userId)
+  async execute(command: StripeWebhookSubscriptionUpdatedCommand): Promise<void> {
     
   }
 }
