@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { createAppAndServerForTests } from './utils/app';
 import * as path from 'path';
 import { MailService } from '../src/adapters/mail/mail.service';

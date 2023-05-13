@@ -6,20 +6,24 @@ import {
 
 @Injectable()
 export class PostDomain {
-  constructor(private postDto: PostUserCreateType) {
-    this.description = postDto.description;
-    this.postPhotoLinks = postDto.postPhotoLinks;
-    this.userId = postDto.userId;
-  }
   id: number;
   description: string;
   postPhotoLinks: string[];
   userId: number;
 
-  setAll(postDto: PostUserFoundType) {
-    this.id = postDto.id;
-    this.description = postDto.description;
-    this.postPhotoLinks = postDto.postPhotoLinks;
-    this.userId = postDto.userId;
+  static async makeInstanceWithoutId(postDto: PostUserCreateType) {
+    const post = new PostDomain();
+    post.description = postDto.description;
+    post.postPhotoLinks = postDto.postPhotoLinks;
+    post.userId = postDto.userId;
+    return post;
+  }
+  static async makeInstanceWithId(postDto: PostUserFoundType) {
+    const post = new PostDomain();
+    post.id = postDto.id;
+    post.description = postDto.description;
+    post.postPhotoLinks = postDto.postPhotoLinks;
+    post.userId = postDto.userId;
+    return post;
   }
 }

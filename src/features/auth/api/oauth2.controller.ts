@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -37,13 +30,15 @@ export class oAuth2Controller {
   })
   @HttpCode(200)
   @Get('google/login')
-  async googleLogin(@Body() oauth2InputModel: Oauth2InputModel, @Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
+  async googleLogin(
+    @Body() oauth2InputModel: Oauth2InputModel,
+    @Req() req: RequestWithUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const tokens = await this.commandBus.execute<
       AuthWithGoogleCommand,
       Promise<TokensType>
-    >(
-    new AuthWithGithubCommand(oauth2InputModel),
-  )
+    >(new AuthWithGithubCommand(oauth2InputModel));
     res.cookie('refreshToken', tokens.refreshToken, {
       sameSite: 'none',
       httpOnly: true,
@@ -69,13 +64,15 @@ export class oAuth2Controller {
   })
   @HttpCode(200)
   @Get('github/login')
-  async githubLogin(@Body() oauth2InputModel: Oauth2InputModel, @Req() req: RequestWithUser, @Res({ passthrough: true }) res: Response) {
+  async githubLogin(
+    @Body() oauth2InputModel: Oauth2InputModel,
+    @Req() req: RequestWithUser,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const tokens = await this.commandBus.execute<
-    AuthWithGithubCommand,
+      AuthWithGithubCommand,
       Promise<TokensType>
-    >(
-      new AuthWithGithubCommand(oauth2InputModel),
-    )
+    >(new AuthWithGithubCommand(oauth2InputModel));
     res.cookie('refreshToken', tokens.refreshToken, {
       sameSite: 'none',
       httpOnly: true,
@@ -84,5 +81,4 @@ export class oAuth2Controller {
     });
     return { accessToken: tokens.accessToken };
   }
-
 }

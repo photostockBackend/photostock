@@ -1,4 +1,4 @@
-import * as request from 'supertest';
+import request from 'supertest';
 import * as constants from './constants';
 
 export const seedUsers = async (server: any) => {

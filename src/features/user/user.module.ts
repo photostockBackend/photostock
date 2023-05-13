@@ -21,6 +21,13 @@ import { UserPostsQueryRepo } from './infrastructure/query.repositories/user-pos
 import { UpdateProfilePhotoUseCase } from './application/use-cases/profile/update-profile-photo.use-case';
 import { FindPostsByUserIdHandler } from './application/queries/handlers/posts/find-posts-by-user-id.handler';
 import { QueryTransformPipe } from '../../helpers/common/pipes/query-transform.pipe';
+import { PaymentController } from './api/payments.controller';
+import { PaymentModule } from '../../adapters/payment/payment.module';
+import { StripeAttachCardUseCase } from './application/use-cases/payment/stripe-attach-card.use-case';
+import { StripeCreateSubscriptionUseCase } from './application/use-cases/payment/stripe-create-subscription.use-case';
+import { PaymentsQueryRepo } from './infrastructure/query.repositories/payments.query.repo';
+import { PaymentsCommandRepo } from './infrastructure/command.repositories/payments.command.repo';
+import { StripeWebhookSubscriptionUpdatedUseCase } from './application/use-cases/payment/stripe-webhook-subscriptionupdated.use-case';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -28,6 +35,9 @@ const commands = [
   CreatePostUseCase,
   UpdatePostUseCase,
   DeletePostUseCase,
+  StripeAttachCardUseCase,
+  StripeCreateSubscriptionUseCase,
+  StripeWebhookSubscriptionUpdatedUseCase,
 ];
 const queries = [
   GetProfileForUserHandler,
@@ -40,13 +50,14 @@ const repositories = [
     provide: PROFILE_USER_REPO,
     useClass: UserProfileCommandRepo,
   },
-
   {
     provide: POSTS_USER_REPO,
     useClass: UserPostsCommandRepo,
   },
   UserProfileQueryRepo,
   UserPostsQueryRepo,
+  PaymentsQueryRepo,
+  PaymentsCommandRepo,
 ];
 const strategies = [];
 const guards = [];
@@ -54,8 +65,14 @@ const interceptors = [CheckUserNameInterceptor];
 const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
-  controllers: [UserProfileController],
-  imports: [CqrsModule, PrismaModule, AuthModule, FilesModule],
+  controllers: [UserProfileController, PaymentController],
+  imports: [
+    CqrsModule, 
+    PrismaModule, 
+    AuthModule, 
+    FilesModule, 
+    PaymentModule,
+  ],
   providers: [
     ...commands,
     ...queries,
