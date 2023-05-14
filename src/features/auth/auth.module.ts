@@ -39,11 +39,22 @@ import { TOKEN_INFO_REPO } from './types/interfaces/i-tokens-info.repo';
 import { USERS_REPO } from './types/interfaces/i-users.repo';
 import { CheckUserNameEmailInterceptor } from './api/interceptors/check-user-name-email.interceptor';
 import { oAuth2Controller } from './api/oauth2.controller';
-import { GoogleAuthGuard, GoogleStrategy } from './api/guards/strategies/google.strategy';
-import { GithubAuthGuard, GithubStrategy } from './api/guards/strategies/github.strategy';
+import {
+  GoogleAuthGuard,
+  GoogleStrategy,
+} from './api/guards/strategies/google.strategy';
+import {
+  GithubAuthGuard,
+  GithubStrategy,
+} from './api/guards/strategies/github.strategy';
 import { AuthWithGithubUseCase } from './application/use-cases/oauth2/registrationWithGithub.use-case';
 import { AuthWithGoogleCommand } from './application/use-cases/oauth2/registrationWithGoogle.use-case';
 import { OauthModule } from '../../adapters/oauth/oauth.module';
+import { SecurityDevicesController } from './api/devices-sessions.controller';
+import { GetSessionsHandler } from './application/queries/sessions/handlers/get-sessions.handler';
+import { DeleteSessionUseCase } from './application/use-cases/devices-sessions/delete-session.use-case';
+import { DeleteSessionsExcludeCurrentUseCase } from './application/use-cases/devices-sessions/delete-sessions-exclude-current.use-case';
+import { TokenInfoQueryRepo } from './infrastructure/query.repositories/token-info.query.repo';
 
 const commands = [
   RegistrationUseCase,
@@ -56,11 +67,14 @@ const commands = [
   CreateNewPairTokensUseCase,
   AuthWithGithubUseCase,
   AuthWithGoogleCommand,
+  DeleteSessionUseCase,
+  DeleteSessionsExcludeCurrentUseCase,
 ];
-const queries = [AuthMeHandler];
+const queries = [AuthMeHandler, GetSessionsHandler];
 const services = [AuthService];
 const repositories = [
   AuthQueryRepo,
+  TokenInfoQueryRepo,
   {
     provide: TOKEN_INFO_REPO,
     useClass: TokenInfoCommandRepo,
@@ -71,10 +85,10 @@ const repositories = [
   },
 ];
 const strategies = [
-  BasicStrategy, 
-  LocalStrategy, 
-  JwtStrategy, 
-  RefreshStrategy, 
+  BasicStrategy,
+  LocalStrategy,
+  JwtStrategy,
+  RefreshStrategy,
   GoogleStrategy,
   GithubStrategy,
 ];
@@ -92,7 +106,7 @@ const interceptors = [
 ];
 
 @Module({
-  controllers: [AuthController, oAuth2Controller],
+  controllers: [AuthController, oAuth2Controller, SecurityDevicesController],
   imports: [MailModule, CqrsModule, PrismaModule, OauthModule],
   providers: [
     JwtService,

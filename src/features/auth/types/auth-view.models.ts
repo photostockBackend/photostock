@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthMeViewModel {
   @ApiProperty()
@@ -9,5 +9,5 @@ export class AuthMeViewModel {
 
 export class ViewModelToken {
   @ApiProperty()
-  accessToken: string
+  accessToken: string;
 }
