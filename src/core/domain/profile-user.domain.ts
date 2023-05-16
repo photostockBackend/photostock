@@ -1,21 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UserDomain } from './user.domain';
-import { ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
+import {
+  ProfileUserCreateType,
+  ProfileUserFoundType,
+} from '../../features/user/types/profile/profile-user-create.type';
 import { ProfileUserUpdateType } from '../../features/user/types/profile/profile-user-update.type';
 import { ProfilePhotoDomain } from './profile-photo.domain';
 
 @Injectable()
 export class ProfileUserDomain {
-  constructor(private profileDto: ProfileUserCreateType) {
-    this.id = profileDto.id;
-    this.firstName = profileDto.firstName;
-    this.lastName = profileDto.lastName;
-    this.birthday = profileDto.birthday;
-    this.city = profileDto.city;
-    this.aboutMe = profileDto.aboutMe;
-    //this.profilePhoto = profileDto.profilePhoto;
-    this.userId = profileDto.userId;
-  }
   id: number;
   firstName: string;
   lastName: string;
@@ -25,14 +18,39 @@ export class ProfileUserDomain {
   profilePhoto: ProfilePhotoDomain;
   user: UserDomain;
   userId: number;
-  async setUser(user: UserDomain): Promise<void> {
-    this.user = user;
-  }
   async setProfileInfo(profileDto: ProfileUserUpdateType) {
     this.firstName = profileDto?.firstName;
     this.lastName = profileDto?.lastName;
     this.birthday = profileDto?.birthday;
     this.city = profileDto?.city;
     this.aboutMe = profileDto?.aboutMe;
+  }
+
+  static async makeInstanceWithoutId(profileDto: ProfileUserCreateType) {
+    const profile = new ProfileUserDomain();
+    profile.firstName = profileDto.firstName;
+    profile.lastName = profileDto.lastName;
+    profile.birthday = profileDto.birthday;
+    profile.city = profileDto.city;
+    profile.aboutMe = profileDto.aboutMe;
+    profile.profilePhoto = await ProfilePhotoDomain.makeInstanceWithoutId(
+      profileDto.profilePhoto,
+    );
+    profile.userId = profileDto.userId;
+    return profile;
+  }
+  static async makeInstanceWithId(profileDto: ProfileUserFoundType) {
+    const profile = new ProfileUserDomain();
+    profile.id = profileDto.id;
+    profile.firstName = profileDto.firstName;
+    profile.lastName = profileDto.lastName;
+    profile.birthday = profileDto.birthday;
+    profile.city = profileDto.city;
+    profile.aboutMe = profileDto.aboutMe;
+    profile.profilePhoto = await ProfilePhotoDomain.makeInstanceWithId(
+      profileDto.profilePhoto,
+    );
+    profile.userId = profileDto.userId;
+    return profile;
   }
 }

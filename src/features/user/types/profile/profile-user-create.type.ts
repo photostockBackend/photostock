@@ -1,18 +1,27 @@
+import {
+  ProfilePhotoCreateType,
+  ProfilePhotoFoundType,
+} from './profile-photo.types';
+
 export type ProfilePhoto = {
-  id: number
+  id: number;
   keys: {
     key: string;
     resolution: string;
-  }[]
-}
+  }[];
+};
 
 export type ProfileUserCreateType = {
-  id: number;
   firstName: string;
   lastName: string;
   birthday: Date;
   city: string;
   aboutMe: string;
-  profilePhoto: ProfilePhoto;
+  profilePhoto: ProfilePhotoCreateType;
   userId: number;
+};
+
+export type ProfileUserFoundType = ProfileUserCreateType & {
+  id: number;
+  profilePhoto: ProfilePhotoFoundType;
 };
