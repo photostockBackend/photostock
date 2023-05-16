@@ -7,14 +7,14 @@ import { FindPostFilterType } from '../../types/posts/find-post-filter.type';
 @Injectable()
 export class UserPostsCommandRepo implements IPostsUserRepo {
   constructor(private prisma: PrismaService) {}
-  async create(postDto: PostDomain): Promise<number> {
+  async create(post: PostDomain): Promise<number> {
     const result = await this.prisma.posts.create({
       data: {
-        description: postDto.description,
-        postFiles: [''],
+        description: post.description,
+        postFiles: { createMany: { data: post.postFiles } },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        user: { connect: { id: postDto.userId } },
+        user: { connect: { id: post.userId } },
       },
     });
     return result.id;
