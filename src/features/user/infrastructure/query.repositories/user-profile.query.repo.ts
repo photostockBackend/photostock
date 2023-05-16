@@ -32,7 +32,7 @@ export class UserProfileQueryRepo {
       avatar: {
         original: profile[0].key,
         thumbnail: profile[0].key,
-      }
+      },
     };
   }
 }

@@ -27,9 +27,9 @@ export class AuthCommandRepo implements IUsersRepo {
           create: {
             profilePhoto: {
               create: {
-                keys: {}
-              }
-            }
+                keys: {},
+              },
+            },
           },
         },
       },

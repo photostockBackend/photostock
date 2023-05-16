@@ -2,13 +2,35 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
 import { UserDomain } from '../../../../core/domain/user.domain';
 import { IProfileUserRepo } from '../../types/interfaces/i-profile-user.repo';
+import { ProfileUserDomain } from '../../../../core/domain/profile-user.domain';
 
 @Injectable()
 export class UserProfileCommandRepo implements IProfileUserRepo {
   constructor(private prisma: PrismaService) {}
+  async updateProfileInfo(profile: ProfileUserDomain): Promise<boolean> {
+    const result = await this.prisma.profileInfoUser.update({
+      where: { id: profile.id },
+      data: {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        birthday: profile.birthday,
+        city: profile.city,
+        aboutMe: profile.aboutMe,
+        user: { update: { username: profile.user.username } },
+      },
+    });
+    return !!result;
+  }
+  async updateProfilePhoto(profile: ProfileUserDomain): Promise<boolean> {
+    const result = await this.prisma.profileInfoUser.update({
+      where: { id: profile.id },
+      data: { profilePhoto: {} },
+    });
+    return !!result;
+  }
   async update(userWithProfile: UserDomain): Promise<boolean> {
     const result = await this.prisma.user.update({
-      where: { 
+      where: {
         id: userWithProfile.id,
       },
       data: {
@@ -22,21 +44,27 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
             aboutMe: userWithProfile.profile.aboutMe,
             profilePhoto: {
               update: {
-                keys: userWithProfile.profile.profilePhoto.keys[0]?.key ? {
-                  upsert: {
-                    where: {id: 1},
-                    update: {
-                      resolution: 'original',
-                      key: userWithProfile.profile.profilePhoto.keys[0]?.key ?? null
-                    },
-                    create: {
-                      resolution: 'original',
-                      key: userWithProfile.profile.profilePhoto.keys[0]?.key ?? null
+                keys: userWithProfile.profile.profilePhoto.keys[0]?.key
+                  ? {
+                      upsert: {
+                        where: { id: 1 },
+                        update: {
+                          resolution: 'original',
+                          key:
+                            userWithProfile.profile.profilePhoto.keys[0]?.key ??
+                            null,
+                        },
+                        create: {
+                          resolution: 'original',
+                          key:
+                            userWithProfile.profile.profilePhoto.keys[0]?.key ??
+                            null,
+                        },
+                      },
                     }
-                  }
-                } : {}
-              }
-            }
+                  : {},
+              },
+            },
           },
         },
       },
@@ -46,17 +74,17 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
   async findUserWithProfileByUserId(userId: number): Promise<UserDomain> {
     const foundUser = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: { 
-        credInfo: true, 
+      include: {
+        credInfo: true,
         profileInfo: {
           include: {
             profilePhoto: {
               include: {
-                keys: true
-              }
-            }
-          }
-        }
+                keys: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!foundUser) return null;

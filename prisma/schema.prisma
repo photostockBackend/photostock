@@ -53,7 +53,7 @@ model ProfileInfoUser {
   birthday          DateTime?
   city              String?
   aboutMe           String?
-  profilePhoto      Files?
+  profilePhoto      ProfilePhotos?
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               @unique
 }
@@ -70,7 +70,7 @@ model BanInfoUser {
 model Posts {
   id                Int               @id @default(autoincrement())
   description       String?
-  postPhotoLinks    String[]
+  postFiles         PostFiles[]
   createdAt         String
   updatedAt         String
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -80,8 +80,8 @@ model Posts {
 }
 
 enum fileType {
-  avatar
-  post_image
+  image
+  video
 }
 enum fileStatus {
   uploaded
@@ -89,13 +89,30 @@ enum fileStatus {
 }
 model Files {
   id                Int               @id @default(autoincrement())
-  profile           ProfileInfoUser?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId         Int?              @unique
+  //profile           ProfileInfoUser?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  //profileId         Int?              @unique
   keys              FileKeys[]
   sizeInBytes       Int?
   type              fileType?
   status            fileStatus?
   extension         String?
+  mimeType          String?
+}
+
+model ProfilePhotos {
+  id                Int               @id @default(autoincrement())
+  profile           ProfileInfoUser  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId         Int              @unique
+  origResolution    String?
+  minResolution     String?
+}
+
+model PostFiles {
+  id                Int               @id @default(autoincrement())
+  post              Posts?  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId            Int?              @unique
+  origResolution    String?
+  minResolution     String?
   mimeType          String?
 }
 
