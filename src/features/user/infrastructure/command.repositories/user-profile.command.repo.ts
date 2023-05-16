@@ -97,4 +97,12 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
     await user.setProfile(foundUser.profileInfo);
     return user;
   }
+  async findProfileByUserId(userId: number) {
+    const foundProfile = await this.prisma.profileInfoUser.findUnique({
+      where: { userId: userId },
+      include: { profilePhoto: true },
+    });
+    const profile = ProfileUserDomain.makeInstanceWithId(foundProfile);
+    return profile;
+  }
 }

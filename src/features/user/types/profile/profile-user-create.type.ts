@@ -3,14 +3,6 @@ import {
   ProfilePhotoFoundType,
 } from './profile-photo.types';
 
-export type ProfilePhoto = {
-  id: number;
-  keys: {
-    key: string;
-    resolution: string;
-  }[];
-};
-
 export type ProfileUserCreateType = {
   firstName: string;
   lastName: string;
