@@ -7,6 +7,7 @@ import {
   POSTS_USER_REPO,
 } from '../../../types/interfaces/i-posts-user.repo';
 import { PostDomain } from '../../../../../core/domain/post.domain';
+import { PostFileCreateType } from '../../../types/posts/post-file.types';
 
 export class CreatePostCommand {
   constructor(
@@ -26,7 +27,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   async execute(command: CreatePostCommand): Promise<number> {
     const { description } = command.createPostInputModel;
 
-    let postFiles = [
+    let postFiles: PostFileCreateType[] = [
       {
         origResolution: null,
         minResolution: null,
@@ -39,11 +40,13 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
         files.push(this.filesService.getFileWrapper(command.userId, file)),
       );
       const filesPath = await this.filesService.saveFiles(files);
-      postFiles = filesPath.map((f) => ({
-        origResolution: f,
-        minResolution: f,
-        mimeType: 'image',
-      }));
+      postFiles = filesPath.map(
+        (f): PostFileCreateType => ({
+          origResolution: f,
+          minResolution: f,
+          mimeType: 'image',
+        }),
+      );
     }
     const userId = command.userId;
     const post = await PostDomain.makeInstanceWithoutId({
