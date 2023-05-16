@@ -26,18 +26,29 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   async execute(command: CreatePostCommand): Promise<number> {
     const { description } = command.createPostInputModel;
 
-    let postPhotoLinks;
+    let postFiles = [
+      {
+        origResolution: null,
+        minResolution: null,
+        mimeType: 'image',
+      },
+    ];
     if (command.files.length > 0) {
       const files = [];
       command.files.forEach((file) =>
         files.push(this.filesService.getFileWrapper(command.userId, file)),
       );
-      postPhotoLinks = await this.filesService.saveFiles(files);
+      const filesPath = await this.filesService.saveFiles(files);
+      postFiles = filesPath.map((f) => ({
+        origResolution: f,
+        minResolution: f,
+        mimeType: 'image',
+      }));
     }
     const userId = command.userId;
     const post = await PostDomain.makeInstanceWithoutId({
       description,
-      postPhotoLinks,
+      postFiles,
       userId,
     });
     return await this.postsRepository.create(post);

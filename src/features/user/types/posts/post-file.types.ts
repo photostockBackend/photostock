@@ -1,10 +1,10 @@
 export type PostFileCreateType = {
-  postId: number;
   origResolution: string;
   minResolution: string;
-  mimeType: 'image' | 'video';
+  mimeType: string;
 };
 
 export type PostFileFoundType = PostFileCreateType & {
   id: number;
+  postId: number;
 };

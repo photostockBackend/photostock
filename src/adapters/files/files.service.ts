@@ -10,7 +10,7 @@ import { v4 } from 'uuid';
 @Injectable()
 export class FilesService {
   private readonly s3: S3Client;
-  constructor(){
+  constructor() {
     this.s3 = new S3Client({
       region: 'REGION',
       endpoint: 'https://storage.yandexcloud.net',
@@ -39,9 +39,11 @@ export class FilesService {
     }
   }
 
-  async saveFiles(files: {filePath: string, file: Express.Multer.File}[]): Promise<string[]> {
-    const paths = [] as string[]
-    for(let i=0; i<files.length; i++) {
+  async saveFiles(
+    files: { filePath: string; file: Express.Multer.File }[],
+  ): Promise<string[]> {
+    const paths: string[] = [];
+    for (let i = 0; i < files.length; i++) {
       const bucketParams = {
         Bucket: 'photostock',
         Key: files[i].filePath,
@@ -52,13 +54,15 @@ export class FilesService {
       const command = new PutObjectCommand(bucketParams);
       try {
         await this.s3.send(command);
-        paths.push(`https://photostock.storage.yandexcloud.net/${files[i].filePath}`);
+        paths.push(
+          `https://photostock.storage.yandexcloud.net/${files[i].filePath}`,
+        );
       } catch (e) {
         console.log(e);
         paths.push(null);
       }
     }
-    return paths
+    return paths;
   }
 
   async deleteAvatar(userId: number): Promise<string> {
@@ -67,7 +71,9 @@ export class FilesService {
       Prefix: `content/user/${userId}/avatars/${userId}`,
     };
 
-    const { Contents } = await this.s3.send(new ListObjectsV2Command(listParams));
+    const { Contents } = await this.s3.send(
+      new ListObjectsV2Command(listParams),
+    );
 
     if (!Contents || Contents.length === 0) {
       return;
@@ -94,9 +100,11 @@ export class FilesService {
 
   getFileWrapper(userId: number, file: Express.Multer.File) {
     return {
-      filePath: `content/user/${userId}/posts/${v4()}.${file.mimetype.split('/')[1]}`,
+      filePath: `content/user/${userId}/posts/${v4()}.${
+        file.mimetype.split('/')[1]
+      }`,
       file: file,
-    }
+    };
   }
 
   async deleteAll(): Promise<string> {
@@ -105,7 +113,9 @@ export class FilesService {
       Prefix: `content`,
     };
 
-    const { Contents } = await this.s3.send(new ListObjectsV2Command(listParams));
+    const { Contents } = await this.s3.send(
+      new ListObjectsV2Command(listParams),
+    );
 
     if (!Contents || Contents.length === 0) {
       return;
