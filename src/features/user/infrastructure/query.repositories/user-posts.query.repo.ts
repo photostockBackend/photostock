@@ -50,7 +50,7 @@ export class UserPostsQueryRepo {
       posts: posts.map((post) => ({
         id: post.id,
         description: post.description,
-        postPhotos: post.postPhotoLinks,
+        postPhotos: [''],
       })),
     };
   }

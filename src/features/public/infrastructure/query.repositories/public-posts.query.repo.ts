@@ -26,7 +26,7 @@ export class PublicPostsQueryRepo {
     return {
       id: post.id,
       description: post.description,
-      postPhotos: post.postPhotoLinks,
+      postPhotos: [''],
       newestComments: post.comments.map((c) => ({
         id: c.id,
         text: c.text,

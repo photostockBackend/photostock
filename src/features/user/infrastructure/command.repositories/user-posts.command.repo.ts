@@ -11,7 +11,7 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
     const result = await this.prisma.posts.create({
       data: {
         description: postDto.description,
-        postPhotoLinks: postDto.postPhotoLinks,
+        postFiles: [''],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         user: { connect: { id: postDto.userId } },
