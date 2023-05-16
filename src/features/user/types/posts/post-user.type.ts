@@ -8,5 +8,7 @@ export type PostUserCreateType = {
 
 export type PostUserFoundType = {
   id: number;
+  description: string;
   postFiles: PostFileFoundType[];
-} & PostUserCreateType;
+  userId: number;
+};
