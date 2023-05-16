@@ -5,7 +5,6 @@ import {
 
 export class ProfilePhotoDomain {
   id: number;
-  //profile: ProfileUserDomain;
   profileId: number;
   origResolution: string;
   minResolution: string;

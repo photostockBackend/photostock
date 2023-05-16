@@ -15,7 +15,6 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
         birthday: profile.birthday,
         city: profile.city,
         aboutMe: profile.aboutMe,
-        //user: { update: { username: profile.user.username } },
       },
     });
     return !!result;
