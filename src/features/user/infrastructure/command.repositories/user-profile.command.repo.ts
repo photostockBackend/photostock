@@ -16,7 +16,7 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
         birthday: profile.birthday,
         city: profile.city,
         aboutMe: profile.aboutMe,
-        user: { update: { username: profile.user.username } },
+        //user: { update: { username: profile.user.username } },
       },
     });
     return !!result;
@@ -78,11 +78,7 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
         credInfo: true,
         profileInfo: {
           include: {
-            profilePhoto: {
-              include: {
-                keys: true,
-              },
-            },
+            profilePhoto: true,
           },
         },
       },
@@ -97,12 +93,11 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
     await user.setProfile(foundUser.profileInfo);
     return user;
   }
-  async findProfileByUserId(userId: number) {
+  async findProfileByUserId(userId: number): Promise<ProfileUserDomain> {
     const foundProfile = await this.prisma.profileInfoUser.findUnique({
       where: { userId: userId },
       include: { profilePhoto: true },
     });
-    const profile = ProfileUserDomain.makeInstanceWithId(foundProfile);
-    return profile;
+    return ProfileUserDomain.makeInstanceWithId(foundProfile);
   }
 }

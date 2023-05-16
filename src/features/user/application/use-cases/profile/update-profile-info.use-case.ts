@@ -1,12 +1,14 @@
 import { UpdateProfileInputModel } from '../../../types/profile/user-profile-input.models';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { FilesService } from '../../../../../adapters/files/files.service';
-import { AuthService } from '../../../../auth/application/services/auth.service';
 import { Inject } from '@nestjs/common';
 import {
   IProfileUserRepo,
   PROFILE_USER_REPO,
 } from '../../../types/interfaces/i-profile-user.repo';
+import {
+  IUsersRepo,
+  USERS_REPO,
+} from '../../../../auth/types/interfaces/i-users.repo';
 
 export class UpdateProfileInfoCommand {
   constructor(
@@ -21,21 +23,26 @@ export class UpdateProfileInfoUseCase
 {
   constructor(
     @Inject(PROFILE_USER_REPO) private profileRepository: IProfileUserRepo,
+    @Inject(USERS_REPO) private usersRepository: IUsersRepo,
   ) {}
   async execute(command: UpdateProfileInfoCommand): Promise<void> {
     const { username, firstName, lastName, birthday, city, aboutMe } =
       command.updateProfileInputModel;
-    const user = await this.profileRepository.findUserWithProfileByUserId(
+    const user = await this.usersRepository.findOneByFilter({
+      id: command.userId,
+    });
+    const profile = await this.profileRepository.findProfileByUserId(
       command.userId,
     );
     user.username = username;
-    await user.profile.setProfileInfo({
+    await profile.setProfileInfo({
       firstName,
       lastName,
       birthday,
       city,
       aboutMe,
     });
-    await this.profileRepository.update(user);
+    await this.profileRepository.updateProfileInfo(profile);
+    await this.usersRepository.update(user);
   }
 }
