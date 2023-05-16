@@ -22,9 +22,7 @@ export class UpdateProfilePhotoUseCase
   ) {}
   async execute(command: UpdateProfilePhotoCommand): Promise<void> {
     const { userId, file } = command;
-    const user = await this.profileRepository.findUserWithProfileByUserId(
-      userId,
-    );
+    const profile = await this.profileRepository.findProfileByUserId(userId);
     let link = null;
     if (file) {
       const filePath = `content/user/${userId}/avatars/${userId}.${
@@ -32,7 +30,8 @@ export class UpdateProfilePhotoUseCase
       }`;
       link = await this.filesService.saveFile(filePath, file);
     }
-    user.profile.profilePhoto.keys[0] = { key: link, resolution: link };
-    await this.profileRepository.update(user);
+    profile.profilePhoto.origResolution = link;
+    profile.profilePhoto.minResolution = link;
+    await this.profileRepository.updateProfilePhoto(profile);
   }
 }
