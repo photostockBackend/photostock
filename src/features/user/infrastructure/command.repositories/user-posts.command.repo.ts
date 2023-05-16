@@ -21,18 +21,19 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
   }
 
   async update(post: PostDomain): Promise<boolean> {
-    const updatedPost = await this.prisma.posts.updateMany({
+    const result = await this.prisma.posts.update({
       where: {
         id: post.id,
-        userId: post.userId,
       },
       data: {
         description: post.description,
-        postPhotoLinks: post.postPhotoLinks,
+        postFiles: {
+          updateMany: { where: { postId: post.id }, data: post.postFiles },
+        },
         updatedAt: new Date().toISOString(),
       },
     });
-    return !!updatedPost.count;
+    return !!result;
   }
 
   async delete(userId: number, postId: number): Promise<boolean> {
