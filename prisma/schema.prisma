@@ -109,11 +109,11 @@ model ProfilePhotos {
 
 model PostFiles {
   id                Int               @id @default(autoincrement())
-  post              Posts?  @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId            Int?              @unique
+  post              Posts   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId            Int             @unique
   origResolution    String?
   minResolution     String?
-  mimeType          String?
+  mimeType          fileType?
 }
 
 enum resolutions {

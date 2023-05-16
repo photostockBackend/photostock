@@ -8,7 +8,7 @@ import {
 export class PostDomain {
   id: number;
   description: string;
-  postPhotoLinks: string[];
+  postFiles: string[];
   userId: number;
 
   static async makeInstanceWithoutId(postDto: PostUserCreateType) {
