@@ -18,6 +18,7 @@ export class ProfileUserDomain {
   profilePhoto: ProfilePhotoDomain;
   user: UserDomain;
   userId: number;
+
   async setProfileInfo(profileDto: ProfileUserUpdateType) {
     this.firstName = profileDto?.firstName;
     this.lastName = profileDto?.lastName;

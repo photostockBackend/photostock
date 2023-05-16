@@ -6,7 +6,7 @@ import { CredInfoUserDomain } from './cred-info-user.domain';
 import { TokenInfoDomain } from './token-info.domain';
 import { FoundUserType } from '../../features/auth/types/found-user.type';
 import { ProfileUserDomain } from './profile-user.domain';
-import { ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
+import { ProfileUserFoundType } from '../../features/user/types/profile/profile-user-create.type';
 import { PaymentInfoCreateType } from '../../features/user/types/payments/payments-create.type';
 import { PaymentDomain } from './payment.domain';
 
@@ -66,10 +66,10 @@ export class UserDomain {
     this.credInfo.userId = userDto.credInfo.userId;
     this.credInfo.recoveryIsUsed = userDto.credInfo.recoveryIsUsed;
   }
-  async setProfile(profileDto: ProfileUserCreateType) {
-    this.profile = new ProfileUserDomain(profileDto);
+  async setProfile(profileDto: ProfileUserFoundType) {
+    this.profile = await ProfileUserDomain.makeInstanceWithId(profileDto);
   }
   async setPayments(paymentDto: PaymentInfoCreateType[]) {
-    this.paymentsInfo = paymentDto.map(p => new PaymentDomain(p))
+    this.paymentsInfo = paymentDto.map((p) => new PaymentDomain(p));
   }
 }
