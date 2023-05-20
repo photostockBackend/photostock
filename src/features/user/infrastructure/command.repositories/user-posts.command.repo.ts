@@ -3,6 +3,8 @@ import { PrismaService } from '../../../../database/prisma.service';
 import { PostDomain } from '../../../../core/domain/post.domain';
 import { IPostsUserRepo } from '../../types/interfaces/i-posts-user.repo';
 import { FindPostFilterType } from '../../types/posts/find-post-filter.type';
+import { PostFileDomain } from '../../../../core/domain/post-file.domain';
+import { PostFileCreateType } from '../../types/posts/post-file.types';
 
 @Injectable()
 export class UserPostsCommandRepo implements IPostsUserRepo {
@@ -49,10 +51,25 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
   async findOne(filter: FindPostFilterType): Promise<PostDomain> {
     const foundedPost = await this.prisma.posts.findFirst({
       where: filter,
+      include: { postFiles: true },
     });
     if (!foundedPost) {
       return null;
     }
     return PostDomain.makeInstanceWithId(foundedPost);
+  }
+  async createPostFile(
+    file: PostFileCreateType,
+    postId: number,
+  ): Promise<PostFileDomain> {
+    const result = await this.prisma.postFiles.create({
+      data: {
+        postId: postId,
+        origResolution: file.origResolution,
+        minResolution: file.minResolution,
+        mimeType: file.mimeType,
+      },
+    });
+    return PostFileDomain.makeInstanceWithId(result);
   }
 }

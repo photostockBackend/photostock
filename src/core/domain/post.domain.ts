@@ -33,4 +33,8 @@ export class PostDomain {
     post.userId = postDto.userId;
     return post;
   }
+  async updatePostFiles(newFiles: PostFileDomain[], deletedFiles: number[]) {
+    const files = this.postFiles.filter((f) => !deletedFiles.includes(f.id));
+    this.postFiles = files.concat(newFiles);
+  }
 }

@@ -7,6 +7,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { v4 } from 'uuid';
 import sharp from 'sharp';
+import { PostFileCreateType } from '../../features/user/types/posts/post-file.types';
 
 @Injectable()
 export class FilesService {
@@ -47,8 +48,8 @@ export class FilesService {
   async saveFiles(
     userId: number,
     files: Express.Multer.File[],
-  ): Promise<{ origResolution: string; minResolution: string }[]> {
-    const paths: { origResolution: string; minResolution: string }[] = [];
+  ): Promise<PostFileCreateType[]> {
+    const paths: PostFileCreateType[] = [];
     for (let i = 0; i < files.length; i++) {
       const compressedImage = await sharp(files[i].path)
         .resize({ width: 300, height: 300, fit: 'inside' })
@@ -56,6 +57,7 @@ export class FilesService {
       paths.push({
         origResolution: await this.saveFile(userId, files[i].buffer, 'posts'),
         minResolution: await this.saveFile(userId, compressedImage, 'posts'),
+        mimeType: 'image',
       });
     }
     return paths;

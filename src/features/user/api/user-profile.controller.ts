@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -28,10 +27,7 @@ import {
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import {
-  UpdateProfileInputModel,
-  UpdateProfilePhotoInputModel,
-} from '../types/profile/user-profile-input.models';
+import { UpdateProfileInputModel } from '../types/profile/user-profile-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
 import { UpdateProfileInfoCommand } from '../application/use-cases/profile/update-profile-info.use-case';
 import { ProfileUserViewModel } from '../types/profile/user-profile-view.models';
@@ -250,19 +246,6 @@ export class UserProfileController {
     )
     files: Express.Multer.File[],
   ) {
-    if (
-      updatePostInputModel.existedPhotos &&
-      updatePostInputModel.existedPhotos.length + files.length > 10
-    ) {
-      throw new BadRequestException({
-        message: [
-          {
-            field: 'postPhoto & existedPhotos',
-            message: 'a post can have no more than 10 photos in summ',
-          },
-        ],
-      });
-    }
     await this.commandBus.execute(
       new UpdatePostCommand(req.user.userId, +id, files, updatePostInputModel),
     );

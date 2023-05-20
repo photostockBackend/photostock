@@ -25,9 +25,14 @@ export class UpdatePostInputModel {
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  existedPhotos: string[];
+  remainingPhotos: number[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  deletedPhotos: number[];
 
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()
-  postPhoto: Express.Multer.File;
+  newPhotos: Express.Multer.File;
 }

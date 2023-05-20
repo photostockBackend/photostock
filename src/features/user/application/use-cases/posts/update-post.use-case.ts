@@ -1,11 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../../adapters/files/files.service';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { UpdatePostInputModel } from '../../../types/posts/user-post-input.models';
 import {
   IPostsUserRepo,
   POSTS_USER_REPO,
 } from '../../../types/interfaces/i-posts-user.repo';
+import { PostFileDomain } from '../../../../../core/domain/post-file.domain';
 
 export class UpdatePostCommand {
   constructor(
@@ -15,20 +16,6 @@ export class UpdatePostCommand {
     public readonly updatePostInputModel: UpdatePostInputModel,
   ) {}
 }
-
-/*
-if(updatePostInputModel.existedPhotos && (updatePostInputModel.existedPhotos.length + files.length) > 10) {
-      throw new BadRequestException({
-        message: [
-          {
-            field: 'postPhoto & existedPhotos',
-            message: 'a post can have no more than 10 photos in summ',
-          },
-        ],
-      });
-    }
-*/
-
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   constructor(
@@ -37,7 +24,18 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<void> {
-    const { description } = command.updatePostInputModel;
+    const { remainingPhotos, deletedPhotos, description } =
+      command.updatePostInputModel;
+    if (remainingPhotos && remainingPhotos.length + command.files.length > 10) {
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'postPhoto & existedPhotos',
+            message: 'a post can have no more than 10 photos in sum',
+          },
+        ],
+      });
+    }
     const foundedPost = await this.postsRepository.findOne({
       id: command.postId,
       user: { id: command.userId },
@@ -45,24 +43,20 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     if (!foundedPost) {
       throw new NotFoundException();
     }
-
-    const removedPhotoIds = command.updatePostInputModel.existedPhotos;
-
-    //const removedLinks =  foundedPost.postPhotoLinks.filter(l => postPhotoLinks.every(l => inputL))
-    let postPhotoLinks = command.updatePostInputModel.existedPhotos;
+    let newPostFiles: PostFileDomain[] = [];
     if (command.files.length > 0) {
-      const files = [];
-      command.files.forEach((file) =>
-        files.push(this.filesService.createFilePath(command.userId, file)),
+      const filesLinks = await this.filesService.saveFiles(
+        command.userId,
+        command.files,
       );
-
-      const newPostPhotoLinks = await this.filesService.saveFiles(files);
-      postPhotoLinks = [...postPhotoLinks, ...newPostPhotoLinks];
+      newPostFiles = await Promise.all(
+        filesLinks.map(async (f) =>
+          this.postsRepository.createPostFile(f, command.postId),
+        ),
+      );
     }
-    foundedPost.postPhotoLinks = postPhotoLinks;
+    await foundedPost.updatePostFiles(newPostFiles, deletedPhotos);
     foundedPost.description = description;
     await this.postsRepository.update(foundedPost);
-
-    // todo:  remove from
   }
 }
