@@ -6,6 +6,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { v4 } from 'uuid';
+import sharp from 'sharp';
 
 @Injectable()
 export class FilesService {
@@ -44,6 +45,10 @@ export class FilesService {
   ): Promise<string[]> {
     const paths: string[] = [];
     for (let i = 0; i < files.length; i++) {
+      const image = await sharp(files[i].file.path)
+        .resize({ width: 300, height: 300, fit: 'inside' })
+        .toBuffer();
+      //image.resize({ width: 300, height: 300, fit: 'inside' }).toBuffer();
       const bucketParams = {
         Bucket: 'photostock',
         Key: files[i].filePath,
