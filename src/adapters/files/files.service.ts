@@ -22,14 +22,18 @@ export class FilesService {
     });
   }
 
-  async saveFile(filePath: string, file: Express.Multer.File): Promise<string> {
+  async saveFile(
+    userId: number,
+    buffer: Buffer,
+    folder: string,
+  ): Promise<string> {
+    const filePath = this.createFilePath(userId, folder);
     const bucketParams = {
       Bucket: 'photostock',
       Key: filePath,
-      Body: file.buffer,
+      Body: buffer,
       ContentType: 'image/jpeg',
     };
-
     const command = new PutObjectCommand(bucketParams);
     try {
       await this.s3.send(command);
@@ -41,31 +45,16 @@ export class FilesService {
   }
 
   async saveFiles(
-    files: { filePath: string; file: Express.Multer.File }[],
+    userId: number,
+    files: Express.Multer.File[],
   ): Promise<string[]> {
     const paths: string[] = [];
     for (let i = 0; i < files.length; i++) {
-      const image = await sharp(files[i].file.path)
+      const compressedImage = await sharp(files[i].path)
         .resize({ width: 300, height: 300, fit: 'inside' })
         .toBuffer();
-      //image.resize({ width: 300, height: 300, fit: 'inside' }).toBuffer();
-      const bucketParams = {
-        Bucket: 'photostock',
-        Key: files[i].filePath,
-        Body: files[i].file.buffer,
-        ContentType: 'image/jpeg',
-      };
-
-      const command = new PutObjectCommand(bucketParams);
-      try {
-        await this.s3.send(command);
-        paths.push(
-          `https://photostock.storage.yandexcloud.net/${files[i].filePath}`,
-        );
-      } catch (e) {
-        console.log(e);
-        paths.push(null);
-      }
+      paths.push(await this.saveFile(userId, files[i].buffer, 'posts'));
+      paths.push(await this.saveFile(userId, compressedImage, 'posts'));
     }
     return paths;
   }
@@ -103,13 +92,8 @@ export class FilesService {
     }
   }
 
-  getFileWrapper(userId: number, file: Express.Multer.File) {
-    return {
-      filePath: `content/user/${userId}/posts/${v4()}.${
-        file.mimetype.split('/')[1]
-      }`,
-      file: file,
-    };
+  createFilePath(userId: number, folder: string) {
+    return `content/user/${userId}/${folder}/${v4()}.jpeg`;
   }
 
   async deleteAll(): Promise<string> {

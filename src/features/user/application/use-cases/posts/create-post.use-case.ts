@@ -37,13 +37,13 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
     if (command.files.length > 0) {
       const files = [];
       command.files.forEach((file) =>
-        files.push(this.filesService.getFileWrapper(command.userId, file)),
+        files.push(this.filesService.createFilePath(command.userId, file)),
       );
       const filesPath = await this.filesService.saveFiles(files);
       postFiles = filesPath.map(
-        (f): PostFileCreateType => ({
-          origResolution: f,
-          minResolution: f,
+        (link): PostFileCreateType => ({
+          origResolution: link,
+          minResolution: link,
           mimeType: 'image',
         }),
       );
