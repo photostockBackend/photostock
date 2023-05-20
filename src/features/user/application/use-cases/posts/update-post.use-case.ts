@@ -43,6 +43,17 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     if (!foundedPost) {
       throw new NotFoundException();
     }
+    //delete removed files from database
+    await this.postsRepository.deletePostFiles(deletedPhotos);
+    //delete removed files from cloud
+    const deletedFilesLinks = [];
+    foundedPost.postFiles
+      .filter((f) => deletedPhotos.includes(f.id))
+      .forEach((f) => {
+        deletedFilesLinks.push(f.minResolution);
+        deletedFilesLinks.push(f.origResolution);
+      });
+    this.filesService.deleteFiles(deletedFilesLinks);
     let newPostFiles: PostFileDomain[] = [];
     if (command.files.length > 0) {
       const filesLinks = await this.filesService.saveFiles(

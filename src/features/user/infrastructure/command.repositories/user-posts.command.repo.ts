@@ -72,4 +72,10 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
     });
     return PostFileDomain.makeInstanceWithId(result);
   }
+  async deletePostFiles(deletedFiles: number[]): Promise<boolean> {
+    const result = await this.prisma.postFiles.deleteMany({
+      where: { id: { in: deletedFiles } },
+    });
+    return !!result.count;
+  }
 }

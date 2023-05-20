@@ -13,4 +13,5 @@ export interface IPostsUserRepo {
     file: PostFileCreateType,
     postId: number,
   ): Promise<PostFileDomain>;
+  deletePostFiles(deletedFiles: number[]): Promise<boolean>;
 }

@@ -26,7 +26,7 @@ export class FilesService {
   async saveFile(
     userId: number,
     buffer: Buffer,
-    folder: string,
+    folder: 'avatars' | 'posts',
   ): Promise<string> {
     const filePath = this.createFilePath(userId, folder);
     const bucketParams = {
@@ -62,42 +62,25 @@ export class FilesService {
     }
     return paths;
   }
-
-  async deleteAvatar(userId: number): Promise<string> {
-    const listParams = {
-      Bucket: 'photostock',
-      Prefix: `content/user/${userId}/avatars/${userId}`,
-    };
-
-    const { Contents } = await this.s3.send(
-      new ListObjectsV2Command(listParams),
-    );
-
-    if (!Contents || Contents.length === 0) {
-      return;
-    }
-
+  createFilePath(userId: number, folder: string) {
+    return `content/user/${userId}/${folder}/${v4()}.jpeg`;
+  }
+  async deleteFiles(links: string[]): Promise<string> {
     const deleteParams = {
       Bucket: 'photostock',
       Delete: { Objects: [] },
     };
-
-    Contents.forEach(({ Key }) => {
-      deleteParams.Delete.Objects.push({ Key });
+    links.forEach((l) => {
+      deleteParams.Delete.Objects.push({ Key: l.slice(l.indexOf('/', 8)) });
     });
 
-    const command = new DeleteObjectsCommand(deleteParams);
+    this.s3.send(new DeleteObjectsCommand(deleteParams));
     try {
-      this.s3.send(command);
       return;
     } catch (e) {
       console.log(e);
       return null;
     }
-  }
-
-  createFilePath(userId: number, folder: string) {
-    return `content/user/${userId}/${folder}/${v4()}.jpeg`;
   }
 
   async deleteAll(): Promise<string> {
