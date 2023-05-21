@@ -14,6 +14,9 @@ import { FilesModule } from './adapters/files/files.module';
 import { EventEmitterModule } from './adapters/eventEmitter/eventEmitter.module';
 import { OauthModule } from './adapters/oauth/oauth.module';
 import { PublicModule } from './features/public/public.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { SuperAdminModule } from './features/superadmin/superadmin.module';
 
 @Module({
   imports: [
@@ -21,10 +24,16 @@ import { PublicModule } from './features/public/public.module';
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
-    ThrottlerModule.forRootAsync({
+    /*ThrottlerModule.forRootAsync({
       useFactory: () => ({ ttl: 10, limit: 100 }),
-    }),
+    }),*/
     ConfigModule.forRoot({ isGlobal: true }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+      introspection: true,
+      playground: true,
+    }),
     AllDataModule,
     AuthModule,
     PrismaModule,
@@ -33,14 +42,15 @@ import { PublicModule } from './features/public/public.module';
     FilesModule,
     EventEmitterModule,
     OauthModule,
+    SuperAdminModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
+    /*{
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    },
+    },*/
   ],
 })
 export class AppModule {}

@@ -196,7 +196,7 @@ export class UserProfileController {
     status: 401,
     description: 'The user not identified.',
   })
-  @ApiConsumes('multipart/from-data')
+  @ApiConsumes('multipart/form-data')
   @HttpCode(201)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(FilesInterceptor('postPhoto', 10))

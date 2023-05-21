@@ -400,6 +400,116 @@ window.onload = function() {
           ]
         }
       },
+      "/security/devices": {
+        "get": {
+          "operationId": "SecurityDevicesController_getSessions",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "The user-profile has been successfully identified.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SessionsViewModels"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "The user is not authorized."
+            }
+          },
+          "tags": [
+            "devices"
+          ]
+        },
+        "delete": {
+          "operationId": "SecurityDevicesController_deleteAllSessionsExcludeCurrent",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "All sessions except the current one have been deleted."
+            },
+            "400": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "devices"
+          ]
+        }
+      },
+      "/security/devices/{id}": {
+        "delete": {
+          "operationId": "SecurityDevicesController_deleteSessionByDeviceId",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Session by deviceId has been deleted."
+            },
+            "400": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/Errored"
+                      },
+                      {
+                        "properties": {
+                          "errorMessages": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/components/schemas/ErrorSwagger"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "devices"
+          ]
+        }
+      },
       "/user/profile": {
         "get": {
           "operationId": "UserProfileController_getProfileForCurrentUser",
@@ -651,7 +761,7 @@ window.onload = function() {
           "requestBody": {
             "required": true,
             "content": {
-              "multipart/from-data": {
+              "multipart/form-data": {
                 "schema": {
                   "$ref": "#/components/schemas/CreatePostInputModel"
                 }
@@ -717,6 +827,20 @@ window.onload = function() {
           "responses": {
             "201": {
               "description": "The subscription has been successfully created"
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/stripe/webhook/subscriptionupdated": {
+        "post": {
+          "operationId": "PaymentController_stripeWebhookSubscriptionUpdated",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
             }
           },
           "tags": [
@@ -1095,6 +1219,29 @@ window.onload = function() {
           },
           "required": [
             "oauth2code"
+          ]
+        },
+        "SessionsViewModels": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "lastActiveDate": {
+              "type": "string"
+            },
+            "deviceId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ip",
+            "title",
+            "lastActiveDate",
+            "deviceId"
           ]
         },
         "PhotoLinks": {
