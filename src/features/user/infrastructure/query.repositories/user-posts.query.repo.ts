@@ -10,21 +10,10 @@ import { PaginatorDto } from '../../../../helpers/common/types/paginator.dto';
 export class UserPostsQueryRepo {
   constructor(protected prisma: PrismaService) {}
   async findPostById(id: number): Promise<PostUserViewModel> {
-    /*const sql = format(
-      `SELECT 
-        "id",
-        "description",
-        "postPhotoLinks"
-        FROM "Posts"
-        WHERE "id" = %1$s;`,
-      id,
-    );*/
-    //const post = await this.prisma.$queryRawUnsafe<PostUserFoundType[]>(sql);
     const post = await this.prisma.posts.findUnique({
       where: { id: id },
       include: { postFiles: true },
     });
-    //if (!post.length) return null;
     return {
       id: post.id,
       description: post.description,

@@ -6,7 +6,7 @@ import { PostFileDomain } from '../../../../core/domain/post-file.domain';
 @Injectable()
 export class PostsFilesCommandRepo implements IPostsFilesRepo {
   constructor(private prisma: PrismaService) {}
-  async createPostFile(file: PostFileDomain): Promise<PostFileDomain> {
+  async createPostFile(file: PostFileDomain): Promise<number> {
     const result = await this.prisma.postFiles.create({
       data: {
         postId: file.postId,
@@ -15,7 +15,7 @@ export class PostsFilesCommandRepo implements IPostsFilesRepo {
         mimeType: file.mimeType,
       },
     });
-    return PostFileDomain.makeInstanceWithId(result);
+    return result.id;
   }
   async deleteManyById(deletedFiles: number[]): Promise<boolean> {
     const result = await this.prisma.postFiles.deleteMany({

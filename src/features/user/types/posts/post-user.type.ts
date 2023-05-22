@@ -2,7 +2,6 @@ import { PostFileFoundType } from './post-file.types';
 
 export type PostUserCreateType = {
   description: string;
-  //postFiles: PostFileCreateType[];
   userId: number;
 };
 

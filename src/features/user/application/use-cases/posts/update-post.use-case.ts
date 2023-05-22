@@ -7,6 +7,10 @@ import {
   POSTS_USER_REPO,
 } from '../../../types/interfaces/i-posts-user.repo';
 import { PostFileDomain } from '../../../../../core/domain/post-file.domain';
+import {
+  IPostsFilesRepo,
+  POSTS_FILES_REPO,
+} from '../../../types/interfaces/i-posts-files.repo';
 
 export class UpdatePostCommand {
   constructor(
@@ -21,6 +25,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   constructor(
     private filesService: FilesService,
     @Inject(POSTS_USER_REPO) private postsRepository: IPostsUserRepo,
+    @Inject(POSTS_FILES_REPO) private postsFilesRepository: IPostsFilesRepo,
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<void> {
@@ -54,20 +59,21 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
         deletedFilesLinks.push(f.origResolution);
       });
     this.filesService.deleteFiles(deletedFilesLinks);
-    let newPostFiles: PostFileDomain[] = [];
     if (command.files.length > 0) {
       const filesLinks = await this.filesService.saveFiles(
         command.userId,
         command.files,
         'posts',
       );
-      newPostFiles = await Promise.all(
-        filesLinks.map(async (f) =>
-          this.postsRepository.createPostFile(f, command.postId),
-        ),
-      );
+      for (const f of filesLinks) {
+        await this.postsFilesRepository.createPostFile(
+          await PostFileDomain.makeInstanceWithoutId({
+            ...f,
+            postId: foundedPost.id,
+          }),
+        );
+      }
     }
-    await foundedPost.updatePostFiles(newPostFiles, deletedPhotos);
     foundedPost.description = description;
     await this.postsRepository.update(foundedPost);
   }

@@ -13,7 +13,6 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
     const result = await this.prisma.posts.create({
       data: {
         description: post.description,
-        postFiles: { createMany: { data: post.postFiles } },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         user: { connect: { id: post.userId } },
@@ -29,9 +28,6 @@ export class UserPostsCommandRepo implements IPostsUserRepo {
       },
       data: {
         description: post.description,
-        postFiles: {
-          updateMany: { where: { postId: post.id }, data: post.postFiles },
-        },
         updatedAt: new Date().toISOString(),
       },
     });

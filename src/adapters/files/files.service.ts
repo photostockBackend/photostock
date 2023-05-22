@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { v4 } from 'uuid';
 import sharp from 'sharp';
-import { PostFileCreateType } from '../../features/user/types/posts/post-file.types';
+import { OutputFileLinksType } from './types/output-file-links.type';
 
 @Injectable()
 export class FilesService {
@@ -49,8 +49,8 @@ export class FilesService {
     userId: number,
     files: Express.Multer.File[],
     folder: 'avatars' | 'posts',
-  ): Promise<PostFileCreateType[]> {
-    const paths: PostFileCreateType[] = [];
+  ): Promise<OutputFileLinksType[]> {
+    const paths: OutputFileLinksType[] = [];
     for (let i = 0; i < files.length; i++) {
       const compressedImage = await sharp(files[i].buffer)
         .resize({ width: 300, height: 300, fit: 'inside' })

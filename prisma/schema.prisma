@@ -110,7 +110,7 @@ model ProfilePhotos {
 model PostFiles {
   id                Int               @id @default(autoincrement())
   post              Posts   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId            Int             @unique
+  postId            Int
   origResolution    String?
   minResolution     String?
   mimeType          fileType?
