@@ -1,8 +1,8 @@
-import { PostFileCreateType, PostFileFoundType } from './post-file.types';
+import { PostFileFoundType } from './post-file.types';
 
 export type PostUserCreateType = {
   description: string;
-  postFiles: PostFileCreateType[];
+  //postFiles: PostFileCreateType[];
   userId: number;
 };
 

@@ -8,6 +8,8 @@ import {
 } from '../../../types/interfaces/i-posts-user.repo';
 import { PostDomain } from '../../../../../core/domain/post.domain';
 import { PostFileCreateType } from '../../../types/posts/post-file.types';
+import {PostFileDomain} from "../../../../../core/domain/post-file.domain";
+import {IPostsFilesRepo, POSTS_FILES_REPO} from "../../../types/interfaces/i-posts-files.repo";
 
 export class CreatePostCommand {
   constructor(
@@ -22,24 +24,36 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   constructor(
     private filesService: FilesService,
     @Inject(POSTS_USER_REPO) private postsRepository: IPostsUserRepo,
+    @Inject(POSTS_FILES_REPO) private postsFilesRepository: IPostsFilesRepo,
   ) {}
 
   async execute(command: CreatePostCommand): Promise<number> {
     const { description } = command.createPostInputModel;
-    let postFiles: PostFileCreateType[] = [];
+    //let postFiles: PostFileCreateType[] = [];
     if (command.files.length > 0) {
-      postFiles = await this.filesService.saveFiles(
+      const postFilesLinks = await this.filesService.saveFiles(
         command.userId,
         command.files,
         'posts',
       );
+      const postFiles: PostFileDomain[] = [];
+      postFilesLinks.forEach((f) => PostFileDomain.)
     }
     const userId = command.userId;
     const post = await PostDomain.makeInstanceWithoutId({
       description,
-      postFiles,
       userId,
     });
-    return await this.postsRepository.create(post);
+    const postId = await this.postsRepository.create(post);
+    if (command.files.length > 0) {
+      const postFilesLinks = await this.filesService.saveFiles(
+          command.userId,
+          command.files,
+          'posts',
+      );
+      const postFiles: PostFileDomain[] = [];
+      postFilesLinks.forEach((f) => PostFileDomain.)
+    }
+    return postId;
   }
 }

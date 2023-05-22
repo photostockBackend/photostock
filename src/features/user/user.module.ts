@@ -28,6 +28,8 @@ import { StripeCreateSubscriptionUseCase } from './application/use-cases/payment
 import { PaymentsQueryRepo } from './infrastructure/query.repositories/payments.query.repo';
 import { PaymentsCommandRepo } from './infrastructure/command.repositories/payments.command.repo';
 import { StripeWebhookSubscriptionUpdatedUseCase } from './application/use-cases/payment/stripe-webhook-subscriptionupdated.use-case';
+import { POSTS_FILES_REPO } from './types/interfaces/i-posts-files.repo';
+import { PostsFilesCommandRepo } from './infrastructure/command.repositories/posts-files.command.repo';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -54,6 +56,10 @@ const repositories = [
     provide: POSTS_USER_REPO,
     useClass: UserPostsCommandRepo,
   },
+  {
+    provide: POSTS_FILES_REPO,
+    useClass: PostsFilesCommandRepo,
+  },
   UserProfileQueryRepo,
   UserPostsQueryRepo,
   PaymentsQueryRepo,
@@ -66,13 +72,7 @@ const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
   controllers: [UserProfileController, PaymentController],
-  imports: [
-    CqrsModule, 
-    PrismaModule, 
-    AuthModule, 
-    FilesModule, 
-    PaymentModule,
-  ],
+  imports: [CqrsModule, PrismaModule, AuthModule, FilesModule, PaymentModule],
   providers: [
     ...commands,
     ...queries,
