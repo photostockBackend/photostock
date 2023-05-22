@@ -1,5 +1,5 @@
 export type PostFileCreateType = {
-  postId?: number;
+  postId: number;
   origResolution: string;
   minResolution: string;
   mimeType: 'image' | 'video';

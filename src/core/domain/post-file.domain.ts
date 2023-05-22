@@ -12,7 +12,7 @@ export class PostFileDomain {
 
   static async makeInstanceWithoutId(postFileDto: PostFileCreateType) {
     const postFile = new PostFileDomain();
-    if (postFileDto.postId) postFile.postId = postFileDto.postId;
+    postFile.postId = postFileDto.postId;
     postFile.origResolution = postFileDto.origResolution;
     postFile.minResolution = postFileDto.minResolution;
     postFile.mimeType = postFileDto.mimeType;
