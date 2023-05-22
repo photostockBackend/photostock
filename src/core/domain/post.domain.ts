@@ -15,11 +15,12 @@ export class PostDomain {
   static async makeInstanceWithoutId(postDto: PostUserCreateType) {
     const post = new PostDomain();
     post.description = postDto.description;
-    post.postFiles = await Promise.all(
+    post.postFiles = postDto.postFiles;
+    /*post.postFiles = await Promise.all(
       postDto.postFiles.map(async (f) =>
         PostFileDomain.makeInstanceWithoutId(f),
       ),
-    );
+    );*/
     post.userId = postDto.userId;
     return post;
   }

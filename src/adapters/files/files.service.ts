@@ -52,7 +52,7 @@ export class FilesService {
   ): Promise<PostFileCreateType[]> {
     const paths: PostFileCreateType[] = [];
     for (let i = 0; i < files.length; i++) {
-      const compressedImage = await sharp(files[i].path)
+      const compressedImage = await sharp(files[i].buffer)
         .resize({ width: 300, height: 300, fit: 'inside' })
         .toBuffer();
       paths.push({
