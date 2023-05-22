@@ -57,4 +57,14 @@ export class UserPostsQueryRepo {
       })),
     };
   }
+  async getPostFilesById(fileId: number) {
+    const file = await this.prisma.postFiles.findUnique({
+      where: { id: fileId },
+    });
+    return {
+      id: file.id,
+      original: file.origResolution,
+      preview: file.minResolution,
+    };
+  }
 }
