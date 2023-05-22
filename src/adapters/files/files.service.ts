@@ -48,6 +48,7 @@ export class FilesService {
   async saveFiles(
     userId: number,
     files: Express.Multer.File[],
+    folder: 'avatars' | 'posts',
   ): Promise<PostFileCreateType[]> {
     const paths: PostFileCreateType[] = [];
     for (let i = 0; i < files.length; i++) {
@@ -55,8 +56,8 @@ export class FilesService {
         .resize({ width: 300, height: 300, fit: 'inside' })
         .toBuffer();
       paths.push({
-        origResolution: await this.saveFile(userId, files[i].buffer, 'posts'),
-        minResolution: await this.saveFile(userId, compressedImage, 'posts'),
+        origResolution: await this.saveFile(userId, files[i].buffer, folder),
+        minResolution: await this.saveFile(userId, compressedImage, folder),
         mimeType: 'image',
       });
     }

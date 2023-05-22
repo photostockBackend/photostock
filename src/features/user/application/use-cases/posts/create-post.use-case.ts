@@ -31,6 +31,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       postFiles = await this.filesService.saveFiles(
         command.userId,
         command.files,
+        'posts',
       );
     }
     const userId = command.userId;

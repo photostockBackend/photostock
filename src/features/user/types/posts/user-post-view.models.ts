@@ -6,7 +6,7 @@ export class PostUserViewModel {
   @ApiProperty()
   description: string;
   @ApiProperty()
-  postPhotos: string[];
+  postPhotosId: number[];
 }
 
 export class PostsUserWithPaginationViewModel {

@@ -43,9 +43,9 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     if (!foundedPost) {
       throw new NotFoundException();
     }
-    //delete removed files from database
+    //deleting removed files from database
     await this.postsRepository.deletePostFiles(deletedPhotos);
-    //delete removed files from cloud
+    //deleting removed files from cloud
     const deletedFilesLinks = [];
     foundedPost.postFiles
       .filter((f) => deletedPhotos.includes(f.id))
@@ -59,6 +59,7 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
       const filesLinks = await this.filesService.saveFiles(
         command.userId,
         command.files,
+        'posts',
       );
       newPostFiles = await Promise.all(
         filesLinks.map(async (f) =>

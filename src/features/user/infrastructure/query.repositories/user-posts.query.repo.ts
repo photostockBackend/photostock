@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
-import { PostUserFoundType } from '../../types/posts/post-user.type';
 import {
   PostsUserWithPaginationViewModel,
   PostUserViewModel,
 } from '../../types/posts/user-post-view.models';
 import { PaginatorDto } from '../../../../helpers/common/types/paginator.dto';
-import format = require('pg-format');
 
 @Injectable()
 export class UserPostsQueryRepo {
   constructor(protected prisma: PrismaService) {}
   async findPostById(id: number): Promise<PostUserViewModel> {
-    const sql = format(
+    /*const sql = format(
       `SELECT 
         "id",
         "description",
@@ -20,13 +18,17 @@ export class UserPostsQueryRepo {
         FROM "Posts"
         WHERE "id" = %1$s;`,
       id,
-    );
-    const post = await this.prisma.$queryRawUnsafe<PostUserFoundType[]>(sql);
-    if (!post.length) return null;
+    );*/
+    //const post = await this.prisma.$queryRawUnsafe<PostUserFoundType[]>(sql);
+    const post = await this.prisma.posts.findUnique({
+      where: { id: id },
+      include: { postFiles: true },
+    });
+    //if (!post.length) return null;
     return {
-      id: post[0].id,
-      description: post[0].description,
-      postPhotos: post[0].postPhotoLinks,
+      id: post.id,
+      description: post.description,
+      postPhotosId: post.postFiles.map((f) => f.id),
     };
   }
   async findPostsByUserId(
@@ -35,6 +37,7 @@ export class UserPostsQueryRepo {
   ): Promise<PostsUserWithPaginationViewModel> {
     const posts = await this.prisma.posts.findMany({
       where: { userId: userId },
+      include: { postFiles: true },
       orderBy: { createdAt: 'asc' },
       skip: (page.pageNumber - 1) * page.pageSize,
       take: page.pageSize,
@@ -50,7 +53,7 @@ export class UserPostsQueryRepo {
       posts: posts.map((post) => ({
         id: post.id,
         description: post.description,
-        postPhotos: [''],
+        postPhotosId: post.postFiles.map((f) => f.id),
       })),
     };
   }
