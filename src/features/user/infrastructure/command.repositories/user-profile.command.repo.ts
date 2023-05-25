@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
 import { IProfileUserRepo } from '../../types/interfaces/i-profile-user.repo';
 import { ProfileUserDomain } from '../../../../core/domain/profile-user.domain';
+import { ProfilePhotoDomain } from '../../../../core/domain/profile-photo.domain';
 
 @Injectable()
 export class UserProfileCommandRepo implements IProfileUserRepo {
@@ -19,25 +20,25 @@ export class UserProfileCommandRepo implements IProfileUserRepo {
     });
     return !!result;
   }
-  async updateProfilePhoto(profile: ProfileUserDomain): Promise<boolean> {
-    const result = await this.prisma.profileInfoUser.update({
-      where: { id: profile.id },
-      data: {
-        profilePhoto: {
-          update: {
-            origResolution: profile.profilePhoto.origResolution,
-            minResolution: profile.profilePhoto.minResolution,
-          },
-        },
-      },
+  async updateProfilePhoto(profilePhoto: ProfilePhotoDomain): Promise<boolean> {
+    const result = await this.prisma.profilePhotos.update({
+      where: { id: profilePhoto.id },
+      data: profilePhoto,
     });
     return !!result;
   }
   async findProfileByUserId(userId: number): Promise<ProfileUserDomain> {
     const foundProfile = await this.prisma.profileInfoUser.findUnique({
       where: { userId: userId },
-      include: { profilePhoto: true },
     });
     return ProfileUserDomain.makeInstanceWithId(foundProfile);
+  }
+  async findProfilePhotoByProfileId(
+    profileId: number,
+  ): Promise<ProfilePhotoDomain> {
+    const foundProfilePhoto = await this.prisma.profilePhotos.findUnique({
+      where: { profileId: profileId },
+    });
+    return ProfilePhotoDomain.makeInstanceWithId(foundProfilePhoto);
   }
 }

@@ -34,24 +34,12 @@ export class ProfileUserDomain {
     profile.birthday = profileDto.birthday;
     profile.city = profileDto.city;
     profile.aboutMe = profileDto.aboutMe;
-    profile.profilePhoto = await ProfilePhotoDomain.makeInstanceWithoutId(
-      profileDto.profilePhoto,
-    );
     profile.userId = profileDto.userId;
     return profile;
   }
   static async makeInstanceWithId(profileDto: ProfileUserFoundType) {
-    const profile = new ProfileUserDomain();
+    const profile = await ProfileUserDomain.makeInstanceWithoutId(profileDto);
     profile.id = profileDto.id;
-    profile.firstName = profileDto.firstName;
-    profile.lastName = profileDto.lastName;
-    profile.birthday = profileDto.birthday;
-    profile.city = profileDto.city;
-    profile.aboutMe = profileDto.aboutMe;
-    profile.profilePhoto = await ProfilePhotoDomain.makeInstanceWithId(
-      profileDto.profilePhoto,
-    );
-    profile.userId = profileDto.userId;
     return profile;
   }
 }
