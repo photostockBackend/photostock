@@ -1,19 +1,14 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
 import { Length } from 'class-validator';
 
-@InputType()
-class UpdateUserDto {
-  @Field({ nullable: true })
-  email?: string;
-
-  @Field({ nullable: true })
-  age?: number;
-}
-
 @ArgsType()
-export class UpdateUserArgs {
+export class PaginatorArgs {
   @Field()
-  userId: string;
-  @Field(() => UpdateUserDto)
-  data: UpdateUserDto;
+  pageSize?: number;
+  @Field()
+  pageNumber?: number;
+  @Field()
+  searchUsernameTerm?: string;
+  @Field()
+  sort?: string;
 }

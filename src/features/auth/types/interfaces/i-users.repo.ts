@@ -6,4 +6,5 @@ export interface IUsersRepo {
   create(user: UserDomain): Promise<number>;
   update(user: UserDomain): Promise<boolean>;
   findOneByFilter(filter: FindFilterUserType): Promise<UserDomain | null>;
+  delete(id: number): Promise<boolean>;
 }

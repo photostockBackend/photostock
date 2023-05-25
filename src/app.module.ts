@@ -28,12 +28,12 @@ import { SuperAdminModule } from './features/superadmin/superadmin.module';
       useFactory: () => ({ ttl: 10, limit: 100 }),
     }),*/
     ConfigModule.forRoot({ isGlobal: true }),
-    /*GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'schema.gql',
+      autoSchemaFile: true,
       introspection: true,
       playground: true,
-    }),*/
+    }),
     AllDataModule,
     AuthModule,
     PrismaModule,

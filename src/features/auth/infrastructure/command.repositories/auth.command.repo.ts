@@ -75,4 +75,11 @@ export class AuthCommandRepo implements IUsersRepo {
     await user.setAll(foundUser);
     return user;
   }
+  async delete(id: number): Promise<boolean> {
+    const result = await this.prisma.user.delete({
+      where: {id: id}
+    })
+    console.log('result', result)
+    return true
+  }
 }
