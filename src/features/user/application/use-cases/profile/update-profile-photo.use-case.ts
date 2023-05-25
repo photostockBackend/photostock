@@ -29,8 +29,8 @@ export class UpdateProfilePhotoUseCase
     if (file) {
       link = await this.filesService.saveFiles(userId, [file], 'avatars');
     }
-    profilePhoto.origResolution = link[1].origResolution;
-    profilePhoto.minResolution = link[1].minResolution;
+    profilePhoto.origResolution = link[0].origResolution;
+    profilePhoto.minResolution = link[0].minResolution;
     await this.profileRepository.updateProfilePhoto(profilePhoto);
   }
 }
