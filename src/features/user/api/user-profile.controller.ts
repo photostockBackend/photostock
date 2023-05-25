@@ -51,6 +51,7 @@ import { parseFilePipeValidationsOptions } from '../../../helpers/common/pipes/o
 import { FindPostsByUserIdCommand } from '../application/queries/handlers/posts/find-posts-by-user-id.handler';
 import { QueryTransformPipe } from '../../../helpers/common/pipes/query-transform.pipe';
 import { PaginatorDto } from '../../../helpers/common/types/paginator.dto';
+import { FindPostFileByIdCommand } from '../application/queries/handlers/posts/find-post-file-by-id.handler';
 
 @ApiTags('user')
 @Controller('user')
@@ -162,9 +163,9 @@ export class UserProfileController {
   @Get('post/file/:id')
   async getPostFileById(@Param('id', new IntTransformPipe()) id: number) {
     const file = await this.queryBus.execute<
-      FindPostByIdCommand,
+      FindPostFileByIdCommand,
       Promise<PostFileViewModel>
-    >(new FindPostByIdCommand(id));
+    >(new FindPostFileByIdCommand(id));
     if (!file) throw new NotFoundException();
     return file;
   }
