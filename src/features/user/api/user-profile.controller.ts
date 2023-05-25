@@ -41,6 +41,7 @@ import { UpdatePostCommand } from '../application/use-cases/posts/update-post.us
 import { DeletePostCommand } from '../application/use-cases/posts/delete-post.use-case';
 import { FindPostByIdCommand } from '../application/queries/handlers/posts/find-post-by-id.handler';
 import {
+  PostFileViewModel,
   PostsUserWithPaginationViewModel,
   PostUserViewModel,
 } from '../types/posts/user-post-view.models';
@@ -120,7 +121,7 @@ export class UserProfileController {
   async updateProfilePhoto(
     @Req() req: RequestWithUser,
     @UploadedFile(
-      new ParseFilePipe(parseFilePipeValidationsOptions('avatar', 1000)),
+      new ParseFilePipe(parseFilePipeValidationsOptions('avatar', 1000, false)),
     )
     file: Express.Multer.File,
   ) {
@@ -147,6 +148,25 @@ export class UserProfileController {
     >(new FindPostByIdCommand(id));
     if (!post) throw new NotFoundException();
     return post;
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'The post file get by id.',
+    type: PostFileViewModel,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post file doesnt exists.',
+  })
+  @Get('post/file/:id')
+  async getPostFileById(@Param('id', new IntTransformPipe()) id: number) {
+    const file = await this.queryBus.execute<
+      FindPostByIdCommand,
+      Promise<PostFileViewModel>
+    >(new FindPostByIdCommand(id));
+    if (!file) throw new NotFoundException();
+    return file;
   }
 
   @ApiBearerAuth()
@@ -201,7 +221,9 @@ export class UserProfileController {
     @Req() req: RequestWithUser,
     @Body() createPostInputModel: CreatePostInputModel,
     @UploadedFiles(
-      new ParseFilePipe(parseFilePipeValidationsOptions('postPhoto', 1000)),
+      new ParseFilePipe(
+        parseFilePipeValidationsOptions('postPhoto', 1000, true),
+      ),
     )
     files: Express.Multer.File[],
   ) {
@@ -242,7 +264,9 @@ export class UserProfileController {
     @Param('id') id: string,
     @Body() updatePostInputModel: UpdatePostInputModel,
     @UploadedFiles(
-      new ParseFilePipe(parseFilePipeValidationsOptions('postPhoto', 1000)),
+      new ParseFilePipe(
+        parseFilePipeValidationsOptions('postPhoto', 1000, false),
+      ),
     )
     files: Express.Multer.File[],
   ) {

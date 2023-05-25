@@ -30,6 +30,7 @@ import { PaymentsCommandRepo } from './infrastructure/command.repositories/payme
 import { StripeWebhookSubscriptionUpdatedUseCase } from './application/use-cases/payment/stripe-webhook-subscriptionupdated.use-case';
 import { POSTS_FILES_REPO } from './types/interfaces/i-posts-files.repo';
 import { PostsFilesCommandRepo } from './infrastructure/command.repositories/posts-files.command.repo';
+import { FindPostFileByIdHandler } from './application/queries/handlers/posts/find-post-file-by-id.handler';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -45,6 +46,7 @@ const queries = [
   GetProfileForUserHandler,
   FindPostByIdHandler,
   FindPostsByUserIdHandler,
+  FindPostFileByIdHandler,
 ];
 const services = [];
 const repositories = [

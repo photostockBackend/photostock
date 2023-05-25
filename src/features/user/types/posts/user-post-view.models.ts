@@ -21,3 +21,12 @@ export class PostsUserWithPaginationViewModel {
   @ApiProperty({ type: PostUserViewModel })
   posts: PostUserViewModel[];
 }
+
+export class PostFileViewModel {
+  @ApiProperty()
+  id: number;
+  @ApiProperty()
+  original: string;
+  @ApiProperty()
+  preview: string;
+}

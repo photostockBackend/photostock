@@ -23,15 +23,12 @@ export class UpdateProfilePhotoUseCase
   async execute(command: UpdateProfilePhotoCommand): Promise<void> {
     const { userId, file } = command;
     const profile = await this.profileRepository.findProfileByUserId(userId);
-    let link = null;
+    let link = [{ origResolution: null, minResolution: null }];
     if (file) {
-      /*const filePath = `content/user/${userId}/avatars/${userId}.${
-        file.mimetype.split('/')[1]
-      }`;*/
       link = await this.filesService.saveFiles(userId, [file], 'avatars');
     }
-    profile.profilePhoto.origResolution = link;
-    profile.profilePhoto.minResolution = link;
+    profile.profilePhoto.origResolution = link[1].origResolution;
+    profile.profilePhoto.minResolution = link[1].minResolution;
     await this.profileRepository.updateProfilePhoto(profile);
   }
 }

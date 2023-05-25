@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
 import {
+  PostFileViewModel,
   PostsUserWithPaginationViewModel,
   PostUserViewModel,
 } from '../../types/posts/user-post-view.models';
@@ -46,7 +47,7 @@ export class UserPostsQueryRepo {
       })),
     };
   }
-  async getPostFilesById(fileId: number) {
+  async getFileById(fileId: number): Promise<PostFileViewModel> {
     const file = await this.prisma.postFiles.findUnique({
       where: { id: fileId },
     });
