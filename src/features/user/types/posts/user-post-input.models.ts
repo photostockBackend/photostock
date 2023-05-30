@@ -22,12 +22,12 @@ export class UpdatePostInputModel {
   @Length(1, 500)
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'array(number) of remaining photo id' })
   @IsOptional()
   @IsArray()
   remainingPhotos: number[];
 
-  @ApiProperty()
+  @ApiProperty({ description: 'array(number) of deleted photo id' })
   @IsOptional()
   @IsArray()
   deletedPhotos: number[];

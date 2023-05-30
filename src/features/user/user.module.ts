@@ -31,6 +31,7 @@ import { StripeWebhookSubscriptionUpdatedUseCase } from './application/use-cases
 import { POSTS_FILES_REPO } from './types/interfaces/i-posts-files.repo';
 import { PostsFilesCommandRepo } from './infrastructure/command.repositories/posts-files.command.repo';
 import { FindPostFileByIdHandler } from './application/queries/handlers/posts/find-post-file-by-id.handler';
+import { UserPostsController } from './api/user-posts.controller';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -73,7 +74,7 @@ const interceptors = [CheckUserNameInterceptor];
 const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
-  controllers: [UserProfileController, PaymentController],
+  controllers: [UserProfileController, UserPostsController, PaymentController],
   imports: [CqrsModule, PrismaModule, AuthModule, FilesModule, PaymentModule],
   providers: [
     ...commands,
