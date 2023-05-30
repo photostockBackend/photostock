@@ -1,11 +1,16 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesService } from '../../../../../adapters/files/files.service';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { UpdatePostInputModel } from '../../../types/posts/user-post-input.models';
 import {
   IPostsUserRepo,
   POSTS_USER_REPO,
 } from '../../../types/interfaces/i-posts-user.repo';
+import { PostFileDomain } from '../../../../../core/domain/post-file.domain';
+import {
+  IPostsFilesRepo,
+  POSTS_FILES_REPO,
+} from '../../../types/interfaces/i-posts-files.repo';
 
 export class UpdatePostCommand {
   constructor(
@@ -15,29 +20,27 @@ export class UpdatePostCommand {
     public readonly updatePostInputModel: UpdatePostInputModel,
   ) {}
 }
-
-/*
-if(updatePostInputModel.existedPhotos && (updatePostInputModel.existedPhotos.length + files.length) > 10) {
-      throw new BadRequestException({
-        message: [
-          {
-            field: 'postPhoto & existedPhotos',
-            message: 'a post can have no more than 10 photos in summ',
-          },
-        ],
-      });
-    }
-*/
-
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
   constructor(
     private filesService: FilesService,
     @Inject(POSTS_USER_REPO) private postsRepository: IPostsUserRepo,
+    @Inject(POSTS_FILES_REPO) private postsFilesRepository: IPostsFilesRepo,
   ) {}
 
   async execute(command: UpdatePostCommand): Promise<void> {
-    const { description } = command.updatePostInputModel;
+    const { remainingPhotos, deletedPhotos, description } =
+      command.updatePostInputModel;
+    if (remainingPhotos && remainingPhotos.length + command.files.length > 10) {
+      throw new BadRequestException({
+        message: [
+          {
+            field: 'postPhoto & existedPhotos',
+            message: 'a post can have no more than 10 photos in sum',
+          },
+        ],
+      });
+    }
     const foundedPost = await this.postsRepository.findOne({
       id: command.postId,
       user: { id: command.userId },
@@ -45,24 +48,33 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     if (!foundedPost) {
       throw new NotFoundException();
     }
-
-    const removedPhotoIds = command.updatePostInputModel.existedPhotos;
-
-    //const removedLinks =  foundedPost.postPhotoLinks.filter(l => postPhotoLinks.every(l => inputL))
-    let postPhotoLinks = command.updatePostInputModel.existedPhotos;
+    //deleting removed files from database
+    await this.postsRepository.deletePostFiles(deletedPhotos);
+    //deleting removed files from cloud
+    const deletedFilesLinks = [];
+    foundedPost.postFiles
+      .filter((f) => deletedPhotos.includes(f.id))
+      .forEach((f) => {
+        deletedFilesLinks.push(f.minResolution);
+        deletedFilesLinks.push(f.origResolution);
+      });
+    this.filesService.deleteFiles(deletedFilesLinks);
     if (command.files.length > 0) {
-      const files = [];
-      command.files.forEach((file) =>
-        files.push(this.filesService.getFileWrapper(command.userId, file)),
+      const filesLinks = await this.filesService.saveFiles(
+        command.userId,
+        command.files,
+        'posts',
       );
-
-      const newPostPhotoLinks = await this.filesService.saveFiles(files);
-      postPhotoLinks = [...postPhotoLinks, ...newPostPhotoLinks];
+      for (const f of filesLinks) {
+        await this.postsFilesRepository.createPostFile(
+          await PostFileDomain.makeInstanceWithoutId({
+            ...f,
+            postId: foundedPost.id,
+          }),
+        );
+      }
     }
-    foundedPost.postPhotoLinks = postPhotoLinks;
     foundedPost.description = description;
     await this.postsRepository.update(foundedPost);
-
-    // todo:  remove from
   }
 }

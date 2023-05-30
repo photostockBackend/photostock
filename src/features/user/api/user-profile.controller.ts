@@ -1,62 +1,31 @@
 import {
-  BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   NotFoundException,
-  Param,
   ParseFilePipe,
-  Post,
   Put,
-  Query,
   Req,
   UploadedFile,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RequestWithUser from '../../types/interfaces/request-with-user.interface';
 import { BearerAuthGuard } from '../../auth/api/guards/strategies/jwt.strategy';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import {
-  UpdateProfileInputModel,
-  UpdateProfilePhotoInputModel,
-} from '../types/profile/user-profile-input.models';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateProfileInputModel } from '../types/profile/user-profile-input.models';
 import { CheckUserNameInterceptor } from './interceptor/check-user-name.interceptor';
 import { UpdateProfileInfoCommand } from '../application/use-cases/profile/update-profile-info.use-case';
 import { ProfileUserViewModel } from '../types/profile/user-profile-view.models';
 import { GetProfileUserCommand } from '../application/queries/handlers/profile/get-profile-for-user.handler';
-import {
-  CreatePostInputModel,
-  UpdatePostInputModel,
-} from '../types/posts/user-post-input.models';
-import { CreatePostCommand } from '../application/use-cases/posts/create-post.use-case';
-import { UpdatePostCommand } from '../application/use-cases/posts/update-post.use-case';
-import { DeletePostCommand } from '../application/use-cases/posts/delete-post.use-case';
-import { FindPostByIdCommand } from '../application/queries/handlers/posts/find-post-by-id.handler';
-import {
-  PostsUserWithPaginationViewModel,
-  PostUserViewModel,
-} from '../types/posts/user-post-view.models';
-import { IntTransformPipe } from '../../../helpers/common/pipes/int-transform.pipe';
 import { UpdateProfilePhotoCommand } from '../application/use-cases/profile/update-profile-photo.use-case';
 import { parseFilePipeValidationsOptions } from '../../../helpers/common/pipes/options.constans/parse-file-pipe-validations.options.constant';
-import { FindPostsByUserIdCommand } from '../application/queries/handlers/posts/find-posts-by-user-id.handler';
-import { QueryTransformPipe } from '../../../helpers/common/pipes/query-transform.pipe';
-import { PaginatorDto } from '../../../helpers/common/types/paginator.dto';
 
-@ApiTags('user')
-@Controller('user')
+@ApiTags('user/profile')
+@Controller('user/profile')
 export class UserProfileController {
   constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
 
@@ -75,7 +44,7 @@ export class UserProfileController {
     description: 'Profile for current user-profile doesnt exists.',
   })
   @UseGuards(BearerAuthGuard)
-  @Get('profile')
+  @Get()
   async getProfileForCurrentUser(@Req() req: RequestWithUser) {
     const result = await this.queryBus.execute<
       GetProfileUserCommand,
@@ -97,7 +66,7 @@ export class UserProfileController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(CheckUserNameInterceptor)
-  @Put('profile/info')
+  @Put('/info')
   async updateProfileInfo(
     @Req() req: RequestWithUser,
     @Body() updateProfileInputModel: UpdateProfileInputModel,
@@ -120,176 +89,17 @@ export class UserProfileController {
   @HttpCode(204)
   @UseGuards(BearerAuthGuard)
   @UseInterceptors(FileInterceptor('avatar'))
-  @Put('profile/photo')
+  @Put('/photo')
   async updateProfilePhoto(
     @Req() req: RequestWithUser,
     @UploadedFile(
-      new ParseFilePipe(parseFilePipeValidationsOptions('avatar', 1000)),
+      new ParseFilePipe(parseFilePipeValidationsOptions('avatar', 1000, false)),
     )
     file: Express.Multer.File,
   ) {
     await this.commandBus.execute(
       new UpdateProfilePhotoCommand(req.user.userId, file),
     );
-    return;
-  }
-
-  @ApiResponse({
-    status: 200,
-    description: 'The post get by id.',
-    type: PostUserViewModel,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Post doesnt exists.',
-  })
-  @Get('post/:id')
-  async getPostById(@Param('id', new IntTransformPipe()) id: number) {
-    const post = await this.queryBus.execute<
-      FindPostByIdCommand,
-      Promise<PostUserViewModel>
-    >(new FindPostByIdCommand(id));
-    if (!post) throw new NotFoundException();
-    return post;
-  }
-
-  @ApiBearerAuth()
-  @ApiQuery({
-    name: 'pageNumber',
-    schema: { type: 'integer', default: 1 },
-    description: 'pageNumber is number of portions that should be returned',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'pageSize',
-    schema: { type: 'integer', default: 8 },
-    description: 'pageSize is portions size that should be returned',
-    required: false,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'The posts by user.',
-    type: PostsUserWithPaginationViewModel,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Posts doesnt exists.',
-  })
-  @UseGuards(BearerAuthGuard)
-  @Get('post')
-  async getPostsByUserId(
-    @Query(new QueryTransformPipe()) query: PaginatorDto,
-    @Req() req: RequestWithUser,
-  ) {
-    return await this.queryBus.execute<
-      FindPostsByUserIdCommand,
-      Promise<PostsUserWithPaginationViewModel>
-    >(new FindPostsByUserIdCommand(req.user.userId, query));
-  }
-
-  @ApiBearerAuth()
-  @ApiResponse({
-    status: 201,
-    description: 'The post has been successfully created.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'The user not identified.',
-  })
-  @ApiConsumes('multipart/form-data')
-  @HttpCode(201)
-  @UseGuards(BearerAuthGuard)
-  @UseInterceptors(FilesInterceptor('postPhoto', 10))
-  @Post('post')
-  async createPostForCurrentUser(
-    @Req() req: RequestWithUser,
-    @Body() createPostInputModel: CreatePostInputModel,
-    @UploadedFiles(
-      new ParseFilePipe(parseFilePipeValidationsOptions('postPhoto', 1000)),
-    )
-    files: Express.Multer.File[],
-  ) {
-    const postId = await this.commandBus.execute<
-      CreatePostCommand,
-      Promise<number>
-    >(new CreatePostCommand(req.user.userId, files, createPostInputModel));
-    return await this.queryBus.execute<
-      FindPostByIdCommand,
-      Promise<PostUserViewModel>
-    >(new FindPostByIdCommand(postId));
-  }
-
-  @ApiBearerAuth()
-  @ApiResponse({
-    status: 204,
-    description: 'The post has been successfully updated.',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Too many photos for one post.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'The user not identified.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'The post for update did not found.',
-  })
-  @ApiConsumes('multipart/from-data')
-  @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
-  @UseInterceptors(FilesInterceptor('postPhoto', 10))
-  @Put('post/:id')
-  async updatePostForCurrentUser(
-    @Req() req: RequestWithUser,
-    @Param('id') id: string,
-    @Body() updatePostInputModel: UpdatePostInputModel,
-    @UploadedFiles(
-      new ParseFilePipe(parseFilePipeValidationsOptions('postPhoto', 1000)),
-    )
-    files: Express.Multer.File[],
-  ) {
-    if (
-      updatePostInputModel.existedPhotos &&
-      updatePostInputModel.existedPhotos.length + files.length > 10
-    ) {
-      throw new BadRequestException({
-        message: [
-          {
-            field: 'postPhoto & existedPhotos',
-            message: 'a post can have no more than 10 photos in summ',
-          },
-        ],
-      });
-    }
-    await this.commandBus.execute(
-      new UpdatePostCommand(req.user.userId, +id, files, updatePostInputModel),
-    );
-    return;
-  }
-
-  @ApiBearerAuth()
-  @ApiResponse({
-    status: 204,
-    description: 'The post has been successfully deleted.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'The user not identified.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'The post for delete did not found.',
-  })
-  @HttpCode(204)
-  @UseGuards(BearerAuthGuard)
-  @Delete('post/:id')
-  async deletePostForCurrentUser(
-    @Req() req: RequestWithUser,
-    @Param('id') id: string,
-  ) {
-    await this.commandBus.execute(new DeletePostCommand(req.user.userId, +id));
     return;
   }
 }

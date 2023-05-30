@@ -8,9 +8,10 @@ import {
 export const parseFilePipeValidationsOptions = (
   field: string,
   size: number,
+  required: boolean,
 ) => {
   return {
-    fileIsRequired: false,
+    fileIsRequired: required,
     validators: [
       new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
       new MaxFileSizeValidator({ maxSize: 1024 * size }),
