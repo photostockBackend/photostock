@@ -5,6 +5,10 @@ import {
   IProfileUserRepo,
   PROFILE_USER_REPO,
 } from '../../../types/interfaces/i-profile-user.repo';
+import {
+  IProfilePhotosRepo,
+  PROFILE_PHOTOS_REPO,
+} from '../../../types/interfaces/i-profile-photos.repo';
 
 export class UpdateProfilePhotoCommand {
   constructor(
@@ -19,18 +23,22 @@ export class UpdateProfilePhotoUseCase
   constructor(
     private filesService: FilesService,
     @Inject(PROFILE_USER_REPO) private profileRepository: IProfileUserRepo,
+    @Inject(PROFILE_PHOTOS_REPO)
+    private profilePhotosRepository: IProfilePhotosRepo,
   ) {}
   async execute(command: UpdateProfilePhotoCommand): Promise<void> {
     const { userId, file } = command;
     const profile = await this.profileRepository.findProfileByUserId(userId);
     const profilePhoto =
-      await this.profileRepository.findProfilePhotoByProfileId(profile.id);
+      await this.profilePhotosRepository.findProfilePhotoByProfileId(
+        profile.id,
+      );
     let link = [{ origResolution: null, minResolution: null }];
     if (file) {
       link = await this.filesService.saveFiles(userId, [file], 'avatars');
     }
     profilePhoto.origResolution = link[0].origResolution;
     profilePhoto.minResolution = link[0].minResolution;
-    await this.profileRepository.updateProfilePhoto(profilePhoto);
+    await this.profilePhotosRepository.updateProfilePhoto(profilePhoto);
   }
 }
