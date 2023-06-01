@@ -14,6 +14,28 @@ export class StripeAdapter implements OnModuleInit {
       {apiVersion: '2022-11-15'},
     );
   }
+
+  async test(){
+    const session = await this.stripe.checkout.sessions.create({
+      success_url: 'http://localhost:3000/stripe/success',
+      cancel_url: 'http://localhost:3000/stripe/error',
+      line_items: [{
+          price_data: {
+              product_data: {
+                  name: `prod ids:`,
+                  description: 'buing products',
+              },
+              unit_amount: 100 * 100,
+              currency: 'USD'
+          },
+          quantity: 1,
+      }],
+      mode: 'payment',
+      client_reference_id: '999'
+  })
+  console.log('session', session)
+    return session 
+  }
   
   async onModuleInit(){
     const currentProduct = await this.stripe.products.list()
@@ -119,5 +141,78 @@ export class StripeAdapter implements OnModuleInit {
       throw error;
     }
   };
- 
+
+  async attachCard() {
+    // проверка наличия клиента
+    const customer = await this.stripe.customers.create({
+      email: 'mail@mail.com'
+    })
+    // сессия с setup картой
+    const session = await this.stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'setup',
+      customer: customer.id,
+      success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'https://example.com/cancel',
+    })
+    console.log('session', session.url)
+    return session
+  }
+
+  async webhook(rawBody, stripeSignature) {
+    let event;
+    let customerId: string;
+    let paymentMethodId: string;
+    try {
+      event = this.stripe.webhooks.constructEvent(rawBody, stripeSignature, process.env.STRIPE_SIGNING_SECRET);
+      if (event.type === 'checkout.session.completed') {
+        const session = await this.stripe.checkout.sessions.retrieve(event.data.object.id)
+
+        const setupIntent = await this.stripe.setupIntents.retrieve(event.data.object.setup_intent);
+        console.log('setupIntent', setupIntent)
+        console.log('setupIntent.payment_method', setupIntent.payment_method)
+
+        const card = await this.stripe.paymentMethods.retrieve(`${setupIntent.payment_method}`)
+        console.log('card', card)
+
+        const list = await this.stripe.paymentMethods.list({customer: `${setupIntent.customer}`})
+        console.log('list', list)
+        console.log('list', list.data[0].card)
+        // сохранение карты в базу
+
+        customerId = setupIntent.customer as string
+        paymentMethodId = setupIntent.payment_method as string
+      }
+    } catch (err) {
+      console.log('err--------------', err)
+    }
+    if (customerId && paymentMethodId) {
+      console.log(customerId)
+      console.log(paymentMethodId)
+      try {
+        const paymentIntent = await this.stripe.paymentIntents.create({
+          amount: 100099,
+          currency: 'usd',
+          customer: customerId,
+          payment_method: paymentMethodId,
+          off_session: true,
+          confirm: true,
+          capture_method: "manual",
+
+        });
+        console.log(paymentIntent)
+
+      } catch (err) {
+        console.log('Error code will be authentication_required if authentication is needed')
+      }
+    }
+  }
+
+  async cupture() {
+    const paymentIntent = await this.stripe.paymentIntents.capture(
+      'нужный id paymentIntent', {amount_to_capture: 90000}
+    );
+    console.log('paymentIntent')
+    console.log(paymentIntent)
+  }
 }

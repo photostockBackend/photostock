@@ -19,6 +19,7 @@ import {
   CreateSubscriptionInputModel,
 } from '../types/payments/payments-input.models';
 import { StripeWebhookSubscriptionUpdatedCommand } from '../application/use-cases/payment/stripe-webhook-subscriptionupdated.use-case';
+import { StripeAdapter } from '../../../adapters/payment/stripe.service';
 
 @ApiTags('payments')
 @Controller('payments')
@@ -26,7 +27,18 @@ export class PaymentController {
   constructor(
     private commandBus: CommandBus,
     private paymentsQueryRepo: PaymentsQueryRepo,
+    private stripe: StripeAdapter,
   ) {}
+
+  @Get('stripe')
+  async payment(@Req() req: RequestWithUser) {
+    return this.stripe.test()
+  }
+
+  @Post('webhook')
+  async webhook(@Body() body: any, @Req() req) {
+    await this.stripe.webhook(req)
+  }
 
   @ApiResponse({
     status: 201,

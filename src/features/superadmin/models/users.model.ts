@@ -13,7 +13,7 @@ export class UserModel {
 }
 
 @ObjectType({ description: 'paginator' })
-export class PaginatorModel {
+export class PaginatorModel<T> {
   @Field()
   page: number;
 
@@ -21,5 +21,5 @@ export class PaginatorModel {
   pageSize: number;
 
   @Field(() => [UserModel])
-  users: UserModel[]
+  users: T
 }

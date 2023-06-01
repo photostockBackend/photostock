@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../database/prisma.service';
 import { AuthMeViewModel } from '../../types/auth-view.models';
 import format = require('pg-format');
-import { PaginatorArgs } from '../../../superadmin/dto/users.args';
+import { Paginator } from '../../../superadmin/dto/users.args';
 
 @Injectable()
 export class AuthQueryRepo {
@@ -23,7 +23,7 @@ export class AuthQueryRepo {
     return user[0];
   }
 
-  async findAllUsersWithPagination(queryParams: PaginatorArgs): Promise<any> {
+  async findAllUsersWithPagination(queryParams: Paginator): Promise<any> {
     const sql = format(
       `SELECT
                 "id" as "userId", "email", "username"

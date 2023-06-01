@@ -786,6 +786,41 @@ window.onload = function() {
           ]
         }
       },
+      "/payments/stripe": {
+        "get": {
+          "operationId": "PaymentController_payment",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
+      "/payments/webhook": {
+        "post": {
+          "operationId": "PaymentController_webhook",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "payments"
+          ]
+        }
+      },
       "/payments/stripe/attachcard": {
         "post": {
           "operationId": "PaymentController_stripeAttachCustomer",
