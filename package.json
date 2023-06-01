@@ -53,6 +53,7 @@
     "emailjs-imap-client": "^3.1.0",
     "googleapis": "^118.0.0",
     "graphql": "^16.6.0",
+    "localtunnel": "^2.0.2",
     "mailparser": "^3.6.4",
     "mongoose": "^6.10.1",
     "passport": "^0.6.0",

@@ -16,7 +16,7 @@ model User {
   credInfo          CredInfoUser?
   tokenInfo         TokenInfoUser[]
   profileInfo       ProfileInfoUser?
-  banInfoUser       BanInfoUser?
+  statusInfoUser    StatusInfoUser?
   paymentsInfo      PaymentsInfoUser[]
   posts             Posts[]
   postsLikes        PostLikes[]
@@ -58,11 +58,15 @@ model ProfileInfoUser {
   userId            Int               @unique
 }
 
-model BanInfoUser {
+enum userStatus {
+  active
+  ban
+}
+model StatusInfoUser {
   id                Int               @id @default(autoincrement())
-  banStatus         Boolean
-  banReason         String
-  banDate           String
+  status            userStatus
+  statusReason      String
+  statusDate        String
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            Int               @unique
 }

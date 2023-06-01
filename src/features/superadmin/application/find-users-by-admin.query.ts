@@ -1,18 +1,18 @@
 import { Inject } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { USERS_REPO } from '../../auth/types/interfaces/i-users.repo';
 import { AuthQueryRepo } from '../../auth/infrastructure/query.repositories/auth.query.repo';
-import { PaginatorArgs } from '../dto/users.args';
+import { Paginator } from '../dto/users.args';
 
 export class FindUsersByAdminQuery {
   constructor(
-    public query: PaginatorArgs,
+    public query: Paginator,
   ) {}
 }
 
-@CommandHandler(FindUsersByAdminQuery)
+@QueryHandler(FindUsersByAdminQuery)
 export class FindUsersByAdminUseCase
-  implements ICommandHandler<FindUsersByAdminQuery>
+  implements IQueryHandler<FindUsersByAdminQuery>
 {
   constructor(
     @Inject(USERS_REPO) private usersRepository: AuthQueryRepo,

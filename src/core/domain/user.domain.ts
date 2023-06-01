@@ -9,6 +9,8 @@ import { ProfileUserDomain } from './profile-user.domain';
 import { ProfileUserCreateType } from '../../features/user/types/profile/profile-user-create.type';
 import { PaymentInfoCreateType } from '../../features/user/types/payments/payments-create.type';
 import { PaymentDomain } from './payment.domain';
+import { UserStatusDomain } from './userStatus.domain';
+import { StatusUserType } from './userStatus.domain';
 
 export enum emailRecoveryFlag {
   email = 'isActivated',
@@ -28,6 +30,7 @@ export class UserDomain {
   email: string;
   createdAt: string;
   credInfo: CredInfoUserDomain;
+  statusInfo: UserStatusDomain;
   profile: ProfileUserDomain;
   tokenInfo: TokenInfoDomain[];
   paymentsInfo: PaymentDomain[];
@@ -68,6 +71,9 @@ export class UserDomain {
   }
   async setProfile(profileDto: ProfileUserCreateType) {
     this.profile = new ProfileUserDomain(profileDto);
+  }
+  setStatus(userStatusDto: StatusUserType){
+    this.statusInfo = UserStatusDomain.create(userStatusDto)
   }
   async setPayments(paymentDto: PaymentInfoCreateType[]) {
     this.paymentsInfo = paymentDto.map(p => new PaymentDomain(p))
