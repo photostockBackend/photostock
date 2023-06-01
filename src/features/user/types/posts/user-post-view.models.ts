@@ -6,7 +6,7 @@ export class PostUserViewModel {
   @ApiProperty()
   description: string;
   @ApiProperty()
-  postPhotos: string[];
+  postPhotosId: number[];
 }
 
 export class PostsUserWithPaginationViewModel {
@@ -20,4 +20,13 @@ export class PostsUserWithPaginationViewModel {
   totalCount: number;
   @ApiProperty({ type: PostUserViewModel })
   posts: PostUserViewModel[];
+}
+
+export class PostFileViewModel {
+  @ApiProperty()
+  id: number;
+  @ApiProperty()
+  original: string;
+  @ApiProperty()
+  preview: string;
 }

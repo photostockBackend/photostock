@@ -26,7 +26,7 @@ export class PaymentsQueryRepo {
     return {
       id: post[0].id,
       description: post[0].description,
-      postPhotos: post[0].postPhotoLinks,
+      postPhotosId: [],
     };
   }
   async findPaymentsByUserId(
@@ -50,7 +50,7 @@ export class PaymentsQueryRepo {
       posts: posts.map((post) => ({
         id: post.id,
         description: post.description,
-        postPhotos: post.postPhotoLinks,
+        postPhotosId: [],
       })),
     };
   }
