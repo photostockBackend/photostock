@@ -15,7 +15,6 @@ import { PublicModule } from './features/public/public.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { SuperAdminModule } from './features/superadmin/superadmin.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -42,9 +41,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     EventEmitterModule,
     OauthModule,
     SuperAdminModule,
-    ClientsModule.register([
-      { name: 'FILES_MICROSERVICE', transport: Transport.TCP },
-    ]),
   ],
   controllers: [AppController],
   providers: [

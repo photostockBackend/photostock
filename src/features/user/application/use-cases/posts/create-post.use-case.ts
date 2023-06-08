@@ -7,7 +7,6 @@ import {
   POSTS_USER_REPO,
 } from '../../../types/interfaces/i-posts-user.repo';
 import { PostDomain } from '../../../../../core/domain/post.domain';
-import { PostFileDomain } from '../../../../../core/domain/post-file.domain';
 import {
   IPostsFilesRepo,
   POSTS_FILES_REPO,
@@ -38,11 +37,20 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       description,
       userId,
     });
+    const id = 1;
+    console.log(await this.client.send({ role: 'item', cmd: 'get-by-id' }, id));
     const postId = await this.postsRepository.create(post);
     if (command.files.length > 0) {
-      const bufferDto = command.files.map((f) => f.buffer.toJSON());
-      this.client.send({ role: 'file', cmd: 'save' }, bufferDto);
-      const filesLinks = await this.filesService.saveFiles(
+      console.log(await this.client.connect());
+      const bufferDto: { type: 'Buffer'; data: number[] }[] = command.files.map(
+        (f) => f.buffer.toJSON(),
+      );
+      const result = await this.client.send(
+        { role: 'file', cmd: 'save' },
+        bufferDto,
+      );
+      console.log(result);
+      /*const filesLinks = await this.filesService.saveFiles(
         command.userId,
         command.files,
         'posts',
@@ -51,7 +59,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
         await this.postsFilesRepository.createPostFile(
           await PostFileDomain.makeInstanceWithoutId({ ...f, postId }),
         );
-      }
+      }*/
     }
     return postId;
   }

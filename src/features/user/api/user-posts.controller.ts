@@ -45,6 +45,7 @@ import { parseFilePipeValidationsOptions } from '../../../helpers/common/pipes/o
 import { CreatePostCommand } from '../application/use-cases/posts/create-post.use-case';
 import { UpdatePostCommand } from '../application/use-cases/posts/update-post.use-case';
 import { DeletePostCommand } from '../application/use-cases/posts/delete-post.use-case';
+import { TestMicro } from '../application/queries/handlers/posts/test-micro';
 
 @ApiTags('user/post')
 @Controller('user/post')
@@ -217,5 +218,10 @@ export class UserPostsController {
   ) {
     await this.commandBus.execute(new DeletePostCommand(req.user.userId, +id));
     return;
+  }
+
+  @Get(':id')
+  async getMicro(@Param('id', new IntTransformPipe()) id: number) {
+    return await this.queryBus.execute(new TestMicro(id));
   }
 }

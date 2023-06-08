@@ -34,6 +34,8 @@ import { FindPostFileByIdHandler } from './application/queries/handlers/posts/fi
 import { UserPostsController } from './api/user-posts.controller';
 import { PROFILE_PHOTOS_REPO } from './types/interfaces/i-profile-photos.repo';
 import { ProfilePhotosCommandRepo } from './infrastructure/command.repositories/profile-photos.command.repo';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { TestHandler } from './application/queries/handlers/posts/test-micro';
 
 const commands = [
   UpdateProfileInfoUseCase,
@@ -50,6 +52,7 @@ const queries = [
   FindPostByIdHandler,
   FindPostsByUserIdHandler,
   FindPostFileByIdHandler,
+  TestHandler,
 ];
 const services = [];
 const repositories = [
@@ -81,7 +84,22 @@ const pipes = [IntTransformPipe, QueryTransformPipe];
 
 @Module({
   controllers: [UserProfileController, UserPostsController, PaymentController],
-  imports: [CqrsModule, PrismaModule, AuthModule, FilesModule, PaymentModule],
+  imports: [
+    CqrsModule,
+    PrismaModule,
+    AuthModule,
+    FilesModule,
+    PaymentModule,
+    ClientsModule.registerAsync([
+      {
+        name: 'FILES_MICROSERVICE',
+        useFactory: () => ({
+          transport: Transport.TCP,
+          options: { host: 'localhost', port: 3000 },
+        }),
+      },
+    ]),
+  ],
   providers: [
     ...commands,
     ...queries,
@@ -92,5 +110,6 @@ const pipes = [IntTransformPipe, QueryTransformPipe];
     ...interceptors,
     ...pipes,
   ],
+  exports: [ClientsModule],
 })
 export class UserModule {}
