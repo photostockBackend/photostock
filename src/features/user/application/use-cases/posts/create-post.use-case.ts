@@ -12,6 +12,7 @@ import {
   IPostsFilesRepo,
   POSTS_FILES_REPO,
 } from '../../../types/interfaces/i-posts-files.repo';
+import { ClientProxy } from '@nestjs/microservices';
 
 export class CreatePostCommand {
   constructor(
@@ -27,6 +28,7 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
     private filesService: FilesService,
     @Inject(POSTS_USER_REPO) private postsRepository: IPostsUserRepo,
     @Inject(POSTS_FILES_REPO) private postsFilesRepository: IPostsFilesRepo,
+    @Inject('FILES_MICROSERVICE') private readonly client: ClientProxy,
   ) {}
 
   async execute(command: CreatePostCommand): Promise<number> {
@@ -38,6 +40,8 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
     });
     const postId = await this.postsRepository.create(post);
     if (command.files.length > 0) {
+      const bufferDto = command.files.map((f) => f.buffer.toJSON());
+      this.client.send({ role: 'file', cmd: 'save' }, bufferDto);
       const filesLinks = await this.filesService.saveFiles(
         command.userId,
         command.files,

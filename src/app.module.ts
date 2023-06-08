@@ -7,8 +7,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './features/auth/auth.module';
 import { PrismaModule } from './database/prisma.module';
 import { AllDataModule } from './helpers/delete-all-data/delete-all-data.module';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './features/user/user.module';
 import { FilesModule } from './adapters/files/files.module';
 import { EventEmitterModule } from './adapters/eventEmitter/eventEmitter.module';
@@ -17,6 +15,7 @@ import { PublicModule } from './features/public/public.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { SuperAdminModule } from './features/superadmin/superadmin.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -43,6 +42,9 @@ import { SuperAdminModule } from './features/superadmin/superadmin.module';
     EventEmitterModule,
     OauthModule,
     SuperAdminModule,
+    ClientsModule.register([
+      { name: 'FILES_MICROSERVICE', transport: Transport.TCP },
+    ]),
   ],
   controllers: [AppController],
   providers: [

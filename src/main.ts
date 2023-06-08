@@ -6,7 +6,7 @@ import { get } from 'http';
 import { useContainer } from 'class-validator';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { BadExceptionFilter } from './helpers/bad-exception.filter';
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 
 const PORT = process.env.PORT || 5000;
 const serverUrl = `http://localhost:${PORT}`;
@@ -14,7 +14,11 @@ const serverUrl = `http://localhost:${PORT}`;
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: ['http://localhost:3000', 'http://localhost:3001', 'https://front-team.vercel.app'],
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://front-team.vercel.app',
+      ],
       credentials: true,
     },
   });

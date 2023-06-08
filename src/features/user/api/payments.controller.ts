@@ -32,12 +32,12 @@ export class PaymentController {
 
   @Get('stripe')
   async payment(@Req() req: RequestWithUser) {
-    return this.stripe.test()
+    return this.stripe.test();
   }
 
   @Post('webhook')
   async webhook(@Body() body: any, @Req() req) {
-    await this.stripe.webhook(req)
+    await this.stripe.webhook(req, null);
   }
 
   @ApiResponse({
